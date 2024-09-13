@@ -30,7 +30,6 @@ final readonly class AttributeEntityTypeService
                 return [app($resourceInstance->getModel())->getMorphClass() => $resourceInstance::getBreadcrumb()];
             });
     }
-
     public static function getMorphClassFromModel(string $model): string
     {
         return app($model)->getMorphClass();
