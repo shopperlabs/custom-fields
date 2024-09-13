@@ -8,6 +8,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use ManukMinasyan\FilamentAttribute\Models\Attribute;
+use Throwable;
 
 final readonly class SelectComponent implements AttributeComponentInterface
 {
@@ -27,24 +28,30 @@ final readonly class SelectComponent implements AttributeComponentInterface
         return $this->configurator->configure($field, $attribute);
     }
 
+    /**
+     * @throws Throwable
+     */
     protected function configureLookup(Select $select, $lookupType): Select
     {
         $lookupMorphedModelPath = Relation::getMorphedModel($lookupType);
 
-        $lookupEntity = app($lookupMorphedModelPath);
-        $resource = app(Filament::getModelResource($lookupMorphedModelPath));
+        $lookupEntityInstance = app($lookupMorphedModelPath);
+        $resourcePath = Filament::getModelResource($lookupMorphedModelPath);
+        $resourceInstance = app($resourcePath);
 
-        $recordTitleAttribute = $resource->getRecordTitleAttribute();
-        $globalSearchableAttributes = $resource->getGloballySearchableAttributes();
+        $recordTitleAttribute = $resourceInstance->getRecordTitleAttribute();
+        $globalSearchableAttributes = $resourceInstance->getGloballySearchableAttributes();
+
+        throw_if($recordTitleAttribute === null, new \Exception("The `{$resourcePath}` does not have a record title attribute."));
 
         return $select
-            ->getSearchResultsUsing(fn (string $search): array => $lookupEntity->query()
+            ->getSearchResultsUsing(fn (string $search): array => $lookupEntityInstance->query()
                 ->whereAny($globalSearchableAttributes, 'like', "%{$search}%")
                 ->limit(50)
                 ->pluck($recordTitleAttribute, 'id')
                 ->toArray())
-            ->getOptionLabelUsing(fn ($value) => $lookupEntity::query()->find($value)->{$recordTitleAttribute})
-            ->getOptionLabelsUsing(fn (array $values): array => $lookupEntity::query()
+            ->getOptionLabelUsing(fn ($value) => $lookupEntityInstance::query()->find($value)->{$recordTitleAttribute})
+            ->getOptionLabelsUsing(fn (array $values): array => $lookupEntityInstance::query()
                 ->whereIn('id', $values)
                 ->pluck($recordTitleAttribute, 'id')
                 ->toArray());
