@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentAttribute;
+namespace ManukMinasyan\FilamentCustomField;
 
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
@@ -10,17 +10,17 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
-use ManukMinasyan\FilamentAttribute\Commands\FilamentAttributeCommand;
-use ManukMinasyan\FilamentAttribute\Testing\TestsFilamentAttribute;
+use ManukMinasyan\FilamentCustomField\Commands\FilamentAttributeCommand;
+use ManukMinasyan\FilamentCustomField\Testing\TestsFilamentAttribute;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FilamentAttributeServiceProvider extends PackageServiceProvider
+class FilamentCustomFieldServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'filament-attribute';
+    public static string $name = 'custom-fields';
 
-    public static string $viewNamespace = 'filament-attribute';
+    public static string $viewNamespace = 'filament-custom-fields';
 
     public function configurePackage(Package $package): void
     {
@@ -35,8 +35,7 @@ class FilamentAttributeServiceProvider extends PackageServiceProvider
                 $command
                     ->publishConfigFile()
                     ->publishMigrations()
-                    ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('manukminasyan/filament-attribute');
+                    ->askToRunMigrations();
             });
 
         $configFileName = $package->shortName();
@@ -91,7 +90,7 @@ class FilamentAttributeServiceProvider extends PackageServiceProvider
 
     protected function getAssetPackageName(): ?string
     {
-        return 'manukminasyan/filament-attribute';
+        return 'manukminasyan/filament-custom-field';
     }
 
     /**

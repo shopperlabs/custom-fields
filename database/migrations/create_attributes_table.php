@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('attributes', function (Blueprint $table): void {
+        Schema::create(config('custom-fields.table_names.attributes'), function (Blueprint $table): void {
             $table->id();
 
             $table->string('code');
@@ -31,6 +31,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('attributes');
+        Schema::dropIfExists(config('custom-fields.table_names.attributes'));
     }
 };

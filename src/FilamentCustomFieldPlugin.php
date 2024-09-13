@@ -1,13 +1,13 @@
 <?php
 
-namespace ManukMinasyan\FilamentAttribute;
+namespace ManukMinasyan\FilamentCustomField;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use ManukMinasyan\FilamentAttribute\Filament\Resources\AttributeResource;
+use ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource;
 use Filament\Navigation\NavigationItem;
 
-class FilamentAttributePlugin implements Plugin
+class FilamentCustomFieldPlugin implements Plugin
 {
     public function getId(): string
     {

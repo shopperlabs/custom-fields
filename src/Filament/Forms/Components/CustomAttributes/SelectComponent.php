@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Forms\Components\CustomAttributes;
+namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomAttributes;
 
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
 use Throwable;
 
 final readonly class SelectComponent implements AttributeComponentInterface

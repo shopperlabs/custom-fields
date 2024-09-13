@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Resources;
+namespace ManukMinasyan\FilamentCustomField\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -10,11 +10,11 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Illuminate\Validation\Rules\Unique;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
-use ManukMinasyan\FilamentAttribute\Filament\Forms\Components\AttributeResource\AttributeValidationComponent;
-use ManukMinasyan\FilamentAttribute\Filament\Resources\AttributeResource\Pages;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
-use ManukMinasyan\FilamentAttribute\Services\AttributeEntityTypeService;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Filament\Forms\Components\AttributeResource\AttributeValidationComponent;
+use ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource\Pages;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Services\AttributeEntityTypeService;
 
 final class AttributeResource extends Resource
 {

@@ -1,15 +1,15 @@
 {
-    "name": "manukminasyan/filament-attribute",
-    "description": "This is my package filament-attribute",
+    "name": "manukminasyan/filament-custom-fields",
+    "description": "This is my package filament-custom-fields",
     "keywords": [
         "manukminasyan",
         "laravel",
-        "filament-attribute"
+        "filament-custom-fields"
     ],
-    "homepage": "https://github.com/manukminasyan/filament-attribute",
+    "homepage": "https://github.com/manukminasyan/filament-custom-fields",
     "support": {
-        "issues": "https://github.com/manukminasyan/filament-attribute/issues",
-        "source": "https://github.com/manukminasyan/filament-attribute"
+        "issues": "https://github.com/manukminasyan/filament-custom-fields/issues",
+        "source": "https://github.com/manukminasyan/filament-custom-fields"
     },
     "license": "MIT",
     "authors": [
@@ -40,13 +40,13 @@
     },
     "autoload": {
         "psr-4": {
-            "ManukMinasyan\\FilamentAttribute\\": "src/",
-            "ManukMinasyan\\FilamentAttribute\\Database\\Factories\\": "database/factories/"
+            "ManukMinasyan\\FilamentCustomField\\": "src/",
+            "ManukMinasyan\\FilamentCustomField\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ManukMinasyan\\FilamentAttribute\\Tests\\": "tests/"
+            "ManukMinasyan\\FilamentCustomField\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -66,10 +66,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ManukMinasyan\\FilamentAttribute\\FilamentAttributeServiceProvider"
+                "ManukMinasyan\\FilamentCustomField\\FilamentCustomFieldServiceProvider"
             ],
             "aliases": {
-                "FilamentAttribute": "ManukMinasyan\\FilamentAttribute\\Facades\\FilamentAttribute"
+                "FilamentCustomField": "ManukMinasyan\\FilamentCustomField\\Facades\\FilamentCustomField"
             }
         }
     },

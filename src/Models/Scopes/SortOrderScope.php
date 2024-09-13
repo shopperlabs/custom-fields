@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Models\Scopes;
+namespace ManukMinasyan\FilamentCustomField\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Forms\Components\CustomAttributes;
+namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomAttributes;
 
 use Filament\Forms\Components\Field;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
 
 interface AttributeComponentInterface
 {

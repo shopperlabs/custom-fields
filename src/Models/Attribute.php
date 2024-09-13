@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Models;
+namespace ManukMinasyan\FilamentCustomField\Models;
 
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use ManukMinasyan\FilamentAttribute\Data\ValidationRuleData;
-use ManukMinasyan\FilamentAttribute\Database\Factories\AttributeFactory;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
-use ManukMinasyan\FilamentAttribute\Models\Scopes\SortOrderScope;
+use ManukMinasyan\FilamentCustomField\Data\ValidationRuleData;
+use ManukMinasyan\FilamentCustomField\Database\Factories\AttributeFactory;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Models\Scopes\SortOrderScope;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -39,6 +39,15 @@ final class Attribute extends Model
         'sort_order',
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        if (!isset($this->table)) {
+            $this->setTable(config('custom-fields.table_names.attributes'));
+        }
+
+        parent::__construct($attributes);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -48,12 +57,12 @@ final class Attribute extends Model
     {
         return [
             'type' => AttributeType::class,
-            'validation_rules' => DataCollection::class.':'.ValidationRuleData::class,
+            'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class,
         ];
     }
 
     /**
-     * @param  Builder<Attribute>  $builder
+     * @param Builder<Attribute> $builder
      * @return Builder<Attribute>
      *
      * @noinspection PhpUnused
@@ -64,7 +73,7 @@ final class Attribute extends Model
     }
 
     /**
-     * @param  Builder<Attribute>  $builder
+     * @param Builder<Attribute> $builder
      * @return Builder<Attribute>
      *
      * @noinspection PhpUnused

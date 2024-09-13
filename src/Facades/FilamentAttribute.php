@@ -1,16 +1,16 @@
 <?php
 
-namespace ManukMinasyan\FilamentAttribute\Facades;
+namespace ManukMinasyan\FilamentCustomField\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \ManukMinasyan\FilamentAttribute\FilamentAttribute
+ * @see \ManukMinasyan\FilamentAttribute\FilamentCustomField
  */
 class FilamentAttribute extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \ManukMinasyan\FilamentAttribute\FilamentAttribute::class;
+        return \ManukMinasyan\FilamentAttribute\FilamentCustomField::class;
     }
 }

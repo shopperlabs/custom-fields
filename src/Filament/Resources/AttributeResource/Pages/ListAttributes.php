@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Resources\AttributeResource\Pages;
+namespace ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource\Pages;
 
 use Filament\Actions\CreateAction;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
-use ManukMinasyan\FilamentAttribute\Filament\Resources\AttributeResource;
-use ManukMinasyan\FilamentAttribute\Services\AttributeEntityTypeService;
+use ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource;
+use ManukMinasyan\FilamentCustomField\Services\AttributeEntityTypeService;
 
 final class ListAttributes extends ListRecords
 {

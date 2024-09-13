@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Concerns;
+namespace ManukMinasyan\FilamentCustomField\Filament\Concerns;
 
 use Filament\Facades\Filament;
 use Filament\Tables\Columns\IconColumn;
@@ -10,8 +10,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
 use Throwable;
 
 trait InteractsWithCustomAttributes

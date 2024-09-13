@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Models;
+namespace ManukMinasyan\FilamentCustomField\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
 
 /**
  * @property Attribute $attribute
@@ -44,6 +44,15 @@ final class AttributeValue extends Model
         AttributeType::DATE->value => 'date_value',
         AttributeType::DATETIME->value => 'datetime_value',
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        if (!isset($this->table)) {
+            $this->setTable(config('custom-fields.table_names.attribute_values'));
+        }
+
+        parent::__construct($attributes);
+    }
 
     /**
      * @return BelongsTo<Attribute, AttributeValue>

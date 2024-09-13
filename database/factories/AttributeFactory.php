@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Database\Factories;
+namespace ManukMinasyan\FilamentCustomField\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeEntityTypeEnum;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeLookupTypeEnum;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeEntityTypeEnum;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeLookupTypeEnum;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
 
 /**
  * @extends Factory<Attribute>

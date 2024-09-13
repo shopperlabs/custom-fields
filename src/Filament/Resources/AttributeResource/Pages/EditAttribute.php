@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Resources\AttributeResource\Pages;
+namespace ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource\Pages;
 
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use ManukMinasyan\FilamentAttribute\Filament\Resources\AttributeResource;
+use ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource;
 
 final class EditAttribute extends EditRecord
 {

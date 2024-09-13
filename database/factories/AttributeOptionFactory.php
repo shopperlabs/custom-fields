@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Database\Factories;
+namespace ManukMinasyan\FilamentCustomField\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
-use ManukMinasyan\FilamentAttribute\Models\AttributeOption;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Models\AttributeOption;
 
 /**
  * @extends Factory<AttributeOption>

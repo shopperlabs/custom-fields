@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Services;
+namespace ManukMinasyan\FilamentCustomField\Services;
 
 use Filament\Facades\Filament;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use ManukMinasyan\FilamentAttribute\Filament\Resources\AttributeResource;
+use ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource;
 
 final readonly class AttributeEntityTypeService
 {

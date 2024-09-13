@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Forms\Components\AttributeResource;
+namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\AttributeResource;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeValidationRule;
-use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeValidationRule;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
 
 final class AttributeValidationComponent extends Component
 {

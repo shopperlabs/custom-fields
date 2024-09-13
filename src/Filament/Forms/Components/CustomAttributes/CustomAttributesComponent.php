@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Filament\Forms\Components\CustomAttributes;
+namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomAttributes;
 
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
-use ManukMinasyan\FilamentAttribute\Services\AttributeEntityTypeService;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Services\AttributeEntityTypeService;
 
 final class CustomAttributesComponent extends Component
 {

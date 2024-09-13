@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentAttribute\Testing;
+namespace ManukMinasyan\FilamentCustomField\Testing;
 
 use Livewire\Features\SupportTesting\Testable;
 

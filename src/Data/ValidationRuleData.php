@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Data;
+namespace ManukMinasyan\FilamentCustomField\Data;
 
 use Spatie\LaravelData\Data;
 

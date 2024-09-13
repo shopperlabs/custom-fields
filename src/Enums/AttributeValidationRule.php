@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Enums;
+namespace ManukMinasyan\FilamentCustomField\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 

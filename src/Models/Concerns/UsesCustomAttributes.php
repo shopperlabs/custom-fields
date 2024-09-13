@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Models\Concerns;
+namespace ManukMinasyan\FilamentCustomField\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
-use ManukMinasyan\FilamentAttribute\Models\AttributeValue;
-use ManukMinasyan\FilamentAttribute\Models\Contracts\HasCustomAttributes;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Models\AttributeValue;
+use ManukMinasyan\FilamentCustomField\Models\Contracts\HasCustomAttributes;
 
 /**
  * @see HasCustomAttributes

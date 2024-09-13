@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentAttribute\Models\Contracts;
+namespace ManukMinasyan\FilamentCustomField\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use ManukMinasyan\FilamentAttribute\Models\Attribute;
-use ManukMinasyan\FilamentAttribute\Models\AttributeValue;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
+use ManukMinasyan\FilamentCustomField\Models\AttributeValue;
 
 interface HasCustomAttributes
 {
