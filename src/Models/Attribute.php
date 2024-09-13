@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace ManukMinasyan\FilamentAttribute\Models;
 
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-use ManukMinasyan\FilamentAttribute\Data\ValidationRuleData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use ManukMinasyan\FilamentAttribute\Data\ValidationRuleData;
 use ManukMinasyan\FilamentAttribute\Database\Factories\AttributeFactory;
 use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
 use ManukMinasyan\FilamentAttribute\Models\Scopes\SortOrderScope;
@@ -36,6 +36,7 @@ final class Attribute extends Model
         'name',
         'code',
         'validation_rules',
+        'sort_order',
     ];
 
     /**
