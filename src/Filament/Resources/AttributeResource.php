@@ -9,6 +9,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
 use ManukMinasyan\FilamentCustomField\Filament\Forms\Components\AttributeResource\AttributeValidationComponent;
@@ -46,16 +47,16 @@ final class AttributeResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->live(onBlur: true)
                                     ->required()
-                                    ->maxLength(30)
+                                    ->maxLength(50)
                                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?string $old, ?string $state): void {
                                         $old ??= '';
                                         $state ??= '';
 
-                                        if (($get('code') ?? '') !== strtolower($old)) {
+                                        if (($get('code') ?? '') !== Str::of($old)->slug('_')->toString()) {
                                             return;
                                         }
 
-                                        $set('code', strtolower($state));
+                                        $set('code', Str::of($state)->slug('_')->toString());
                                     }),
                                 Forms\Components\TextInput::make('code')
                                     ->live(onBlur: true)
@@ -65,9 +66,9 @@ final class AttributeResource extends Resource
                                     ->validationMessages([
                                         'unique' => __('validation.custom.attributes.code.unique'),
                                     ])
-                                    ->maxLength(30)
+                                    ->maxLength(50)
                                     ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
-                                        $set('code', strtolower($state ?? ''));
+                                        $set('code', Str::of($state)->slug('_')->toString());
                                     }),
                                 Forms\Components\Select::make('options_lookup_type')
                                     ->visible(fn (Forms\Get $get): bool => in_array($get('type'), [AttributeType::SELECT->value, AttributeType::MULTISELECT->value]))
