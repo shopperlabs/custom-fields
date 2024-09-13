@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ManukMinasyan\FilamentAttribute\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use ManukMinasyan\FilamentAttribute\Data\ValidationRuleData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use ManukMinasyan\FilamentAttribute\Database\Factories\AttributeFactory;
 use ManukMinasyan\FilamentAttribute\Enums\AttributeType;
+use ManukMinasyan\FilamentAttribute\Models\Scopes\SortOrderScope;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -18,6 +20,7 @@ use Spatie\LaravelData\DataCollection;
  * @property Model $entity_type
  * @property Model|null $lookup_type
  */
+#[ScopedBy([SortOrderScope::class])]
 final class Attribute extends Model
 {
     /** @use HasFactory<AttributeFactory> */
@@ -44,8 +47,6 @@ final class Attribute extends Model
     {
         return [
             'type' => AttributeType::class,
-            //            'entity_type' => Model::class,
-            //            'lookup_type' => AttributeLookupTypeEnum::class,,
             'validation_rules' => DataCollection::class.':'.ValidationRuleData::class,
         ];
     }

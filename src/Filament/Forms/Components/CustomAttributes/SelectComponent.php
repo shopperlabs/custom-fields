@@ -33,9 +33,9 @@ final readonly class SelectComponent implements AttributeComponentInterface
 
         return $select
             ->getSearchResultsUsing(fn (string $search): array => $lookupEntity->query()
-                ->whereAny($lookupType->searchColumns(), 'like', "%{$search}%")
+                ->whereAny(['name'], 'like', "%{$search}%") // TODO: Get search columns from attribute/resource
                 ->limit(50)
-                ->pluck($lookupType->labelColumn(), 'id')
+                ->pluck('name', 'id') // TODO: Get label column from attribute/resource
                 ->toArray())
             ->getOptionLabelUsing(fn ($value): ?string => $lookupEntity::find($value)?->{$lookupType->labelColumn()});
     }
