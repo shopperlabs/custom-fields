@@ -22,8 +22,8 @@ return new class extends Migration
             $table->boolean('boolean_value')->nullable();
             $table->integer('integer_value')->nullable();
             $table->double('float_value')->nullable();
-            $table->datetime('datetime_value')->nullable();
             $table->date('date_value')->nullable();
+            $table->dateTime('datetime_value')->nullable();
             $table->json('json_value')->nullable();
 
             $table->unique(['entity_type', 'entity_id', 'attribute_id'], 'entity_type_attribute_value_index_unique');

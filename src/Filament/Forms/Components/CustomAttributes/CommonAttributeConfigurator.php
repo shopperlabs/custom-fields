@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomAttributes;
 
-use ManukMinasyan\FilamentCustomField\Data\ValidationRuleData;
-use ManukMinasyan\FilamentCustomField\Models\Attribute;
 use Filament\Forms\Components\Field;
+use Illuminate\Support\Carbon;
+use ManukMinasyan\FilamentCustomField\Data\ValidationRuleData;
+use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Models\Attribute;
 use Spatie\LaravelData\DataCollection;
 
 final readonly class CommonAttributeConfigurator
@@ -23,7 +25,12 @@ final readonly class CommonAttributeConfigurator
             ->label($attribute->name)
             ->reactive()
             ->afterStateHydrated(function ($component, $state, $record) use ($attribute): void {
-                $component->state($record?->getCustomAttributeValue($attribute->code));
+                $value = $record?->getCustomAttributeValue($attribute->code);
+                $component->state(match ($attribute->type) {
+                    AttributeType::DATE => $value instanceof Carbon ? $value->toDateString() : $value,
+                    AttributeType::DATETIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
+                    default => $value,
+                });
             })
             ->dehydrated(fn ($state): bool => $state !== null && $state !== '')
             ->rules($this->convertRulesToFilamentFormat($attribute->validation_rules));

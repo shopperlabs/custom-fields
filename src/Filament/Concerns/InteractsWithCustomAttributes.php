@@ -17,8 +17,6 @@ use Throwable;
 
 trait InteractsWithCustomAttributes
 {
-    private const DEFAULT_COLUMN_VALUE = '-';
-
     /**
      * Returns the table with custom attributes added as columns.
      *
@@ -57,10 +55,34 @@ trait InteractsWithCustomAttributes
     {
         return match ($attribute->type) {
             AttributeType::TOGGLE => $this->createColumnForToggle($attribute),
+            AttributeType::DATE => $this->createColumnForDate($attribute),
+            AttributeType::DATETIME => $this->createColumnForDateTime($attribute),
             AttributeType::SELECT => $this->createColumnForSelect($attribute),
             AttributeType::MULTISELECT => $this->createColumnForMultiSelect($attribute),
             default => $this->createColumnForText($attribute),
         };
+    }
+
+    /**
+     * Create a date column for the attribute.
+     */
+    private function createColumnForDate(Attribute $attribute): TextColumn
+    {
+        return TextColumn::make("custom_attributes.$attribute->code")
+            ->date()
+            ->label($attribute->name)
+            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($attribute->code));
+    }
+
+    /**
+     * Create a date time column for the attribute.
+     */
+    private function createColumnForDateTime(Attribute $attribute): TextColumn
+    {
+        return TextColumn::make("custom_attributes.$attribute->code")
+            ->dateTime()
+            ->label($attribute->name)
+            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($attribute->code));
     }
 
     /**
@@ -70,7 +92,7 @@ trait InteractsWithCustomAttributes
     {
         return TextColumn::make("custom_attributes.$attribute->code")
             ->label($attribute->name)
-            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($attribute->code) ?? self::DEFAULT_COLUMN_VALUE);
+            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($attribute->code));
     }
 
     /**
@@ -114,7 +136,7 @@ trait InteractsWithCustomAttributes
         $value = $record->getCustomAttributeValue($attribute->code);
         $lookupValue = $this->resolveLookupValues([$value], $attribute)->first();
 
-        return (string) $lookupValue ?? self::DEFAULT_COLUMN_VALUE;
+        return (string) $lookupValue;
     }
 
     /**
@@ -127,7 +149,7 @@ trait InteractsWithCustomAttributes
         $value = $record->getCustomAttributeValue($attribute->code) ?? [];
         $lookupValues = $this->resolveLookupValues($value, $attribute);
 
-        return $lookupValues->isNotEmpty() ? $lookupValues->implode(', ') : self::DEFAULT_COLUMN_VALUE;
+        return $lookupValues->isNotEmpty() ? $lookupValues->implode(', ') : '';
     }
 
     /**

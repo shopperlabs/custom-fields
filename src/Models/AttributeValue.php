@@ -7,10 +7,19 @@ namespace ManukMinasyan\FilamentCustomField\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
 
 /**
  * @property Attribute $attribute
+ * @property ?string $text_value
+ * @property ?int $integer_value
+ * @property ?float $float_value
+ * @property ?Collection $json_value
+ * @property ?bool $boolean_value
+ * @property ?Carbon $date_value
+ * @property ?Carbon $datetime_value
  */
 final class AttributeValue extends Model
 {
@@ -28,7 +37,13 @@ final class AttributeValue extends Model
     ];
 
     protected $casts = [
+        'text_value' => 'string',
+        'integer_value' => 'integer',
+        'float_value' => 'float',
         'json_value' => 'collection',
+        'boolean_value' => 'boolean',
+        'date_value' => 'date',
+        'datetime_value' => 'datetime',
     ];
 
     /**
@@ -47,7 +62,7 @@ final class AttributeValue extends Model
 
     public function __construct(array $attributes = [])
     {
-        if (!isset($this->table)) {
+        if (! isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.attribute_values'));
         }
 

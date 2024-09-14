@@ -16,9 +16,13 @@ use ManukMinasyan\FilamentCustomField\Models\Scopes\SortOrderScope;
 use Spatie\LaravelData\DataCollection;
 
 /**
+ * @property string $name
+ * @property string $code
  * @property AttributeType $type
- * @property Model $entity_type
- * @property class-string $lookup_type
+ * @property string $entity_type
+ * @property string $lookup_type
+ * @property DataCollection<int, ValidationRuleData> $validation_rules
+ * @property int $sort_order
  */
 #[ScopedBy([SortOrderScope::class])]
 final class Attribute extends Model
@@ -30,11 +34,11 @@ final class Attribute extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'entity_type',
-        'type',
-        'lookup_type',
         'name',
         'code',
+        'type',
+        'entity_type',
+        'lookup_type',
         'validation_rules',
         'sort_order',
     ];
