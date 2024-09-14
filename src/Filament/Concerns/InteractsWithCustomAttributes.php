@@ -11,24 +11,27 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use ManukMinasyan\FilamentCustomField\Enums\AttributeType;
+use ManukMinasyan\FilamentCustomField\Exceptions\MissingRecordTitleAttributeException;
 use ManukMinasyan\FilamentCustomField\Models\Attribute;
 use Throwable;
 
 trait InteractsWithCustomAttributes
 {
+    private const DEFAULT_COLUMN_VALUE = '-';
+
     /**
      * Returns the table with custom attributes added as columns.
+     *
      * @throws Throwable
      */
     public function getTable(): Table
     {
-        $modelClass = self::getModel();
-        $instance = app($modelClass);
+        $instance = app(self::getModel());
 
-        $customAttributes = $this->getCustomAttributeColumns($instance);
-
-        // Merge custom attribute columns with existing table columns
-        $this->table->columns([...$this->table->getColumns(), ...$customAttributes]);
+        $this->table->columns([
+            ...$this->table->getColumns(),
+            ...$this->getCustomAttributeColumns($instance),
+        ]);
 
         return $this->table;
     }
@@ -36,14 +39,15 @@ trait InteractsWithCustomAttributes
     /**
      * Get custom attribute columns for the table.
      */
-    private function getCustomAttributeColumns($instance): Collection
+    private function getCustomAttributeColumns($instance): array
     {
         return $instance->customAttributes()
             ->with('options')
             ->get()
-            ->map(fn(Attribute $attribute) => $this->createCustomAttributeColumn($attribute)
+            ->map(fn (Attribute $attribute) => $this->createCustomAttributeColumn($attribute)
                 ->toggleable(isToggledHiddenByDefault: true)
-            );
+            )
+            ->toArray();
     }
 
     /**
@@ -66,7 +70,7 @@ trait InteractsWithCustomAttributes
     {
         return TextColumn::make("custom_attributes.$attribute->code")
             ->label($attribute->name)
-            ->getStateUsing(fn($record) => $record->getCustomAttributeValue($attribute->code) ?? '-');
+            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($attribute->code) ?? self::DEFAULT_COLUMN_VALUE);
     }
 
     /**
@@ -77,7 +81,7 @@ trait InteractsWithCustomAttributes
         return IconColumn::make("custom_attributes.$attribute->code")
             ->boolean()
             ->label($attribute->name)
-            ->getStateUsing(fn($record) => $record->getCustomAttributeValue($attribute->code) ?? false);
+            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($attribute->code) ?? false);
     }
 
     /**
@@ -87,7 +91,7 @@ trait InteractsWithCustomAttributes
     {
         return TextColumn::make("custom_attributes.$attribute->code")
             ->label($attribute->name)
-            ->getStateUsing(fn($record) => $this->getSelectColumnValue($record, $attribute));
+            ->getStateUsing(fn ($record) => $this->getSelectColumnValue($record, $attribute));
     }
 
     /**
@@ -97,74 +101,70 @@ trait InteractsWithCustomAttributes
     {
         return TextColumn::make("custom_attributes.$attribute->code")
             ->label($attribute->name)
-            ->getStateUsing(fn($record) => $this->getMultiSelectColumnValue($record, $attribute));
+            ->getStateUsing(fn ($record) => $this->getMultiSelectColumnValue($record, $attribute));
     }
 
     /**
      * Get the value for a select column.
+     *
      * @throws Throwable
      */
     private function getSelectColumnValue($record, Attribute $attribute): string
     {
         $value = $record->getCustomAttributeValue($attribute->code);
-        $selectedOption = $this->resolveLookupOption($value, $attribute);
+        $lookupValue = $this->resolveLookupValues([$value], $attribute)->first();
 
-        return $selectedOption ? $selectedOption : '-';
+        return (string) $lookupValue ?? self::DEFAULT_COLUMN_VALUE;
     }
 
     /**
      * Get the value for a multi-select column.
+     *
      * @throws Throwable
      */
     private function getMultiSelectColumnValue($record, Attribute $attribute): string
     {
         $value = $record->getCustomAttributeValue($attribute->code) ?? [];
-        $selectedOptions = $this->resolveLookupOptions($value, $attribute);
+        $lookupValues = $this->resolveLookupValues($value, $attribute);
 
-        return $selectedOptions->isNotEmpty() ? $selectedOptions->implode(', ') : '-';
-    }
-
-    /**
-     * Resolve a single lookup option based on the attribute configuration.
-     * @throws Throwable
-     */
-    private function resolveLookupOption($value, Attribute $attribute): ?string
-    {
-        if (isset($attribute->lookup_type)) {
-            $lookupMorphedModelPath = Relation::getMorphedModel($attribute->lookup_type);
-            $lookupEntityInstance = app($lookupMorphedModelPath);
-
-            $resourcePath = Filament::getModelResource($lookupMorphedModelPath);
-            $resourceInstance = app($resourcePath);
-            $recordTitleAttribute = $resourceInstance->getRecordTitleAttribute();
-
-            throw_if($recordTitleAttribute === null, new \Exception("The `{$resourcePath}` does not have a record title attribute."));
-
-            return $lookupEntityInstance->find($value)?->{$recordTitleAttribute};
-        }
-
-        return $attribute->options->firstWhere('id', $value)?->name;
+        return $lookupValues->isNotEmpty() ? $lookupValues->implode(', ') : self::DEFAULT_COLUMN_VALUE;
     }
 
     /**
      * Resolve multiple lookup options based on the attribute configuration.
+     *
      * @throws Throwable
      */
-    private function resolveLookupOptions(array $values, Attribute $attribute): Collection
+    private function resolveLookupValues(array $values, Attribute $attribute): Collection
     {
-        if (isset($attribute->lookup_type)) {
-            $lookupMorphedModelPath = Relation::getMorphedModel($attribute->lookup_type);
-            $lookupEntityInstance = app($lookupMorphedModelPath);
-
-            $resourcePath = Filament::getModelResource($lookupMorphedModelPath);
-            $resourceInstance = app($resourcePath);
-            $recordTitleAttribute = $resourceInstance->getRecordTitleAttribute();
-
-            throw_if($recordTitleAttribute === null, new \Exception("The `{$resourcePath}` does not have a record title attribute."));
-
-            return $lookupEntityInstance->whereIn('id', $values)->pluck($recordTitleAttribute);
+        if (! isset($attribute->lookup_type)) {
+            return $attribute->options->whereIn('id', $values)->pluck('name');
         }
 
-        return $attribute->options->whereIn('id', $values)->pluck('name');
+        [$lookupInstance, $recordTitleAttribute] = $this->getLookupAttributes($attribute->lookup_type);
+
+        return $lookupInstance->whereIn('id', $values)->pluck($recordTitleAttribute);
+    }
+
+    /**
+     * Get the lookup instance and record title attribute based on the attribute configuration.
+     *
+     * @throws Throwable
+     */
+    private function getLookupAttributes(string $lookupType): array
+    {
+        $lookupModelPath = Relation::getMorphedModel($lookupType);
+        $lookupInstance = app($lookupModelPath);
+
+        $resourcePath = Filament::getModelResource($lookupModelPath);
+        $resourceInstance = app($resourcePath);
+        $recordTitleAttribute = $resourceInstance->getRecordTitleAttribute();
+
+        throw_if(
+            $recordTitleAttribute === null,
+            new MissingRecordTitleAttributeException("The `{$resourcePath}` does not have a record title attribute.")
+        );
+
+        return [$lookupInstance, $recordTitleAttribute];
     }
 }

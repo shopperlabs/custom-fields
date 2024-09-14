@@ -18,7 +18,7 @@ use Spatie\LaravelData\DataCollection;
 /**
  * @property AttributeType $type
  * @property Model $entity_type
- * @property Model|null $lookup_type
+ * @property class-string $lookup_type
  */
 #[ScopedBy([SortOrderScope::class])]
 final class Attribute extends Model
@@ -41,7 +41,7 @@ final class Attribute extends Model
 
     public function __construct(array $attributes = [])
     {
-        if (!isset($this->table)) {
+        if (! isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.attributes'));
         }
 
@@ -57,12 +57,12 @@ final class Attribute extends Model
     {
         return [
             'type' => AttributeType::class,
-            'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class,
+            'validation_rules' => DataCollection::class.':'.ValidationRuleData::class,
         ];
     }
 
     /**
-     * @param Builder<Attribute> $builder
+     * @param  Builder<Attribute>  $builder
      * @return Builder<Attribute>
      *
      * @noinspection PhpUnused
@@ -73,7 +73,7 @@ final class Attribute extends Model
     }
 
     /**
-     * @param Builder<Attribute> $builder
+     * @param  Builder<Attribute>  $builder
      * @return Builder<Attribute>
      *
      * @noinspection PhpUnused
