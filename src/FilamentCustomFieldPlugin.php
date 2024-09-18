@@ -4,24 +4,28 @@ namespace ManukMinasyan\FilamentCustomField;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use ManukMinasyan\FilamentCustomField\Filament\Resources\AttributeResource;
-use Filament\Navigation\NavigationItem;
+use ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResource;
 
 class FilamentCustomFieldPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'filament-attribute';
+        return 'filament-custom-fields';
     }
 
     public function register(Panel $panel): void
     {
-        $panel->resources([
-            AttributeResource::class,
-        ]);
+
+        $panel
+            ->resources([
+                CustomFieldResource::class,
+            ])
+            ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
     }
 
-    public function boot(Panel $panel): void {}
+    public function boot(Panel $panel): void
+    {
+    }
 
     public static function make(): static
     {

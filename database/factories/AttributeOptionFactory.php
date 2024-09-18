@@ -6,20 +6,20 @@ namespace ManukMinasyan\FilamentCustomField\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentCustomField\Models\Attribute;
-use ManukMinasyan\FilamentCustomField\Models\AttributeOption;
+use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use ManukMinasyan\FilamentCustomField\Models\CustomFieldOption;
 
 /**
- * @extends Factory<AttributeOption>
+ * @extends Factory<CustomFieldOption>
  */
 class AttributeOptionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
-     * @var class-string<AttributeOption>
+     * @var class-string<CustomFieldOption>
      */
-    protected $model = AttributeOption::class;
+    protected $model = CustomFieldOption::class;
 
     /**
      * Define the model's default state.
@@ -34,7 +34,7 @@ class AttributeOptionFactory extends Factory
             'name' => $this->faker->name(),
             'sort_order' => $this->faker->word(),
 
-            'attribute_id' => Attribute::factory(),
+            'custom_field_id' => CustomField::factory(),
         ];
     }
 }

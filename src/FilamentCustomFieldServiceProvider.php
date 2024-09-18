@@ -10,8 +10,8 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
-use ManukMinasyan\FilamentCustomField\Commands\FilamentAttributeCommand;
-use ManukMinasyan\FilamentCustomField\Testing\TestsFilamentAttribute;
+use ManukMinasyan\FilamentCustomField\Commands\FilamentCustomFieldCommand;
+use ManukMinasyan\FilamentCustomField\Testing\TestsFilamentCustomField;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -79,13 +79,13 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
         if (app()->runningInConsole()) {
             foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
-                    $file->getRealPath() => base_path("stubs/filament-attribute/{$file->getFilename()}"),
-                ], 'filament-attribute-stubs');
+                    $file->getRealPath() => base_path("stubs/filament-custom-fields/{$file->getFilename()}"),
+                ], 'filament-custom-fields-stubs');
             }
         }
 
         // Testing
-        Testable::mixin(new TestsFilamentAttribute);
+        Testable::mixin(new TestsFilamentCustomField);
     }
 
     protected function getAssetPackageName(): ?string
@@ -99,9 +99,9 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('filament-attribute', __DIR__ . '/../resources/dist/components/filament-attribute.js'),
-            //            Css::make('filament-attribute-styles', __DIR__ . '/../resources/dist/filament-attribute.css'),
-            //            Js::make('filament-attribute-scripts', __DIR__ . '/../resources/dist/filament-attribute.js'),
+            // AlpineComponent::make('filament-custom-fields', __DIR__ . '/../resources/dist/components/filament-custom-fields.js'),
+            //            Css::make('filament-custom-fields-styles', __DIR__ . '/../resources/dist/filament-custom-fields.css'),
+            //            Js::make('filament-custom-fields-scripts', __DIR__ . '/../resources/dist/filament-custom-fields.js'),
         ];
     }
 
@@ -111,7 +111,7 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
-            FilamentAttributeCommand::class,
+            FilamentCustomFieldCommand::class,
         ];
     }
 
@@ -145,9 +145,9 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            'create_attributes_table',
-            'create_attribute_values_table',
-            'create_attribute_options_table',
+            'create_custom_fields_table',
+            'create_custom_field_values_table',
+            'create_custom_field_options_table',
         ];
     }
 }

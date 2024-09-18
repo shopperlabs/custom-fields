@@ -4,20 +4,20 @@ namespace ManukMinasyan\FilamentCustomField\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentCustomField\Models\Attribute;
-use ManukMinasyan\FilamentCustomField\Models\AttributeValue;
+use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use ManukMinasyan\FilamentCustomField\Models\CustomFieldValue;
 
 /**
- * @extends Factory<AttributeValue>
+ * @extends Factory<CustomFieldValue>
  */
 class AttributeValueFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
-     * @var class-string<AttributeValue>
+     * @var class-string<CustomFieldValue>
      */
-    protected $model = AttributeValue::class;
+    protected $model = CustomFieldValue::class;
 
     /**
      * Define the model's default state.
@@ -37,7 +37,7 @@ class AttributeValueFactory extends Factory
             'date_value' => Carbon::now(),
             'json_value' => $this->faker->words(),
 
-            'attribute_id' => Attribute::factory(),
+            'custom_field_id' => CustomField::factory(),
         ];
     }
 }

@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace ManukMinasyan\FilamentCustomField\Models\Contracts;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use ManukMinasyan\FilamentCustomField\Models\CustomFieldValue;
+
+interface HasCustomFields
+{
+    /**
+     * @return Builder<CustomField>
+     */
+    public function customFields(): Builder;
+
+    /**
+     * @return MorphMany<CustomFieldValue>
+     */
+    public function customFieldValues(): MorphMany;
+
+    public function getCustomFieldValue(string $code): mixed;
+
+    public function saveCustomFieldValue(string $code, mixed $value): void;
+
+    /**
+     * @param  array<string, mixed>  $customFields
+     */
+    public function saveCustomFields(array $customFields): void;
+}

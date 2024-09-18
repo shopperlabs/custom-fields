@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace ManukMinasyan\FilamentCustomField\Services;
+
+use Filament\Facades\Filament;
+use Illuminate\Support\Collection;
+use InvalidArgumentException;
+use ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResource;
+
+final readonly class CustomFieldEntityTypeService
+{
+    /**
+     * Get the options for attribute entity types.
+     *
+     * @return Collection<string, string>
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function options(): Collection
+    {
+        return collect(Filament::getResources())
+            ->filter(function (string $resource): bool {
+                return $resource !== CustomFieldResource::class;
+            })
+            ->mapWithKeys(function (string $resource): array {
+                $resourceInstance = app($resource);
+
+                return [app($resourceInstance->getModel())->getMorphClass() => $resourceInstance::getBreadcrumb()];
+            });
+    }
+
+    public static function default(): string
+    {
+        return self::options()->keys()->first();
+    }
+
+    public static function getMorphClassFromModel(string $model): string
+    {
+        return app($model)->getMorphClass();
+    }
+}

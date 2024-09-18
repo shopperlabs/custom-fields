@@ -10,8 +10,8 @@ return [
     'disallowed_lookup_resources' => ['*'],
 
     'table_names' => [
-        'attributes' => 'attributes',
-        'attribute_values' => 'attribute_values',
-        'attribute_options' => 'attribute_options',
+        'custom_fields' => 'custom_fields',
+        'custom_field_values' => 'custom_field_values',
+        'custom_field_options' => 'custom_field_options',
     ],
 ];

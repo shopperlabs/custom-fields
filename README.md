@@ -1,9 +1,9 @@
-# This is my package filament-attribute
+# This is my package filament-custom-fields
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/manukminasyan/filament-attribute.svg?style=flat-square)](https://packagist.org/packages/manukminasyan/filament-attribute)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/manukminasyan/filament-attribute/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/manukminasyan/filament-attribute/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/manukminasyan/filament-attribute/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/manukminasyan/filament-attribute/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/manukminasyan/filament-attribute.svg?style=flat-square)](https://packagist.org/packages/manukminasyan/filament-attribute)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/manukminasyan/filament-custom-fields.svg?style=flat-square)](https://packagist.org/packages/manukminasyan/filament-custom-fields)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/manukminasyan/filament-custom-fields/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/manukminasyan/filament-custom-fields/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/manukminasyan/filament-custom-fields/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/manukminasyan/filament-custom-fields/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/manukminasyan/filament-custom-fields.svg?style=flat-square)](https://packagist.org/packages/manukminasyan/filament-custom-fields)
 
 
 
@@ -14,26 +14,26 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 You can install the package via composer:
 
 ```bash
-composer require manukminasyan/filament-attribute
+composer require manukminasyan/filament-custom-fields
 ```
 
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --tag="filament-attribute-migrations"
+php artisan vendor:publish --tag="filament-custom-fields-migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="filament-attribute-config"
+php artisan vendor:publish --tag="filament-custom-fields-config"
 ```
 
 Optionally, you can publish the views using
 
 ```bash
-php artisan vendor:publish --tag="filament-attribute-views"
+php artisan vendor:publish --tag="filament-custom-fields-views"
 ```
 
 This is the contents of the published config file:
