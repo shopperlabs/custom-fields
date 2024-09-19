@@ -67,7 +67,7 @@ Thank you for purchasing Custom Fields!
 
 Below you'll find extensive documentation on installing and using this plugin. Of course, if you have any questions,
 find a bug, need support, or have a feature request, please don't hesitate to reach out to me at
-advancedtables@gmail.com.
+`customfieldsnext@gmail.com`.
 
 ```bash
 composer require manukminasyan/filament-custom-fields
