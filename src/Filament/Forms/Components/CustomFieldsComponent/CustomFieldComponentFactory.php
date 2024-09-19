@@ -18,13 +18,23 @@ final class CustomFieldComponentFactory
      */
     private array $componentMap = [
         CustomFieldType::TEXT->value => TextInputComponent::class,
+        CustomFieldType::NUMBER->value => NumberComponent::class,
+        CustomFieldType::CHECKBOX->value => CheckboxComponent::class,
+        CustomFieldType::CHECKBOX_LIST->value => CheckboxListComponent::class,
+        CustomFieldType::RICH_EDITOR->value => RichEditorComponent::class,
+        CustomFieldType::MARKDOWN_EDITOR->value => MarkdownEditorComponent::class,
+        CustomFieldType::TOGGLE_BUTTONS->value => ToggleButtonsComponent::class,
+        CustomFieldType::TAGS_INPUT->value => TagsInputComponent::class,
+        CustomFieldType::LINK->value => LinkComponent::class,
+        CustomFieldType::COLOR_PICKER->value => ColorPickerComponent::class,
         CustomFieldType::TEXTAREA->value => TextareaAttributeComponent::class,
-        CustomFieldType::PRICE->value => PriceComponent::class,
+        CustomFieldType::CURRENCY->value => CurrencyComponent::class,
         CustomFieldType::DATE->value => DateComponent::class,
-        CustomFieldType::DATETIME->value => DateTimeComponent::class,
+        CustomFieldType::DATE_TIME->value => DateTimeComponent::class,
         CustomFieldType::TOGGLE->value => ToggleComponent::class,
+        CustomFieldType::RADIO->value => RadioComponent::class,
         CustomFieldType::SELECT->value => SelectComponent::class,
-        CustomFieldType::MULTISELECT->value => MultiSelectComponent::class,
+        CustomFieldType::MULTI_SELECT->value => MultiSelectComponent::class,
     ];
 
     /**

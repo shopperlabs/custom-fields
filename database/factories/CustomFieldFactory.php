@@ -6,15 +6,14 @@ namespace ManukMinasyan\FilamentCustomField\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentCustomField\Enums\AttributeEntityTypeEnum;
-use ManukMinasyan\FilamentCustomField\Enums\AttributeLookupTypeEnum;
 use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
 use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use ManukMinasyan\FilamentCustomField\Services\CustomFieldModelService;
 
 /**
  * @extends Factory<CustomField>
  */
-final class AttributeFactory extends Factory
+final class CustomFieldFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
@@ -34,8 +33,8 @@ final class AttributeFactory extends Factory
             'code' => $this->faker->word(),
             'name' => $this->faker->name(),
             'type' => $this->faker->randomElement(CustomFieldType::cases()),
-            'lookup_type' => $this->faker->randomElement(AttributeLookupTypeEnum::cases()),
-            'entity_type' => $this->faker->randomElement(AttributeEntityTypeEnum::cases()),
+            'lookup_type' => $this->faker->randomElement(CustomFieldModelService::default()),
+            'entity_type' => $this->faker->randomElement(CustomFieldModelService::default()),
             'sort_order' => $this->faker->randomNumber(),
             'validation' => $this->faker->word(),
             'is_required' => $this->faker->boolean(),

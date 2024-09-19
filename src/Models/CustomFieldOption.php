@@ -8,27 +8,29 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use ManukMinasyan\FilamentCustomField\Database\Factories\AttributeOptionFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use ManukMinasyan\FilamentCustomField\Database\Factories\CustomFieldOptionFactory;
 use ManukMinasyan\FilamentCustomField\Models\Scopes\SortOrderScope;
 
 #[ScopedBy([SortOrderScope::class])]
 final class CustomFieldOption extends Model
 {
-    /** @use HasFactory<AttributeOptionFactory> */
+    /** @use HasFactory<CustomFieldOptionFactory> */
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
         'sort_order'
     ];
 
-    public function __construct(array $customFields = [])
+    public function __construct(array $attributes = [])
     {
         if (!isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.custom_field_options'));
         }
 
-        parent::__construct($customFields);
+        parent::__construct($attributes);
     }
 
     /**

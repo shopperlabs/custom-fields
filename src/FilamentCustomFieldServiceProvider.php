@@ -146,8 +146,6 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
     {
         return [
             'create_custom_fields_table',
-            'create_custom_field_values_table',
-            'create_custom_field_options_table',
         ];
     }
 }

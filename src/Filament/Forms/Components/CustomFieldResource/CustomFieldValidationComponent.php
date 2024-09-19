@@ -94,7 +94,7 @@ final class CustomFieldValidationComponent extends Component
             ->columnSpanFull()
             ->visible(fn (Get $get): bool => CustomFieldValidationRule::hasParameterForRule($get('name')))
             ->minItems(1)
-            ->maxItems(3)
+            ->maxItems(fn (Get $get): int => CustomFieldValidationRule::getAllowedParametersCountForRule($get('name')))
             ->reorderable(false)
             ->defaultItems(1)
             ->addActionLabel('Add Parameter');

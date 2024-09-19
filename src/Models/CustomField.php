@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use ManukMinasyan\FilamentCustomField\Data\ValidationRuleData;
-use ManukMinasyan\FilamentCustomField\Database\Factories\AttributeFactory;
+use ManukMinasyan\FilamentCustomField\Database\Factories\CustomFieldFactory;
 use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
+use ManukMinasyan\FilamentCustomField\Models\Concerns\Activable;
 use ManukMinasyan\FilamentCustomField\Models\Scopes\SortOrderScope;
 use Spatie\LaravelData\DataCollection;
 
@@ -23,12 +25,16 @@ use Spatie\LaravelData\DataCollection;
  * @property string $lookup_type
  * @property DataCollection<int, ValidationRuleData> $validation_rules
  * @property int $sort_order
+ * @property bool $active
+ * @property bool $user_defined
  */
 #[ScopedBy([SortOrderScope::class])]
 final class CustomField extends Model
 {
-    /** @use HasFactory<AttributeFactory> */
+    /** @use HasFactory<CustomFieldFactory> */
     use HasFactory;
+    use SoftDeletes;
+    use Activable;
 
     /**
      * @var array<int, string>
@@ -41,15 +47,17 @@ final class CustomField extends Model
         'lookup_type',
         'validation_rules',
         'sort_order',
+        'active',
+        'user_defined'
     ];
 
-    public function __construct(array $customFields = [])
+    public function __construct(array $attributes = [])
     {
         if (! isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.custom_fields'));
         }
 
-        parent::__construct($customFields);
+        parent::__construct($attributes);
     }
 
     /**
@@ -62,6 +70,8 @@ final class CustomField extends Model
         return [
             'type' => CustomFieldType::class,
             'validation_rules' => DataCollection::class.':'.ValidationRuleData::class,
+            'active' => 'boolean',
+            'user_defined' => 'boolean',
         ];
     }
 
@@ -83,6 +93,17 @@ final class CustomField extends Model
      * @noinspection PhpUnused
      */
     public function scopeForEntity(Builder $builder, string $entity): Builder
+    {
+        return $builder->where('entity_type', app($entity)->getMorphClass());
+    }
+
+    /**
+     * @param  Builder<CustomField>  $builder
+     * @return Builder<CustomField>
+     *
+     * @noinspection PhpUnused
+     */
+    public function scopeForMorphEntity(Builder $builder, string $entity): Builder
     {
         return $builder->where('entity_type', $entity);
     }

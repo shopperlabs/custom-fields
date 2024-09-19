@@ -9,7 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Str;
 use ManukMinasyan\FilamentCustomField\Models\CustomField;
 
-final readonly class PriceComponent implements AttributeComponentInterface
+final readonly class CurrencyComponent implements AttributeComponentInterface
 {
     public function __construct(private Configurator $configurator) {}
 

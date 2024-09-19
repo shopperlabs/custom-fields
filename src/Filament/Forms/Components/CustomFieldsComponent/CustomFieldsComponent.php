@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
 
-use Filament\Facades\Filament;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Collection;
 use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Services\CustomFieldEntityTypeService;
+use ManukMinasyan\FilamentCustomField\Services\EntityTypeOptionsService;
 
 final class CustomFieldsComponent extends Component
 {
@@ -43,7 +42,7 @@ final class CustomFieldsComponent extends Component
     {
         return CustomField::query()
             ->with(['options'])
-            ->forEntity(CustomFieldEntityTypeService::getMorphClassFromModel($this->getModel()))
+            ->forEntity($this->getModel())
             ->get();
     }
 }

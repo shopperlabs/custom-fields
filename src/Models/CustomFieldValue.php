@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace ManukMinasyan\FilamentCustomField\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use ManukMinasyan\FilamentCustomField\Database\Factories\CustomFieldValueFactory;
 use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
 
 /**
@@ -23,11 +26,16 @@ use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
  */
 final class CustomFieldValue extends Model
 {
+    /** @use HasFactory<CustomFieldValueFactory> */
+    use HasFactory;
+    use SoftDeletes;
+
     public $timestamps = false;
 
     protected $fillable = [
         'custom_field_id',
         'text_value',
+        'string_value',
         'integer_value',
         'float_value',
         'json_value',
@@ -36,37 +44,58 @@ final class CustomFieldValue extends Model
         'datetime_value',
     ];
 
-    protected $casts = [
-        'text_value' => 'string',
-        'integer_value' => 'integer',
-        'float_value' => 'float',
-        'json_value' => 'collection',
-        'boolean_value' => 'boolean',
-        'date_value' => 'date',
-        'datetime_value' => 'datetime',
-    ];
-
     /**
      * @var array<string, string>
      */
     public static array $valueColumns = [
         CustomFieldType::TEXT->value => 'text_value',
+        CustomFieldType::NUMBER->value => 'integer_value',
+        CustomFieldType::CHECKBOX->value => 'boolean_value',
+        CustomFieldType::CHECKBOX_LIST->value => 'json_value',
         CustomFieldType::TEXTAREA->value => 'text_value',
+        CustomFieldType::TOGGLE_BUTTONS->value => 'json_value',
+        CustomFieldType::TAGS_INPUT->value => 'json_value',
+        CustomFieldType::LINK->value => 'string_value',
+        CustomFieldType::RICH_EDITOR->value => 'text_value',
+        CustomFieldType::MARKDOWN_EDITOR->value => 'text_value',
+        CustomFieldType::RADIO->value => 'integer_value',
         CustomFieldType::SELECT->value => 'integer_value',
-        CustomFieldType::PRICE->value => 'float_value',
-        CustomFieldType::MULTISELECT->value => 'json_value',
+        CustomFieldType::COLOR_PICKER->value => 'string_value',
+        CustomFieldType::CURRENCY->value => 'float_value',
+        CustomFieldType::MULTI_SELECT->value => 'json_value',
         CustomFieldType::TOGGLE->value => 'boolean_value',
         CustomFieldType::DATE->value => 'date_value',
-        CustomFieldType::DATETIME->value => 'datetime_value',
+        CustomFieldType::DATE_TIME->value => 'datetime_value',
     ];
 
-    public function __construct(array $customFields = [])
+
+    public function __construct(array $attributes = [])
     {
-        if (! isset($this->table)) {
+        if (!isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.custom_field_values'));
         }
 
-        parent::__construct($customFields);
+        parent::__construct($attributes);
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'string_value' => 'string',
+            'text_value' => 'string',
+            'integer_value' => 'integer',
+            'float_value' => 'float',
+            'json_value' => 'collection',
+            'boolean_value' => 'boolean',
+            'date_value' => 'date',
+            'datetime_value' => 'datetime',
+        ];
+
     }
 
     /**

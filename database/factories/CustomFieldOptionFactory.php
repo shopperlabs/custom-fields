@@ -12,7 +12,7 @@ use ManukMinasyan\FilamentCustomField\Models\CustomFieldOption;
 /**
  * @extends Factory<CustomFieldOption>
  */
-class AttributeOptionFactory extends Factory
+class CustomFieldOptionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

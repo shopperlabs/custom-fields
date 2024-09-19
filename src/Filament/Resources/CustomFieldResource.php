@@ -15,18 +15,23 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
 use ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldResource\CustomFieldValidationComponent;
+use ManukMinasyan\FilamentCustomField\Filament\Forms\Components\TypeField;
 use ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResource\Pages;
+use ManukMinasyan\FilamentCustomField\Filament\Tables\Columns\TypeColumn;
 use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Services\CustomFieldEntityTypeService;
+use ManukMinasyan\FilamentCustomField\Models\Scopes\ActivableScope;
+use ManukMinasyan\FilamentCustomField\Services\EntityTypeOptionsService;
+use ManukMinasyan\FilamentCustomField\Services\LookupTypeOptionsService;
 
 final class CustomFieldResource extends Resource
 {
     protected static ?string $model = CustomField::class;
 
     protected static ?string $label = 'Custom Field';
+
     protected static ?string $slug = 'custom-fields';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -39,16 +44,14 @@ final class CustomFieldResource extends Resource
                         Forms\Components\Tabs\Tab::make('General')
                             ->schema([
                                 Forms\Components\Select::make('entity_type')
-                                    ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
-                                    ->options(CustomFieldEntityTypeService::options())
+                                    ->disabled(fn (?CustomField $record): bool => (bool) $record?->exists)
+                                    ->options(EntityTypeOptionsService::getOptions())
                                     ->searchable()
-                                    ->default(fn() => request('entity_type', CustomFieldEntityTypeService::default()))
+                                    ->default(fn () => request('entityType', EntityTypeOptionsService::getDefaultOption()))
                                     ->required(),
-                                Forms\Components\Select::make('type')
-                                    ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
+                                TypeField::make('type')
+                                    ->disabled(fn (?CustomField $record): bool => (bool) $record?->exists)
                                     ->reactive()
-                                    ->options(CustomFieldType::class)
-                                    ->searchable()
                                     ->required(),
                                 Forms\Components\TextInput::make('name')
                                     ->live(onBlur: true)
@@ -68,7 +71,7 @@ final class CustomFieldResource extends Resource
                                     ->live(onBlur: true)
                                     ->required()
                                     ->alphaDash()
-                                    ->unique(table: CustomField::class, column: 'code', ignoreRecord: true, modifyRuleUsing: fn(Unique $rule, Forms\Get $get) => $rule->where('entity_type', $get('entity_type')))
+                                    ->unique(table: CustomField::class, column: 'code', ignoreRecord: true, modifyRuleUsing: fn (Unique $rule, Forms\Get $get) => $rule->where('entity_type', $get('entity_type')))
                                     ->validationMessages([
                                         'unique' => __('validation.custom.$customFields.code.unique'),
                                     ])
@@ -77,7 +80,7 @@ final class CustomFieldResource extends Resource
                                         $set('code', Str::of($state)->slug('_')->toString());
                                     }),
                                 Forms\Components\Select::make('options_lookup_type')
-                                    ->visible(fn(Forms\Get $get): bool => in_array($get('type'), [CustomFieldType::SELECT->value, CustomFieldType::MULTISELECT->value]))
+                                    ->visible(fn (Forms\Get $get): bool => in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                     ->reactive()
                                     ->options([
                                         'options' => 'Options',
@@ -92,12 +95,13 @@ final class CustomFieldResource extends Resource
                                     ->dehydrated(false)
                                     ->required(),
                                 Forms\Components\Select::make('lookup_type')
-                                    ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'lookup')
+                                    ->visible(fn (Forms\Get $get): bool => $get('options_lookup_type') === 'lookup')
                                     ->reactive()
-                                    ->options(CustomFieldEntityTypeService::options())
+                                    ->options(LookupTypeOptionsService::getOptions())
+                                    ->default(LookupTypeOptionsService::getDefaultOption())
                                     ->required(),
                                 Forms\Components\Repeater::make('options')
-                                    ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), [CustomFieldType::SELECT->value, CustomFieldType::MULTISELECT->value]))
+                                    ->visible(fn (Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                     ->relationship()
                                     ->simple(
                                         Forms\Components\TextInput::make('name')
@@ -105,7 +109,7 @@ final class CustomFieldResource extends Resource
                                             ->required(),
                                     )
                                     ->columns(2)
-                                    ->label('Select Options')
+                                    ->label('Options')
                                     ->helperText('Add options for the select field.')
                                     ->defaultItems(1)
                                     ->addActionLabel('Add Option')
@@ -128,30 +132,55 @@ final class CustomFieldResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable()
-                    ->sortable(),
+                TypeColumn::make('type'),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->sortable(),
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->searchable(),
             ])
             ->filters([
-                //  Filter by Multiple types
                 Tables\Filters\SelectFilter::make('type')
                     ->multiple()
-                    ->options(CustomFieldType::class)
+                    ->options(CustomFieldType::class),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     EditAction::make(),
-                    DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make('Restore'),
+                    Tables\Actions\Action::make('activate')
+                        ->icon('heroicon-o-archive-box')
+                        ->requiresConfirmation()
+                        ->visible(fn (CustomField $record): bool => ! $record->isActive())
+                        ->action(fn (CustomField $record) => $record->activate()),
+                    Tables\Actions\Action::make('deactivate')
+                        ->icon('heroicon-o-archive-box-x-mark')
+                        ->requiresConfirmation()
+                        ->visible(fn (CustomField $record): bool => $record->isActive())
+                        ->action(fn (CustomField $record) => $record->deactivate()),
+                    DeleteAction::make()->visible(fn (CustomField $record): bool => ! $record->isActive()),
                 ])->iconButton(),
 
             ])
+            ->defaultGroup('active')
+            ->groups([
+                Tables\Grouping\Group::make('active')
+                    ->titlePrefixedWithLabel(false)
+                    ->getTitleFromRecordUsing(fn (CustomField $record): string => $record->active ? 'Active' : 'Inactive')
+                    ->orderQueryUsing(fn (Builder $query, string $direction) => $query->orderByDesc('active'))
+                    ->label('Active')
+                    ->collapsible(),
+            ])
+            ->groupingSettingsHidden()
             ->paginated(false)
             ->reorderable('sort_order');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                ActivableScope::class,
+            ]);
     }
 
     public static function getPages(): array
@@ -161,18 +190,5 @@ final class CustomFieldResource extends Resource
             'create' => Pages\CreateCustomField::route('/create'),
             'edit' => Pages\EditCustomField::route('/{record}/edit'),
         ];
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->forEntity(
-                request('entity_type', CustomFieldEntityTypeService::default())
-            );
     }
 }

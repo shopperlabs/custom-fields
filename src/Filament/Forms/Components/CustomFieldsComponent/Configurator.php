@@ -16,7 +16,7 @@ final readonly class Configurator
     /**
      * @template T of Field
      *
-     * @param  T  $field
+     * @param T $field
      * @return T
      */
     public function configure(Field $field, CustomField $customField): Field
@@ -26,25 +26,30 @@ final readonly class Configurator
             ->reactive()
             ->afterStateHydrated(function ($component, $state, $record) use ($customField): void {
                 $value = $record?->getCustomFieldValue($customField->code);
+
                 $component->state(match ($customField->type) {
                     CustomFieldType::DATE => $value instanceof Carbon ? $value->toDateString() : $value,
-                    CustomFieldType::DATETIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
+                    CustomFieldType::DATE_TIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
+                    CustomFieldType::CHECKBOX_LIST,
+                    CustomFieldType::MULTI_SELECT,
+                    CustomFieldType::TAGS_INPUT,
+                    CustomFieldType::TOGGLE_BUTTONS, => is_array($value) ? $value : [],
                     default => $value,
                 });
             })
-            ->dehydrated(fn ($state): bool => $state !== null && $state !== '')
+            ->dehydrated(fn($state): bool => $state !== null && $state !== '')
             ->rules($this->convertRulesToFilamentFormat($customField->validation_rules));
     }
 
     /**
      * Converts validation rules from a collection to an array in the format expected by Filament.
      *
-     * @param  DataCollection<int, ValidationRuleData>|null  $rules  The validation rules to convert.
+     * @param DataCollection<int, ValidationRuleData>|null $rules The validation rules to convert.
      * @return array<string, string> The converted rules.
      */
     private function convertRulesToFilamentFormat(?DataCollection $rules): array
     {
-        if (! $rules instanceof DataCollection || $rules->toCollection()->isEmpty()) {
+        if (!$rules instanceof DataCollection || $rules->toCollection()->isEmpty()) {
             return [];
         }
 
@@ -53,7 +58,7 @@ final readonly class Configurator
                 return $ruleData->name;
             }
 
-            return $ruleData->name.':'.implode(',', $ruleData->parameters);
+            return $ruleData->name . ':' . implode(',', $ruleData->parameters);
         })->toArray();
     }
 }

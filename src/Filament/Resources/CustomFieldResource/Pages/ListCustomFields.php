@@ -7,12 +7,27 @@ namespace ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResour
 use Filament\Actions\CreateAction;
 use Filament\Navigation\NavigationItem;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Url;
 use ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResource;
-use ManukMinasyan\FilamentCustomField\Services\CustomFieldEntityTypeService;
+use ManukMinasyan\FilamentCustomField\Services\EntityTypeOptionsService;
 
 final class ListCustomFields extends ListRecords
 {
     protected static string $resource = CustomFieldResource::class;
+
+    #[Url]
+    public ?string $entityType;
+
+    protected $queryString = [
+        'entityType',
+        'tableFilters',
+        'tableSortColumn',
+        'tableSortDirection',
+        'tableSearchQuery' => ['except' => ''],
+        'tableColumnSearchQueries',
+    ];
 
     protected function getHeaderActions(): array
     {
@@ -21,7 +36,7 @@ final class ListCustomFields extends ListRecords
                 ->url(function (array $data): string {
                     return CustomFieldResource::getUrl('create', [
                         ...$data,
-                        'entity_type' => request('entity_type'),
+                        'entityType' => $this->entityType ?? EntityTypeOptionsService::getDefaultOption(),
                     ]);
                 }),
         ];
@@ -29,12 +44,17 @@ final class ListCustomFields extends ListRecords
 
     public function getSubNavigation(): array
     {
-        return CustomFieldEntityTypeService::options()
+        return EntityTypeOptionsService::getOptions()
             ->map(fn ($label, $value) => NavigationItem::make($label)
-                ->url(CustomFieldResource::getUrl('index', ['entity_type' => $value]))
-                ->isActiveWhen(fn () => request('entity_type', CustomFieldEntityTypeService::default()) === $value)
+                ->url(CustomFieldResource::getUrl('index', ['entityType' => $value]))
+                ->isActiveWhen(fn () => ($this->entityType ?? EntityTypeOptionsService::getDefaultOption()) === $value)
             )
             ->values()
             ->toArray();
+    }
+
+    public function table(Table $table): Table
+    {
+        return parent::table($table)->modifyQueryUsing(fn (Builder $query): Builder => $query->forMorphEntity($this->entityType ?? EntityTypeOptionsService::getDefaultOption()));
     }
 }

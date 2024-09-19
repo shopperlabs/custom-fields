@@ -3,6 +3,7 @@
 namespace ManukMinasyan\FilamentCustomField;
 
 use Filament\Contracts\Plugin;
+use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResource;
 
@@ -19,6 +20,13 @@ class FilamentCustomFieldPlugin implements Plugin
         $panel
             ->resources([
                 CustomFieldResource::class,
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Custom Fields')
+                    ->url(fn (): string => CustomFieldResource::getUrl('index'))
+                    ->icon('heroicon-o-table-cells'),
+                // ...
             ])
             ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
     }

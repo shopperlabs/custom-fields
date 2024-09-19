@@ -10,7 +10,7 @@ use ManukMinasyan\FilamentCustomField\Models\CustomFieldValue;
 /**
  * @extends Factory<CustomFieldValue>
  */
-class AttributeValueFactory extends Factory
+class CustomFieldValueFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

@@ -8,20 +8,20 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use ManukMinasyan\FilamentCustomField\Models\Contracts\HasCustomFields;
 use ManukMinasyan\FilamentCustomField\Models\CustomField;
 use ManukMinasyan\FilamentCustomField\Models\CustomFieldValue;
-use ManukMinasyan\FilamentCustomField\Models\Contracts\HasCustomFields;
 
 /**
  * @see HasCustomFields
  */
 trait UsesCustomFields
 {
-    public function __construct($customFields = [])
+    public function __construct($attributes = [])
     {
         // Ensure custom fields are included in a fillable array
         $this->fillable = array_merge(['custom_fields'], $this->fillable);
-        parent::__construct($customFields);
+        parent::__construct($attributes);
     }
 
     /**
@@ -69,7 +69,7 @@ trait UsesCustomFields
      */
     public function customFields(): Builder
     {
-        return CustomField::query()->forEntity($this->getMorphClass());
+        return CustomField::query()->forEntity($this::class);
     }
 
     /**
@@ -88,7 +88,7 @@ trait UsesCustomFields
             return null;
         }
 
-        $customFieldValue = $customField->values()->first();
+        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id)->first();
 
         $customFieldValue = $customFieldValue ? $customFieldValue->getValue() : null;
 

@@ -5,21 +5,16 @@ declare(strict_types=1);
 namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\Field;
-use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\RichEditor;
 use ManukMinasyan\FilamentCustomField\Models\CustomField;
 
-final readonly class ToggleComponent implements AttributeComponentInterface
+final readonly class RichEditorComponent implements AttributeComponentInterface
 {
-    public function __construct(private Configurator $configurator)
-    {
-    }
+    public function __construct(private Configurator $configurator) {}
 
     public function make(CustomField $customField): Field
     {
-        $field = Toggle::make("custom_fields.{$customField->code}")
-            ->onColor('success')
-            ->offColor('danger')
-            ->inline(false);
+        $field = RichEditor::make("custom_fields.{$customField->code}");
 
         return $this->configurator->configure($field, $customField);
     }

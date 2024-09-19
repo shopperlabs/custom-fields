@@ -104,19 +104,44 @@ enum CustomFieldValidationRule: string implements HasLabel
         );
     }
 
-    public function hasParameter(): bool
+    /**
+     * Get the count of allowed parameters for a given validation rule.
+     *
+     * @return int
+     */
+    public function allowedParameterCount(): int
     {
         return match ($this) {
-            self::ACCEPTED_IF, self::AFTER, self::AFTER_OR_EQUAL, self::BEFORE, self::BEFORE_OR_EQUAL,
-            self::BETWEEN, self::DATE_FORMAT, self::DECIMAL, self::DECLINED_IF, self::DIFFERENT,
-            self::DIGITS, self::DIGITS_BETWEEN, self::DIMENSIONS, self::ENDS_WITH, self::EXISTS,
-            self::GT, self::GTE, self::IN, self::LT, self::LTE, self::MAX, self::MAX_DIGITS,
-            self::MIMES, self::MIMETYPES, self::MIN, self::MIN_DIGITS, self::MULTIPLE_OF,
-            self::NOT_IN, self::REGEX, self::REQUIRED_IF, self::REQUIRED_UNLESS, self::REQUIRED_WITH,
-            self::REQUIRED_WITH_ALL, self::REQUIRED_WITHOUT, self::REQUIRED_WITHOUT_ALL,
-            self::SAME, self::SIZE, self::STARTS_WITH, self::UNIQUE => true,
-            default => false
+            // Rules with unlimited parameters
+            self::ACCEPTED_IF, self::DECLINED_IF, self::DIFFERENT, self::ENDS_WITH,
+            self::IN, self::NOT_IN, self::REQUIRED_IF, self::REQUIRED_WITH, self::REQUIRED_WITH_ALL,
+            self::REQUIRED_WITHOUT, self::REQUIRED_WITHOUT_ALL, self::STARTS_WITH,
+            self::EXCLUDE_IF, self::EXCLUDE_UNLESS, self::PROHIBITS => -1,
+
+            // Rules with exactly two parameters
+            self::BETWEEN, self::DECIMAL, self::REQUIRED_UNLESS, self::PROHIBITED_IF,
+            self::PROHIBITED_UNLESS, self::DIGITS_BETWEEN => 2,
+
+            // Rules with one parameter
+            self::SIZE, self::MAX, self::MIN, self::DIGITS, self::DATE_EQUALS,
+            self::DATE_FORMAT, self::AFTER, self::AFTER_OR_EQUAL, self::BEFORE,
+            self::BEFORE_OR_EQUAL, self::EXISTS, self::UNIQUE, self::GT, self::GTE,
+            self::LT, self::LTE, self::MAX_DIGITS, self::MIN_DIGITS, self::MULTIPLE_OF => 1,
+
+            // Default case for any unspecified rules
+            default => 0
         };
+    }
+
+
+    /**
+     * Check if the validation rule has any parameters.
+     */
+    public function hasParameter(): bool
+    {
+        $allowedCount = $this->allowedParameterCount();
+
+        return $allowedCount > 0 || $allowedCount === -1;
     }
 
     public function getLabel(): string
@@ -221,6 +246,16 @@ enum CustomFieldValidationRule: string implements HasLabel
         }
 
         return self::tryFrom($rule)?->hasParameter() ?? false;
+    }
+
+    public static function getAllowedParametersCountForRule(?string $rule): int {
+        if ($rule === null) {
+            return 0;
+        }
+
+        // If we get -1 as the allowed parameter count, it means that the rule allows any number of parameters.
+        // Otherwise, we return the allowed parameter count.
+        return self::tryFrom($rule)?->allowedParameterCount() === -1 ? 30 : self::tryFrom($rule)?->allowedParameterCount();
     }
 
     public static function getDescriptionForRule(?string $rule): string

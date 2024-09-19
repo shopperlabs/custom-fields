@@ -42,23 +42,23 @@ trait InteractsWithCustomFields
         return $instance->customFields()
             ->with('options')
             ->get()
-            ->map(fn (CustomField $customField) => $this->createCustomAttributeColumn($customField)
+            ->map(fn (CustomField $customField) => $this->createCustomFieldColumn($customField)
                 ->toggleable(isToggledHiddenByDefault: true)
             )
             ->toArray();
     }
 
     /**
-     * Create a custom custom field column based on its type.
+     * Create a custom field column based on its type.
      */
-    private function createCustomAttributeColumn(CustomField $customField): TextColumn|IconColumn
+    private function createCustomFieldColumn(CustomField $customField): TextColumn|IconColumn
     {
         return match ($customField->type) {
             CustomFieldType::TOGGLE => $this->createColumnForToggle($customField),
             CustomFieldType::DATE => $this->createColumnForDate($customField),
-            CustomFieldType::DATETIME => $this->createColumnForDateTime($customField),
+            CustomFieldType::DATE_TIME => $this->createColumnForDateTime($customField),
             CustomFieldType::SELECT => $this->createColumnForSelect($customField),
-            CustomFieldType::MULTISELECT => $this->createColumnForMultiSelect($customField),
+            CustomFieldType::MULTI_SELECT => $this->createColumnForMultiSelect($customField),
             default => $this->createColumnForText($customField),
         };
     }
@@ -71,7 +71,7 @@ trait InteractsWithCustomFields
         return TextColumn::make("custom_fields.$customField->code")
             ->date()
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($customField->code));
+            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code));
     }
 
     /**
@@ -82,7 +82,7 @@ trait InteractsWithCustomFields
         return TextColumn::make("custom_fields.$customField->code")
             ->dateTime()
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($customField->code));
+            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code));
     }
 
     /**
@@ -92,7 +92,7 @@ trait InteractsWithCustomFields
     {
         return TextColumn::make("custom_fields.$customField->code")
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($customField->code));
+            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code));
     }
 
     /**
@@ -103,7 +103,7 @@ trait InteractsWithCustomFields
         return IconColumn::make("custom_fields.$customField->code")
             ->boolean()
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomAttributeValue($customField->code) ?? false);
+            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code) ?? false);
     }
 
     /**
@@ -133,7 +133,7 @@ trait InteractsWithCustomFields
      */
     private function getSelectColumnValue($record, CustomField $customField): string
     {
-        $value = $record->getCustomAttributeValue($customField->code);
+        $value = $record->getCustomFieldValue($customField->code);
         $lookupValue = $this->resolveLookupValues([$value], $customField)->first();
 
         return (string) $lookupValue;
@@ -146,7 +146,7 @@ trait InteractsWithCustomFields
      */
     private function getMultiSelectColumnValue($record, CustomField $customField): string
     {
-        $value = $record->getCustomAttributeValue($customField->code) ?? [];
+        $value = $record->getCustomFieldValue($customField->code) ?? [];
         $lookupValues = $this->resolveLookupValues($value, $customField);
 
         return $lookupValues->isNotEmpty() ? $lookupValues->implode(', ') : '';
@@ -184,7 +184,7 @@ trait InteractsWithCustomFields
 
         throw_if(
             $recordTitleAttribute === null,
-            new MissingRecordTitleAttributeException("The `{$resourcePath}` does not have a record title custom field.")
+            new MissingRecordTitleAttributeException("The `{$resourcePath}` does not have a record title custom attribute.")
         );
 
         return [$lookupInstance, $recordTitleAttribute];
