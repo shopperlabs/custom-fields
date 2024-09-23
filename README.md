@@ -91,9 +91,9 @@ the plugin.
 
 ### Requirements
 
-- **PHP**: 8.0 or higher
-- **Laravel**: 9.x or higher
-- **Filament**: 3.x
+- **PHP**: 8.1 or higher
+- **Laravel**: 10.0 or higher
+- **Filament**: 3.0 or higher
 
 ### Activating your license on AnyStack
 
