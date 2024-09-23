@@ -64,7 +64,7 @@ Watch a short demonstration showcasing some of the powerful features included in
 - **Dynamic Field Management**:
     - Easily create, edit, and delete custom fields.
     - Assign custom fields to any Filament resource.
-    - Organize custom fields within resources using a drag-and-drop interface.
+    - Organize custom fields using a drag-and-drop interface.
 
 - **Validation and Data Integrity**:
     - Define validation rules for each custom field.
@@ -285,6 +285,7 @@ class Company extends Model implements HasCustomFields
 
 By following these steps, your model will be fully equipped to handle custom fields, and you will have successfully set
 up custom fields in your Filament panel, enabling dynamic and flexible data management.
+
 ---
 
 ## Configuration
