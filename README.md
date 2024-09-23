@@ -97,28 +97,28 @@ the plugin.
 
 ### Activating your license on AnyStack
 
-Custom Fields uses AnyStack to handle payment, licensing, and distribution.
+Custom Fields uses [AnyStack](https://anystack.sh/) to handle payment, licensing, and distribution.
 
 During the purchasing process, AnyStack will provide you with a license key. You will also be asked by AnyStack to
-activate your license by providing a domain. This is usually the domain of where your final project will live. You’ll
+activate your license by providing a `domain`. This is usually the domain of where your final project will live. You’ll
 use this same domain to install locally and in production. Once you have provide a domain, your license key will be
 activated and you can proceed with installing with composer below.
 
-Tip: If you missed this step, or if you need to add additional domains for other projects, you can access the activation
-page by going to Transactions in your AnyStack account and then clicking View details on the Custom Fields product.
+> Tip: If you missed this step, or if you need to add additional domains for other projects, you can access the activation
+page by going to Transactions in your AnyStack account and then clicking `View details` on the Custom Fields product.
 
-Tip: You will need both your license key and your domain to authenticate when you install the package with composer.
+> Tip: You will need both your `license key` and your `domain` to authenticate when you install the package with composer.
 
 ### Installing with Composer
 
-To install Custom Fields you'll need to add the package to your composer.json file:
+To install Custom Fields you'll need to add the package to your `composer.json` file:
 
 ```json
 {
     "repositories": [
         {
             "type": "composer",
-            "url": "https://filament-filter-sets.composer.sh"
+            "url": "https://custom-fields.composer.sh"
         }
     ]
 }
@@ -143,9 +143,9 @@ Password: [license-key]
 Your username will be your email address and the password will is your license key, followed by a colon (:), followed by
 the domain you are activating. For example, let's say we have the following email and license activation:
 
-- Contact email: myname@example.com
-- License key: 9f3a2e1d-5b7c-4f86-a9d0-3e1c2b4a5f8e
-- Activation fingerprint: my_domain.com
+- Contact email: **myname@example.com**
+- License key: **9f3a2e1d-5b7c-4f86-a9d0-3e1c2b4a5f8e**
+- Activation fingerprint: **my_domain.com**
 
 - You will need to enter the above information as follows when prompted for your credentials:
 
@@ -193,8 +193,7 @@ This will create a `custom-fields.php` file in your `config` directory.
 
 ### Step 3: Integrating Custom Fields Plugin
 
-In order to use Custom Fields, you need to register the plugin with your Filament panel. This is done in
-your `PanelProvider` or wherever you are configuring your Filament panel.
+To use Custom Fields, you need to register the plugin with your Filament panel.
 
 ```php
 use Relaticle\CustomFields\CustomFieldsPlugin;
@@ -236,7 +235,7 @@ class CompanyResource extends Resource
 
                 // Add the CustomFieldsComponent
                 CustomFieldsComponent::make()
-                    ->columns(1), // You can adjust the number of columns
+                    ->columns(1),
             ]);
     }
 
@@ -249,7 +248,7 @@ class CompanyResource extends Resource
 To display custom fields in your table views, you need to use the `InteractsWithCustomFields` trait in your
 resource's `ListRecords` page.
 
-In your `ListCompanies` class, add the trait:
+In your list records class (e.g., `ListCompanies`), add the trait:
 
 ```php
 use Relaticle\CustomFields\Filament\Tables\Concerns\InteractsWithCustomFields;
@@ -270,7 +269,7 @@ This trait automatically includes all custom fields in the table view for the re
 Your model needs to implement the `HasCustomFields` interface and use the `UsesCustomFields` trait to work with custom
 fields.
 
-In your `Company` model, add the following:
+In your model (e.g., `Company`), add the following:
 
 ```php
 use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
@@ -286,7 +285,7 @@ class Company extends Model implements HasCustomFields
 ```
 
 By following these steps, your model will be fully equipped to handle custom fields, and you will have successfully set
-up custom fields in your Filament panel, enabling dynamic and flexible data management.
+up Custom Fields in your Filament application, enabling dynamic and flexible data management.
 
 ---
 
