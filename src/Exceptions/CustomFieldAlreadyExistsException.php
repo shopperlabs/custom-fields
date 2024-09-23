@@ -4,7 +4,7 @@ namespace Relaticle\CustomFields\Exceptions;
 
 use Exception;
 
-class CustomFieldAlreadyExists extends Exception
+class CustomFieldAlreadyExistsException extends Exception
 {
     public static function whenAdding(string $code): self
     {

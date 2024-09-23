@@ -5,20 +5,36 @@ namespace Relaticle\CustomFields\Migrations;
 use Illuminate\Support\Facades\DB;
 use Relaticle\CustomFields\Data\CustomFieldData;
 use Relaticle\CustomFields\Enums\CustomFieldType;
-use Relaticle\CustomFields\Exceptions\CustomFieldAlreadyExists;
-use Relaticle\CustomFields\Exceptions\CustomFieldDoesNotExist;
+use Relaticle\CustomFields\Exceptions\CustomFieldAlreadyExistsException;
+use Relaticle\CustomFields\Exceptions\CustomFieldDoesNotExistException;
+use Relaticle\CustomFields\Exceptions\FieldTypeNotOptionableException;
 use Relaticle\CustomFields\Models\CustomField;
 
 class CustomFieldsMigrator
 {
-    private CustomFieldData $field;
+    private CustomFieldData $customFieldData;
+
+    private ?CustomField $customField;
+
+    public function find(string $model, string $code): CustomFieldsMigrator
+    {
+        $this->customField = CustomField::query()
+            ->withTrashed()
+            ->forMorphEntity(app($model)->getMorphClass())
+            ->where('code', $code)
+            ->firstOrFail();
+
+        $this->customFieldData = CustomFieldData::from($this->customField);
+
+        return $this;
+    }
 
     /**
-     * @param  class-string  $model
+     * @param class-string $model
      */
     public function new(string $model, CustomFieldType $type, string $name, string $code, bool $active = true, bool $userDefined = false): CustomFieldsMigrator
     {
-        $this->field = CustomFieldData::from([
+        $this->customFieldData = CustomFieldData::from([
             'entity_type' => app($model)->getMorphClass(),
             'type' => $type,
             'name' => $name,
@@ -30,29 +46,37 @@ class CustomFieldsMigrator
         return $this;
     }
 
+    /**
+     * @throws FieldTypeNotOptionableException
+     */
     public function options(array $options): CustomFieldsMigrator
     {
-        $this->field->options = $options;
+        if (!$this->isCustomFieldTypeOptionable()) {
+            throw new FieldTypeNotOptionableException();
+        }
+
+        $this->customFieldData->options = $options;
 
         return $this;
     }
 
     /**
-     * @throws CustomFieldAlreadyExists
+     * @throws CustomFieldAlreadyExistsException
+     * @throws \Exception
      */
     public function create(): void
     {
+        if ($this->isCustomFieldExists($this->customFieldData->entityType, $this->customFieldData->code)) {
+            throw CustomFieldAlreadyExistsException::whenAdding($this->customFieldData->code);
+        }
+
         try {
             DB::beginTransaction();
 
-            if ($this->checkIfCustomFieldExists($this->field->entityType, $this->field->code)) {
-                throw CustomFieldAlreadyExists::whenAdding($this->field->code);
-            }
+            $customField = CustomField::query()->create($this->customFieldData->toArray());
 
-            $customField = $this->createCustomField();
-
-            if (CustomFieldType::optionables()->contains('value', $this->field->type->value) && ! empty($this->field->options)) {
-                $this->createOptions($customField, $this->field->options);
+            if ($this->isCustomFieldTypeOptionable() && !empty($this->customFieldData->options)) {
+                $this->createOptions($customField, $this->customFieldData->options);
             }
 
             DB::commit();
@@ -62,26 +86,91 @@ class CustomFieldsMigrator
         }
     }
 
-    public function createOptions(CustomField $customField, array $options): void
+    /**
+     * @param array $data
+     * @return CustomFieldsMigrator
+     * @throws CustomFieldDoesNotExistException
+     * @throws \Exception
+     */
+    public function update(array $data): CustomFieldsMigrator
     {
-        $customField->options()->createMany(collect($options)->map(fn ($value) => ['name' => $value])->toArray());
+        if (!$this->customField->exists) {
+            throw CustomFieldDoesNotExistException::whenUpdating($this->customFieldData->code);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            collect($data)->each(fn($value, $key) => $this->customFieldData->$key = $value);
+
+            $this->customField->update($this->customFieldData->toArray());
+
+            if ($this->isCustomFieldTypeOptionable() && !empty($this->customFieldData->options)) {
+                $this->customField->options()->delete();
+                $this->createOptions($this->customField, $this->customFieldData->options);
+            }
+
+            DB::commit();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @throws CustomFieldDoesNotExistException
+     */
+    public function delete(): void
+    {
+        if (!$this->customField) {
+            throw CustomFieldDoesNotExistException::whenDeleting($this->customField->code);
+        }
+
+        $this->customField->delete();
     }
 
     /**
-     * @throws CustomFieldDoesNotExist
+     * @throws CustomFieldDoesNotExistException
      */
-    public function delete(string $model, string $code): void
+    public function forceDelete(): void
     {
-        $model = app($model)->getMorphClass();
-
-        if (! $this->checkIfCustomFieldExists($model, $code)) {
-            throw CustomFieldDoesNotExist::whenDeleting($code);
+        if (!$this->customField) {
+            throw CustomFieldDoesNotExistException::whenDeleting($this->customField->code);
         }
 
-        $this->deleteCustomField($model, $code);
+        $this->customField->forceDelete();
     }
 
-    protected function checkIfCustomFieldExists(string $model, string $code): bool
+    /**
+     * @throws CustomFieldDoesNotExistException
+     */
+    public function restore(): void
+    {
+        if (!$this->customField) {
+            throw CustomFieldDoesNotExistException::whenRestoring($this->customField->code);
+        }
+
+        if (!$this->customField->trashed()) {
+            return;
+        }
+
+        $this->customField->restore();
+    }
+
+    protected function createOptions(CustomField $customField, array $options): void
+    {
+        $customField->options()->createMany(collect($options)->map(fn($value) => ['name' => $value])->toArray());
+    }
+
+    /**
+     * @param string $model
+     * @param string $code
+     * @return bool
+     */
+    protected function isCustomFieldExists(string $model, string $code): bool
     {
         return CustomField::query()
             ->forMorphEntity($model)
@@ -89,16 +178,8 @@ class CustomFieldsMigrator
             ->exists();
     }
 
-    protected function createCustomField(): CustomField
+    protected function isCustomFieldTypeOptionable(): bool
     {
-        return CustomField::query()->create($this->field->toArray());
-    }
-
-    protected function deleteCustomField(string $model, string $code): void
-    {
-        CustomField::query()
-            ->forMorphEntity($model)
-            ->where('code', $code)
-            ->forceDelete();
+        return CustomFieldType::optionables()->contains('value', $this->customFieldData->type->value);
     }
 }

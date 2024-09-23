@@ -15,13 +15,14 @@
     - [Step 5: Displaying Custom Fields in Table Views](#step-5-displaying-custom-fields-in-table-views)
     - [Step 6: Setting Up the Model](#step-6-setting-up-the-model)
 7. [Configuration](#configuration)
-8. [Support](#support)
-9. [Changelog](#changelog)
-10. [Contributing](#contributing)
-11. [Credits](#credits)
-12. [License](#license)
-13. [Code Distribution](#code-distribution)
-14. [Questions?](#questions)
+8. [Preset Custom Fields](#preset-custom-fields)
+9. [Support](#support)
+10. [Changelog](#changelog)
+11. [Contributing](#contributing)
+12. [Credits](#credits)
+13. [License](#license)
+14. [Code Distribution](#code-distribution)
+15. [Thank You](#thank-you)
 
 ---
 
@@ -139,7 +140,8 @@ Username: [licensee-email]
 Password: [license-key]
 ```
 
-Your username will be your email address and the password will is your license key, followed by a colon (:), followed by the domain you are activating. For example, let's say we have the following email and license activation:
+Your username will be your email address and the password will is your license key, followed by a colon (:), followed by
+the domain you are activating. For example, let's say we have the following email and license activation:
 
 - Contact email: myname@example.com
 - License key: 9f3a2e1d-5b7c-4f86-a9d0-3e1c2b4a5f8e
@@ -391,6 +393,161 @@ return [
 ];
 ```
 
+## Preset Custom Fields
+
+Preset Custom Fields allow developers to programmatically define, deploy, and manage custom fields for Filament
+resources using migrations.
+This approach ensures consistency, version control, and easy deployment across different
+environments.
+
+### Creating Custom Fields Migrations
+
+To create a new custom fields migration, use the dedicated Artisan command:
+
+```bash
+php artisan make:custom-fields-migration CreateGeneralCustomFieldsForOpportunity
+```
+
+This command generates a new migration file in your `database/migrations/custom-fields` directory with a timestamp prefix and the name you specified.
+
+### Field Types and Properties
+
+The `CustomFieldType` enum provides various field types you can use. Here are some common types and their associated properties:
+
+- `TEXT`: Basic text input
+- `NUMBER`: Numeric input
+- `SELECT`: Dropdown selection
+- `MULTI_SELECT`: Multiple selection
+- `DATE`: Date picker
+- `TOGGLE`: Boolean toggle switch
+- `TEXTAREA`: Multi-line text input
+
+Refer to the `CustomFieldType` enum for a complete list of available field types.
+
+### Creating Fields
+
+In your migration file, use the `new()` method to create new custom fields:
+
+```php
+use App\Models\Opportunity;
+use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Migrations\CustomFieldsMigration;
+
+return new class extends CustomFieldsMigration
+{
+    public function up(): void
+    {
+        $this->migrator->new(
+            model: Opportunity::class,
+            type: CustomFieldType::TEXT,
+            name: 'Name',
+            code: 'name'
+        )->create();
+
+        $this->migrator
+            ->new(
+                model: Opportunity::class,
+                type: CustomFieldType::SELECT,
+                name: 'Stage',
+                code: 'stage'
+            )
+            ->options([
+                'New',
+                'Screening',
+                'Meeting',
+                'Proposal',
+                'Customer',
+            ])
+            ->create();
+    }
+};
+```
+
+### Updating Fields
+
+To update existing fields, create a new migration and use the `update()` method:
+
+```php
+use App\Models\Opportunity;
+use Relaticle\CustomFields\Migrations\CustomFieldsMigration;
+
+return new class extends CustomFieldsMigration
+{
+    public function up(): void
+    {
+        $this->migrator
+        ->find(Opportunity::class, 'stage')
+        ->options([
+                'New',
+                'Qualified',
+                'Proposal',
+                'Negotiation',
+                'Closed Won',
+                'Closed Lost',
+            ])
+        ->update();
+    }
+};
+```
+
+### Deleting Fields
+
+To remove preset fields, create a migration that uses the `delete()` method:
+
+```php
+<?php
+
+use App\Models\Opportunity;
+use Relaticle\CustomFields\Migrations\CustomFieldsMigration;
+
+return new class extends CustomFieldsMigration
+{
+    public function up(): void
+    {
+        $this->migrator->find(Opportunity::class, 'stage')->delete();
+        // $this->migrator->find(Opportunity::class, 'stage')->forceDelete();
+    }
+};
+```
+
+**Note**: Deleting a field with function forceDelete is permanent and will result in data loss. Ensure you have backups and that no part of your application depends on the field being deleted.
+
+### Restoring Fields
+
+To restore preset fields, create a migration that uses the `restore()` method:
+
+```php
+<?php
+
+use App\Models\Opportunity;
+use Relaticle\CustomFields\Migrations\CustomFieldsMigration;
+
+return new class extends CustomFieldsMigration
+{
+    public function up(): void
+    {
+        $this->migrator->find(Opportunity::class, 'stage')->restore();
+    }
+};
+```
+
+### Deploying Preset Fields
+
+To deploy your preset custom fields, run the standard Laravel migration command:
+
+```bash
+php artisan migrate --path=database/custom-fields
+```
+
+
+### Best Practices
+
+1. **Naming Conventions**: Use clear, descriptive names for your migration files.
+2. **Versioning**: Create separate migrations for creating, updating, and deleting fields to maintain a clear history.
+3. **Idempotency**: Ensure your migrations are idempotent (can be run multiple times without side effects).
+4. **Documentation**: Comment your migrations to explain the purpose of each change.
+5. **Data Integrity**: When updating or deleting fields, consider the impact on existing data.
+
 ---
 
 ## Support
@@ -400,6 +557,8 @@ Need assistance? Encountered a bug? Have a feature request? We’re here to help
 - **Email**: [`customfieldsnext@gmail.com`](mailto:customfieldsnext@gmail.com)
 - **Bug Reports & Feature Requests**: [GitHub Issues](https://github.com/your-repo/issues) *(Replace with your actual
   repository link)*
+
+Feel free to reach out with your queries, and we'll get back to you promptly.
 
 ---
 
@@ -467,17 +626,6 @@ The **Lifetime License** offers the same benefits as the Unlimited License with 
   or any other code distribution platforms.
 
 Violating this policy may result in license termination and potential legal action.
-
----
-
-## Questions?
-
-Unsure which license best fits your needs or have other questions? We're here to help!
-
-- **Email Us**: [`customfieldsnext@gmail.com`](mailto:customfieldsnext@gmail.com)
-- **Visit Our [Support Page](https://custom-fields.relaticle.com/support)** *(Replace with your actual support link)*
-
-Feel free to reach out with your queries, and we'll get back to you promptly.
 
 ---
 
