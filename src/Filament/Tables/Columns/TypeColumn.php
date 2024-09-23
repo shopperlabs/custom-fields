@@ -1,10 +1,10 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Tables\Columns;
+namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
 
 class TypeColumn extends Column
 {
-    protected string $view = 'filament-custom-fields::filament.tables.columns.type';
+    protected string $view = 'custom-fields::filament.tables.columns.type';
 }

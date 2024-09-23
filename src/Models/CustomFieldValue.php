@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Models;
+namespace Relaticle\CustomFields\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentCustomField\Database\Factories\CustomFieldValueFactory;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
+use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
+use Relaticle\CustomFields\Enums\CustomFieldType;
 
 /**
  * @property CustomField $customField

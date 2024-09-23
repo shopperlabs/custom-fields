@@ -1,22 +1,23 @@
 {
-    "name": "manukminasyan/filament-custom-fields",
-    "description": "This is my package filament-custom-fields",
+    "name": "relaticle/custom-fields",
+    "description": "This is my package custom-fields",
     "keywords": [
         "manukminasyan",
+        "relaticle",
         "laravel",
-        "filament-custom-fields"
+        "custom-fields"
     ],
-    "homepage": "https://github.com/manukminasyan/filament-custom-fields",
+    "homepage": "https://github.com/manukminasyan/custom-fields",
     "support": {
-        "issues": "https://github.com/manukminasyan/filament-custom-fields/issues",
-        "source": "https://github.com/manukminasyan/filament-custom-fields"
+        "issues": "https://github.com/manukminasyan/custom-fields/issues",
+        "source": "https://github.com/manukminasyan/custom-fields"
     },
     "license": "MIT",
     "authors": [
         {
             "name": "manukminasyan",
             "email": "manuk.minasyan1@gmail.com",
-            "role": "Developer"
+            "role": "Engineer"
         }
     ],
     "require": {
@@ -41,13 +42,13 @@
     },
     "autoload": {
         "psr-4": {
-            "ManukMinasyan\\FilamentCustomField\\": "src/",
-            "ManukMinasyan\\FilamentCustomField\\Database\\Factories\\": "database/factories/"
+            "Relaticle\\CustomFields\\": "src/",
+            "Relaticle\\CustomFields\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ManukMinasyan\\FilamentCustomField\\Tests\\": "tests/"
+            "Relaticle\\CustomFields\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -67,10 +68,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ManukMinasyan\\FilamentCustomField\\FilamentCustomFieldServiceProvider"
+                "Relaticle\\CustomFields\\CustomFieldsServiceProvider"
             ],
             "aliases": {
-                "FilamentCustomField": "ManukMinasyan\\FilamentCustomField\\Facades\\FilamentCustomField"
+                "CustomFields": "Relaticle\\CustomFields\\Facades\\CustomFields"
             }
         }
     },

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Database\Factories;
+namespace Relaticle\CustomFields\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Models\CustomFieldOption;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldOption;
 
 /**
  * @extends Factory<CustomFieldOption>

@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentCustomField\Data\ValidationRuleData;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use Relaticle\CustomFields\Data\ValidationRuleData;
+use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
+use Relaticle\CustomFields\Models\CustomField;
 use Spatie\LaravelData\DataCollection;
 
 final readonly class Configurator
@@ -38,6 +39,7 @@ final readonly class Configurator
                 });
             })
             ->dehydrated(fn($state): bool => $state !== null && $state !== '')
+            ->required($customField->validation_rules->toCollection()->contains('name', CustomFieldValidationRule::REQUIRED->value))
             ->rules($this->convertRulesToFilamentFormat($customField->validation_rules));
     }
 
@@ -60,5 +62,10 @@ final readonly class Configurator
 
             return $ruleData->name . ':' . implode(',', $ruleData->parameters);
         })->toArray();
+    }
+
+    public function isRequired()
+    {
+        return collect($this->rules()[$this->handle])->contains('required');
     }
 }

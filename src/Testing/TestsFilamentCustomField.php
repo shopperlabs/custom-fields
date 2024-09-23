@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Testing;
+namespace Relaticle\CustomFields\Testing;
 
 use Livewire\Features\SupportTesting\Testable;
 

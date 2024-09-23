@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Commands;
+namespace Relaticle\CustomFields\Commands;
 
 use Illuminate\Console\Command;
 

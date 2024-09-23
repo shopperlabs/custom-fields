@@ -1,22 +1,21 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField;
+namespace Relaticle\CustomFields;
 
 use Filament\Contracts\Plugin;
 use Filament\Navigation\MenuItem;
 use Filament\Panel;
-use ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResource;
+use Relaticle\CustomFields\Filament\Resources\CustomFieldResource;
 
-class FilamentCustomFieldPlugin implements Plugin
+class CustomFieldsPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'filament-custom-fields';
+        return 'custom-fields';
     }
 
     public function register(Panel $panel): void
     {
-
         $panel
             ->resources([
                 CustomFieldResource::class,
@@ -24,9 +23,8 @@ class FilamentCustomFieldPlugin implements Plugin
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Custom Fields')
-                    ->url(fn (): string => CustomFieldResource::getUrl('index'))
-                    ->icon('heroicon-o-table-cells'),
-                // ...
+                    ->url(fn (): string => CustomFieldResource::getUrl())
+                    ->icon('heroicon-m-table-cells'),
             ])
             ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
     }

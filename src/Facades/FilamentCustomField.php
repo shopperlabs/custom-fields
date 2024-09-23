@@ -1,16 +1,16 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Facades;
+namespace Relaticle\CustomFields\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \ManukMinasyan\FilamentCustomField\FilamentCustomField
+ * @see \Relaticle\CustomFields\CustomField
  */
 class FilamentCustomField extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \ManukMinasyan\FilamentCustomField\FilamentCustomField::class;
+        return \Relaticle\CustomFields\CustomField::class;
     }
 }

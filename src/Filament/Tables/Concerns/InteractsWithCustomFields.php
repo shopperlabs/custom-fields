@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Concerns;
+namespace Relaticle\CustomFields\Filament\Tables\Concerns;
 
 use Filament\Facades\Filament;
 use Filament\Tables\Columns\IconColumn;
@@ -10,9 +10,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
-use ManukMinasyan\FilamentCustomField\Exceptions\MissingRecordTitleAttributeException;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Exceptions\MissingRecordTitleAttributeException;
+use Relaticle\CustomFields\Models\CustomField;
 use Throwable;
 
 trait InteractsWithCustomFields
@@ -43,7 +43,10 @@ trait InteractsWithCustomFields
             ->with('options')
             ->get()
             ->map(fn (CustomField $customField) => $this->createCustomFieldColumn($customField)
-                ->toggleable(isToggledHiddenByDefault: true)
+                ->toggleable(
+                    condition: config('custom-fields.resource.table.columns_toggleable.enabled', true),
+                    isToggledHiddenByDefault: config('custom-fields.resource.table.columns_toggleable.hidden_by_default', true)
+                )
             )
             ->toArray();
     }

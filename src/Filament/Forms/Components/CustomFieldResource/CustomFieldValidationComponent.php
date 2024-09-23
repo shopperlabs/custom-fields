@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldResource;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldResource;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldValidationRule;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
+use Relaticle\CustomFields\Enums\CustomFieldType;
 
 final class CustomFieldValidationComponent extends Component
 {
@@ -37,6 +37,7 @@ final class CustomFieldValidationComponent extends Component
                     ->schema([
                         Forms\Components\Select::make('name')
                             ->label('Rule')
+                            ->placeholder('Select Rule')
                             ->options(function (Get $get) {
                                 $existingRules = $get('../../validation_rules') ?? [];
                                 $customFieldType = CustomFieldType::tryFrom($get('../../type'));
@@ -50,9 +51,7 @@ final class CustomFieldValidationComponent extends Component
                             ->searchable()
                             ->required()
                             ->live()
-                            ->rules([
-                                'required',
-                            ])
+                            ->required()
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state, ?string $old): void {
                                 if ($old !== $state) {
                                     $set('parameters', []);
@@ -78,6 +77,7 @@ final class CustomFieldValidationComponent extends Component
             })
             ->hiddenLabel()
             ->defaultItems(0)
+            ->addActionLabel('Add Validation Rule')
             ->columnSpanFull();
     }
 

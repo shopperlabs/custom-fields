@@ -1,11 +1,11 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Services;
+namespace Relaticle\CustomFields\Services;
 
 use Filament\Facades\Filament;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentCustomField\Filament\Resources\CustomFieldResource;
+use Relaticle\CustomFields\Filament\Resources\CustomFieldResource;
 
 abstract class AbstractOptionsService
 {

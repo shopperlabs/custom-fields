@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\Field;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Models\CustomField;
 use RuntimeException;
 
 final class CustomFieldComponentFactory

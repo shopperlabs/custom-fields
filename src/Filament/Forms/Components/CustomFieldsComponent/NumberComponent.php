@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\TextInput;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomField;
 
 final readonly class NumberComponent implements AttributeComponentInterface
 {

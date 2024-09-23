@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Models\Scopes;
+namespace Relaticle\CustomFields\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Models\Contracts;
+namespace Relaticle\CustomFields\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Models\CustomFieldValue;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldValue;
 
 interface HasCustomFields
 {

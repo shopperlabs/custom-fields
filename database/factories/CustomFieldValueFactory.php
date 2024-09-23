@@ -1,11 +1,11 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Database\Factories;
+namespace Relaticle\CustomFields\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Models\CustomFieldValue;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldValue;
 
 /**
  * @extends Factory<CustomFieldValue>

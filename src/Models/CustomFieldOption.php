@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Models;
+namespace Relaticle\CustomFields\Models;
 
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use ManukMinasyan\FilamentCustomField\Database\Factories\CustomFieldOptionFactory;
-use ManukMinasyan\FilamentCustomField\Models\Scopes\SortOrderScope;
+use Relaticle\CustomFields\Database\Factories\CustomFieldOptionFactory;
+use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 
 #[ScopedBy([SortOrderScope::class])]
 final class CustomFieldOption extends Model

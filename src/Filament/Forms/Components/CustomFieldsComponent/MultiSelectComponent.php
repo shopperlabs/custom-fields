@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\Select;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomField;
 
 final readonly class MultiSelectComponent implements AttributeComponentInterface
 {

@@ -1,26 +1,46 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField;
+namespace Relaticle\CustomFields;
 
+use Filament\Facades\Filament;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
-use ManukMinasyan\FilamentCustomField\Commands\FilamentCustomFieldCommand;
-use ManukMinasyan\FilamentCustomField\Testing\TestsFilamentCustomField;
+use Livewire\Livewire;
+use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Testing\TestsFilamentCustomField;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FilamentCustomFieldServiceProvider extends PackageServiceProvider
+class CustomFieldsServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'custom-fields';
 
-    public static string $viewNamespace = 'filament-custom-fields';
+    public static string $viewNamespace = 'custom-fields';
+
+    public function bootingPackage()
+    {
+        if (config('custom-fields.tenant_aware', false) && Filament::hasTenancy()) {
+            $tenantModel = Filament::getTenantModel();
+            $tenantModelInstance = app($tenantModel);
+
+            CustomField::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
+                return $customField->belongsTo($tenantModel, config('custom-fields.column_names.tenant_foreign_key'));
+            });
+
+            $tenantModelInstance->resolveRelationUsing('customFields', function (Model $tenantModel) {
+                return $tenantModel->hasMany(CustomField::class, config('custom-fields.column_names.tenant_foreign_key'));
+            });
+        }
+    }
 
     public function configurePackage(Package $package): void
     {
@@ -57,7 +77,9 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void {}
+    public function packageRegistered(): void
+    {
+    }
 
     public function packageBooted(): void
     {
@@ -77,10 +99,10 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
-                    $file->getRealPath() => base_path("stubs/filament-custom-fields/{$file->getFilename()}"),
-                ], 'filament-custom-fields-stubs');
+                    $file->getRealPath() => base_path("stubs/custom-fields/{$file->getFilename()}"),
+                ], 'custom-fields-stubs');
             }
         }
 
@@ -99,9 +121,9 @@ class FilamentCustomFieldServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('filament-custom-fields', __DIR__ . '/../resources/dist/components/filament-custom-fields.js'),
-            //            Css::make('filament-custom-fields-styles', __DIR__ . '/../resources/dist/filament-custom-fields.css'),
-            //            Js::make('filament-custom-fields-scripts', __DIR__ . '/../resources/dist/filament-custom-fields.js'),
+            // AlpineComponent::make('custom-fields', __DIR__ . '/../resources/dist/components/custom-fields.js'),
+            //            Css::make('custom-fields-styles', __DIR__ . '/../resources/dist/custom-fields.css'),
+            //            Js::make('custom-fields-scripts', __DIR__ . '/../resources/dist/custom-fields.js'),
         ];
     }
 

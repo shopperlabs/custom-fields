@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Models\Concerns;
+namespace Relaticle\CustomFields\Models\Concerns;
 
 use Exception;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use ManukMinasyan\FilamentCustomField\Models\Scopes\ActivableScope;
+use Relaticle\CustomFields\Models\Scopes\ActivableScope;
 
 trait Activable
 {
@@ -84,7 +83,7 @@ trait Activable
      *
      * @return string
      */
-    public function getQualifiedActiveColumn()
+    public function getQualifiedActiveColumn(): string
     {
         return $this->qualifyColumn($this->getActiveColumn());
     }

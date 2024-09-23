@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Models\Concerns;
+namespace Relaticle\CustomFields\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentCustomField\Models\Contracts\HasCustomFields;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Models\CustomFieldValue;
+use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldValue;
 
 /**
  * @see HasCustomFields

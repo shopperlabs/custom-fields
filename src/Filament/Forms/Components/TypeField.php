@@ -1,9 +1,9 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components;
+namespace Relaticle\CustomFields\Filament\Forms\Components;
 
 use Filament\Forms\Components\Select;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldType;
 
 class TypeField extends Select
 {
@@ -18,7 +18,7 @@ class TypeField extends Select
 
     public function getHtmlOption($name, $value)
     {
-        return view('filament-custom-fields::filament.forms.type-field')
+        return view('custom-fields::filament.forms.type-field')
             ->with('label', $name)
             ->with('value', $value)
             ->with('icon', CustomFieldType::tryFrom($value)->getIcon())

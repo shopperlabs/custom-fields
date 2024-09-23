@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components;
 
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Collection;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Services\EntityTypeOptionsService;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\CustomFieldComponentFactory;
+use Relaticle\CustomFields\Models\CustomField;
 
 final class CustomFieldsComponent extends Component
 {

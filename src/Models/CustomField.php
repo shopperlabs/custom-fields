@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Models;
+namespace Relaticle\CustomFields\Models;
 
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use ManukMinasyan\FilamentCustomField\Data\ValidationRuleData;
-use ManukMinasyan\FilamentCustomField\Database\Factories\CustomFieldFactory;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
-use ManukMinasyan\FilamentCustomField\Models\Concerns\Activable;
-use ManukMinasyan\FilamentCustomField\Models\Scopes\SortOrderScope;
+use Relaticle\CustomFields\Data\ValidationRuleData;
+use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
+use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Models\Concerns\Activable;
+use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -53,7 +54,7 @@ final class CustomField extends Model
 
     public function __construct(array $attributes = [])
     {
-        if (! isset($this->table)) {
+        if (!isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.custom_fields'));
         }
 
@@ -69,14 +70,14 @@ final class CustomField extends Model
     {
         return [
             'type' => CustomFieldType::class,
-            'validation_rules' => DataCollection::class.':'.ValidationRuleData::class,
+            'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
             'active' => 'boolean',
             'user_defined' => 'boolean',
         ];
     }
 
     /**
-     * @param  Builder<CustomField>  $builder
+     * @param Builder<CustomField> $builder
      * @return Builder<CustomField>
      *
      * @noinspection PhpUnused
@@ -87,7 +88,7 @@ final class CustomField extends Model
     }
 
     /**
-     * @param  Builder<CustomField>  $builder
+     * @param Builder<CustomField> $builder
      * @return Builder<CustomField>
      *
      * @noinspection PhpUnused
@@ -98,7 +99,7 @@ final class CustomField extends Model
     }
 
     /**
-     * @param  Builder<CustomField>  $builder
+     * @param Builder<CustomField> $builder
      * @return Builder<CustomField>
      *
      * @noinspection PhpUnused

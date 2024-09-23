@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Services;
+namespace Relaticle\CustomFields\Services;
 
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;

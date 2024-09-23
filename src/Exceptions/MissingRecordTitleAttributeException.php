@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Exceptions;
+namespace Relaticle\CustomFields\Exceptions;
 
 use Exception;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Services;
+namespace Relaticle\CustomFields\Services;
 
 class LookupTypeOptionsService extends AbstractOptionsService
 {

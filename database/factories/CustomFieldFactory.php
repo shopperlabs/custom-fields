@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Database\Factories;
+namespace Relaticle\CustomFields\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use ManukMinasyan\FilamentCustomField\Enums\CustomFieldType;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Services\CustomFieldModelService;
+use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Services\CustomFieldModelService;
 
 /**
  * @extends Factory<CustomField>

@@ -1,6 +1,6 @@
 <?php
 
-namespace ManukMinasyan\FilamentCustomField\Migrations;
+namespace Relaticle\CustomFields\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 

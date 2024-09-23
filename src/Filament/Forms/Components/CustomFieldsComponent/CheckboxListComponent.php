@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManukMinasyan\FilamentCustomField\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Field;
-use ManukMinasyan\FilamentCustomField\Models\CustomField;
-use ManukMinasyan\FilamentCustomField\Services\FilamentResourceService;
+use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Services\FilamentResourceService;
 use Throwable;
 
 final readonly class CheckboxListComponent implements AttributeComponentInterface
