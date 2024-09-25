@@ -12,7 +12,7 @@
         "issues": "https://github.com/manukminasyan/custom-fields/issues",
         "source": "https://github.com/manukminasyan/custom-fields"
     },
-    "license": "MIT",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "manukminasyan",
