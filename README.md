@@ -465,6 +465,7 @@ In your migration file, use the `new()` method to create new custom fields:
 
 ```php
 use App\Models\Opportunity;
+use App\Models\User;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigration;
 
@@ -493,6 +494,16 @@ return new class extends CustomFieldsMigration
                 'Proposal',
                 'Customer',
             ])
+            ->create();
+            
+        $this->migrator
+            ->new(
+                model: Opportunity::class,
+                type: CustomFieldType::SELECT,
+                name: 'Author',
+                code: 'author'
+            )
+            ->lookupType(User::class)
             ->create();
     }
 };
