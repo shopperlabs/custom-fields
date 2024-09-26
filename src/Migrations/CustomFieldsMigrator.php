@@ -61,6 +61,20 @@ class CustomFieldsMigrator
     }
 
     /**
+     * @throws FieldTypeNotOptionableException
+     */
+    public function lookupType(string $model): CustomFieldsMigrator
+    {
+        if (!$this->isCustomFieldTypeOptionable()) {
+            throw new FieldTypeNotOptionableException();
+        }
+
+        $this->customFieldData->lookupType = app($model)->getMorphClass();
+
+        return $this;
+    }
+
+    /**
      * @throws CustomFieldAlreadyExistsException
      * @throws \Exception
      */

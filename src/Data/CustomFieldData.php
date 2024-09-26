@@ -26,6 +26,7 @@ final class CustomFieldData extends Data
         public string $entityType,
         public bool $active = true,
         public bool $userDefined = true,
-        public ?array $options = null
+        public ?array $options = null,
+        public ?string $lookupType = null
     ) {}
 }
