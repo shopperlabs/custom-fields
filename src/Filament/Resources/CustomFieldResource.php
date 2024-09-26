@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Filament\Resources;
 
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Resource;
@@ -22,18 +23,13 @@ use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\Scopes\ActivableScope;
 use Relaticle\CustomFields\Services\EntityTypeOptionsService;
 use Relaticle\CustomFields\Services\LookupTypeOptionsService;
+use Relaticle\CustomFields\Support\Utils;
 
 final class CustomFieldResource extends Resource
 {
     protected static ?string $model = CustomField::class;
 
-    protected static ?string $label = 'Custom Field';
-
-    protected static ?string $slug = 'custom-fields';
-
     protected static ?string $tenantOwnershipRelationshipName = 'team';
-
-    protected static bool $shouldRegisterNavigation = false;
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::End;
 
@@ -193,5 +189,59 @@ final class CustomFieldResource extends Resource
         return [
             'index' => Pages\ManageCustomFields::route('/'),
         ];
+    }
+
+    public static function getCluster(): ?string
+    {
+        return Utils::getResourceCluster() ?? static::$cluster;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Utils::isResourceNavigationRegistered();
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return Utils::isResourceNavigationGroupEnabled()
+            ? __('custom-fields::custom-fields.nav.group')
+            : '';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('custom-fields::custom-fields.nav.label');
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return __('custom-fields::custom-fields.nav.icon');
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return Utils::getResourceNavigationSort();
+    }
+
+    public static function getSlug(): string
+    {
+        return Utils::getResourceSlug();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Utils::isResourceNavigationBadgeEnabled()
+            ? strval(static::getEloquentQuery()->count())
+            : null;
+    }
+
+    public static function isScopedToTenant(): bool
+    {
+        return Utils::isScopedToTenant();
+    }
+
+    public static function canGloballySearch(): bool
+    {
+        return Utils::isResourceGloballySearchable() && count(static::getGloballySearchableAttributes()) && static::canViewAny();
     }
 }

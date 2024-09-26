@@ -298,6 +298,26 @@ default configuration:
 return [
     /*
     |--------------------------------------------------------------------------
+    | Custom Fields Resource Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the Custom Fields resource.
+    | This allows you to customize the behavior of the resource.
+    |
+    */
+    'custom_fields_resource' => [
+        'should_register_navigation' => true,
+        'slug' => 'custom-fields',
+        'navigation_sort' => -1,
+        'navigation_badge' => false,
+        'navigation_group' => true,
+        'is_globally_searchable' => false,
+        'is_scoped_to_tenant' => true,
+        'cluster' => null,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Entity Resources Configuration
     |--------------------------------------------------------------------------
     |
@@ -312,6 +332,24 @@ return [
 
     'disallowed_entity_resources' => [
         //
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Entity Resources Customization
+    |--------------------------------------------------------------------------
+    |
+    | This section allows you to customize the behavior of entity resources,
+    | such as enabling table column toggling and setting default visibility.
+    |
+    */
+    'resource' => [
+        'table' => [
+            'columns_toggleable' => [
+                'enabled' => true,
+                'hidden_by_default' => true,
+            ],
+        ],
     ],
 
     /*
@@ -334,24 +372,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Resource Table Configuration
-    |--------------------------------------------------------------------------
-    |
-    | This section allows you to customize the behavior of resource tables,
-    | such as enabling column toggling and setting default visibility.
-    |
-    */
-    'resource' => [
-        'table' => [
-            'columns_toggleable' => [
-                'enabled' => true,
-                'hidden_by_default' => true,
-            ],
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Tenant Awareness Configuration
     |--------------------------------------------------------------------------
     |
@@ -360,7 +380,22 @@ return [
     | register the tenant foreign key.
     |
     */
-    'tenant_aware' => false,
+    'tenant_aware' => true,
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database Migrations Paths
+    |--------------------------------------------------------------------------
+    |
+    | In these directories custom fields migrations will be stored and ran when migrating. A custom fields
+    | migration created via the make:custom-fields-migration command will be stored in the first path or
+    | a custom defined path when running the command.
+    |
+    */
+    'migrations_paths' => [
+        database_path('custom-fields'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -391,6 +426,7 @@ return [
     ],
 ];
 ```
+
 
 ## Preset Custom Fields
 
