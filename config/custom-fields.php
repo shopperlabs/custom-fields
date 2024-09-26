@@ -85,7 +85,7 @@ return [
     | register the tenant foreign key.
     |
     */
-    'tenant_aware' => true,
+    'tenant_aware' => false,
 
 
     /*
