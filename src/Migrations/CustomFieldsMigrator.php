@@ -3,6 +3,7 @@
 namespace Relaticle\CustomFields\Migrations;
 
 use Illuminate\Support\Facades\DB;
+use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
 use Relaticle\CustomFields\Data\CustomFieldData;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Exceptions\CustomFieldAlreadyExistsException;
@@ -10,7 +11,7 @@ use Relaticle\CustomFields\Exceptions\CustomFieldDoesNotExistException;
 use Relaticle\CustomFields\Exceptions\FieldTypeNotOptionableException;
 use Relaticle\CustomFields\Models\CustomField;
 
-class CustomFieldsMigrator
+class CustomFieldsMigrator implements CustomsFieldsMigrators
 {
     private CustomFieldData $customFieldData;
 
@@ -102,11 +103,10 @@ class CustomFieldsMigrator
 
     /**
      * @param array $data
-     * @return CustomFieldsMigrator
+     * @return void
      * @throws CustomFieldDoesNotExistException
-     * @throws \Exception
      */
-    public function update(array $data): CustomFieldsMigrator
+    public function update(array $data): void
     {
         if (!$this->customField->exists) {
             throw CustomFieldDoesNotExistException::whenUpdating($this->customFieldData->code);
@@ -129,8 +129,6 @@ class CustomFieldsMigrator
             DB::rollBack();
             throw $exception;
         }
-
-        return $this;
     }
 
 

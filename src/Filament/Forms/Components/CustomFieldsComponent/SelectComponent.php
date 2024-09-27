@@ -38,6 +38,7 @@ final readonly class SelectComponent implements AttributeComponentInterface
         $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($lookupType);
         $globalSearchableAttributes = FilamentResourceService::getGlobalSearchableAttributes($lookupType);
 
+        // TODO: Check tenant support for below queries and other lookups
         return $select
             ->getSearchResultsUsing(fn(string $search): array => $entityInstance->query()
                 ->whereAny($globalSearchableAttributes, 'like', "%{$search}%")

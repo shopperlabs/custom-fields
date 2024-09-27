@@ -14,6 +14,8 @@ use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
+use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
+use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Testing\TestsFilamentCustomField;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -28,6 +30,8 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage()
     {
+        $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
+
         if (config('custom-fields.tenant_aware', false) && Filament::hasTenancy()) {
             $tenantModel = Filament::getTenantModel();
             $tenantModelInstance = app($tenantModel);
