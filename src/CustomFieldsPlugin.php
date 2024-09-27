@@ -20,12 +20,6 @@ class CustomFieldsPlugin implements Plugin
             ->resources([
                 CustomFieldResource::class,
             ])
-            ->userMenuItems([
-                MenuItem::make()
-                    ->label('Custom Fields')
-                    ->url(fn (): string => CustomFieldResource::getUrl())
-                    ->icon('heroicon-m-table-cells'),
-            ])
             ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
     }
 
