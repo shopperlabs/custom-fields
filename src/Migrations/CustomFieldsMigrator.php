@@ -2,6 +2,8 @@
 
 namespace Relaticle\CustomFields\Migrations;
 
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
 use Relaticle\CustomFields\Data\CustomFieldData;
@@ -13,9 +15,16 @@ use Relaticle\CustomFields\Models\CustomField;
 
 class CustomFieldsMigrator implements CustomsFieldsMigrators
 {
+    private int|string|null $tenantId = null;
+
     private CustomFieldData $customFieldData;
 
     private ?CustomField $customField;
+
+    public function setTenantId(int|string|null $tenantId = null): void
+    {
+        $this->tenantId = $tenantId;
+    }
 
     public function find(string $model, string $code): CustomFieldsMigrator
     {
@@ -81,14 +90,20 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
      */
     public function create(): void
     {
-        if ($this->isCustomFieldExists($this->customFieldData->entityType, $this->customFieldData->code)) {
+        if ($this->isCustomFieldExists($this->customFieldData->entityType, $this->customFieldData->code, $this->tenantId)) {
             throw CustomFieldAlreadyExistsException::whenAdding($this->customFieldData->code);
         }
 
         try {
             DB::beginTransaction();
 
-            $customField = CustomField::query()->create($this->customFieldData->toArray());
+            $data = $this->customFieldData->except('options')->toArray();
+
+            if (Filament::hasTenancy() && config('custom-fields.tenant_aware', false)) {
+                $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
+            }
+
+            $customField = CustomField::query()->create($data);
 
             if ($this->isCustomFieldTypeOptionable() && !empty($this->customFieldData->options)) {
                 $this->createOptions($customField, $this->customFieldData->options);
@@ -117,7 +132,13 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
 
             collect($data)->each(fn($value, $key) => $this->customFieldData->$key = $value);
 
-            $this->customField->update($this->customFieldData->toArray());
+            $data = $this->customFieldData->toArray();
+
+            if (Filament::hasTenancy() && config('custom-fields.tenant_aware', false)) {
+                $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
+            }
+
+            $this->customField->update($data);
 
             if ($this->isCustomFieldTypeOptionable() && !empty($this->customFieldData->options)) {
                 $this->customField->options()->delete();
@@ -182,11 +203,12 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
      * @param string $code
      * @return bool
      */
-    protected function isCustomFieldExists(string $model, string $code): bool
+    protected function isCustomFieldExists(string $model, string $code, int|string|null $tenantId = null): bool
     {
         return CustomField::query()
             ->forMorphEntity($model)
             ->where('code', $code)
+            ->when($tenantId, fn($query) => $query->where(config('custom-fields.column_names.tenant_foreign_key'), $tenantId))
             ->exists();
     }
 

@@ -16,10 +16,13 @@ return new class extends Migration
          * Custom Fields
          */
         Schema::create(config('custom-fields.table_names.custom_fields'), function (Blueprint $table): void {
+            $uniqueColumns = ['code', 'entity_type'];
+
             $table->id();
 
             if (config('custom-fields.tenant_aware', false) && Filament::hasTenancy()) {
                 $table->foreignId(config('custom-fields.column_names.tenant_foreign_key'))->nullable()->index();
+                $uniqueColumns[] = config('custom-fields.column_names.tenant_foreign_key');
             }
 
             $table->string('code');
@@ -33,7 +36,8 @@ return new class extends Migration
             $table->boolean('active')->default(1);
             $table->boolean('user_defined')->default(1);
 
-            $table->unique(['code', 'entity_type']);
+
+            $table->unique($uniqueColumns);
 
             $table->softDeletes();
             $table->timestamps();

@@ -2,10 +2,13 @@
 
 namespace Relaticle\CustomFields\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 
 interface CustomsFieldsMigrators
 {
+    public function setTenantId(int|string|null $tenantId = null): void;
+
     public function find(string $model, string $code): ?CustomsFieldsMigrators;
     public function new(string $model, CustomFieldType $type, string $name, string $code, bool $active = true, bool $userDefined = false): CustomsFieldsMigrators;
     public function options(array $options): CustomsFieldsMigrators;
