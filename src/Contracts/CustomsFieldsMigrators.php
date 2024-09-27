@@ -3,7 +3,6 @@
 namespace Relaticle\CustomFields\Contracts;
 
 use Relaticle\CustomFields\Enums\CustomFieldType;
-use Relaticle\CustomFields\Models\CustomField;
 
 interface CustomsFieldsMigrators
 {
