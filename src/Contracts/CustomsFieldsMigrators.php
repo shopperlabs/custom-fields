@@ -10,7 +10,7 @@ interface CustomsFieldsMigrators
     public function setTenantId(int|string|null $tenantId = null): void;
 
     public function find(string $model, string $code): ?CustomsFieldsMigrators;
-    public function new(string $model, CustomFieldType $type, string $name, string $code, bool $active = true, bool $userDefined = false): CustomsFieldsMigrators;
+    public function new(string $model, CustomFieldType $type, string $name, string $code, bool $active = true, bool $systemDefined = false): CustomsFieldsMigrators;
     public function options(array $options): CustomsFieldsMigrators;
     public function lookupType(string $model): CustomsFieldsMigrators;
     public function create(): void;

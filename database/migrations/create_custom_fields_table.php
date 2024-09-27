@@ -33,8 +33,8 @@ return new class extends Migration
             $table->unsignedBigInteger('sort_order')->nullable();
             $table->json('validation_rules')->nullable();
 
-            $table->boolean('active')->default(1);
-            $table->boolean('user_defined')->default(1);
+            $table->boolean('active')->default(true);
+            $table->boolean('system_defined')->default(false);
 
 
             $table->unique($uniqueColumns);

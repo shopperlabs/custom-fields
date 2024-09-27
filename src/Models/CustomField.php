@@ -27,7 +27,7 @@ use Spatie\LaravelData\DataCollection;
  * @property DataCollection<int, ValidationRuleData> $validation_rules
  * @property int $sort_order
  * @property bool $active
- * @property bool $user_defined
+ * @property bool $system_defined
  */
 #[ScopedBy([SortOrderScope::class])]
 final class CustomField extends Model
@@ -49,7 +49,7 @@ final class CustomField extends Model
         'validation_rules',
         'sort_order',
         'active',
-        'user_defined'
+        'system_defined'
     ];
 
     public function __construct(array $attributes = [])
@@ -72,7 +72,7 @@ final class CustomField extends Model
             'type' => CustomFieldType::class,
             'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
             'active' => 'boolean',
-            'user_defined' => 'boolean',
+            'system_defined' => 'boolean',
         ];
     }
 
@@ -123,5 +123,13 @@ final class CustomField extends Model
     public function options(): HasMany
     {
         return $this->hasMany(CustomFieldOption::class);
+    }
+
+    /**
+     * Determine if the model instance is user defined.
+     */
+    public function isSystemDefined(): bool
+    {
+        return $this->system_defined === true;
     }
 }

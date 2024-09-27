@@ -158,7 +158,7 @@ final class CustomFieldResource extends Resource
                         ->requiresConfirmation()
                         ->visible(fn(CustomField $record): bool => $record->isActive())
                         ->action(fn(CustomField $record) => $record->deactivate()),
-                    DeleteAction::make()->visible(fn(CustomField $record): bool => !$record->isActive()),
+                    DeleteAction::make()->visible(fn(CustomField $record): bool => !$record->isActive() && !$record->isSystemDefined()),
                 ])->iconButton(),
 
             ])

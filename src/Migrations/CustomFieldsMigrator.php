@@ -3,7 +3,6 @@
 namespace Relaticle\CustomFields\Migrations;
 
 use Filament\Facades\Filament;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
 use Relaticle\CustomFields\Data\CustomFieldData;
@@ -42,7 +41,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
     /**
      * @param class-string $model
      */
-    public function new(string $model, CustomFieldType $type, string $name, string $code, bool $active = true, bool $userDefined = false): CustomFieldsMigrator
+    public function new(string $model, CustomFieldType $type, string $name, string $code, bool $active = true, bool $systemDefined = false): CustomFieldsMigrator
     {
         $this->customFieldData = CustomFieldData::from([
             'entity_type' => app($model)->getMorphClass(),
@@ -50,7 +49,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
             'name' => $name,
             'code' => $code,
             'active' => $active,
-            'user_defined' => $userDefined,
+            'system_defined' => $systemDefined,
         ]);
 
         return $this;
