@@ -11,6 +11,7 @@ use Relaticle\CustomFields\Exceptions\CustomFieldAlreadyExistsException;
 use Relaticle\CustomFields\Exceptions\CustomFieldDoesNotExistException;
 use Relaticle\CustomFields\Exceptions\FieldTypeNotOptionableException;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Support\Utils;
 
 class CustomFieldsMigrator implements CustomsFieldsMigrators
 {
@@ -98,7 +99,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
 
             $data = $this->customFieldData->except('options')->toArray();
 
-            if (Filament::hasTenancy() && config('custom-fields.tenant_aware', false)) {
+            if (Utils::isTenantEnabled()) {
                 $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
             }
 
@@ -133,7 +134,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
 
             $data = $this->customFieldData->toArray();
 
-            if (Filament::hasTenancy() && config('custom-fields.tenant_aware', false)) {
+            if (Utils::isTenantEnabled()) {
                 $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
             }
 
@@ -207,7 +208,6 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
         return CustomField::query()
             ->forMorphEntity($model)
             ->where('code', $code)
-            ->when($tenantId, fn($query) => $query->where(config('custom-fields.column_names.tenant_foreign_key'), $tenantId))
             ->exists();
     }
 

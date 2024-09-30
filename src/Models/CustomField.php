@@ -16,6 +16,7 @@ use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Concerns\Activable;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
+use Relaticle\CustomFields\Models\Scopes\TenantScope;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -29,7 +30,7 @@ use Spatie\LaravelData\DataCollection;
  * @property bool $active
  * @property bool $system_defined
  */
-#[ScopedBy([SortOrderScope::class])]
+#[ScopedBy([TenantScope::class, SortOrderScope::class])]
 final class CustomField extends Model
 {
     /** @use HasFactory<CustomFieldFactory> */
@@ -40,17 +41,7 @@ final class CustomField extends Model
     /**
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'code',
-        'type',
-        'entity_type',
-        'lookup_type',
-        'validation_rules',
-        'sort_order',
-        'active',
-        'system_defined'
-    ];
+    protected $guarded = [];
 
     public function __construct(array $attributes = [])
     {

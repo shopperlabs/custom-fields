@@ -56,7 +56,22 @@ final class CustomFieldResource extends Resource
                                     ->live(onBlur: true)
                                     ->required()
                                     ->maxLength(50)
-                                    ->unique(table: CustomField::class, column: 'name', ignoreRecord: true, modifyRuleUsing: fn(Unique $rule, Forms\Get $get) => $rule->where('entity_type', $get('entity_type')))
+                                    ->unique(
+                                        table: CustomField::class,
+                                        column: 'name',
+                                        ignoreRecord: true,
+                                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                                            return $rule->where('entity_type', $get('entity_type'))
+                                                ->when(
+                                                    Utils::isTenantEnabled(),
+                                                    function (Unique $rule) {
+                                                        return $rule->where(
+                                                            config('custom-fields.column_names.tenant_foreign_key'),
+                                                            Filament::getTenant()?->id
+                                                        );
+                                                    });
+                                        },
+                                    )
                                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?string $old, ?string $state): void {
                                         $old ??= '';
                                         $state ??= '';
@@ -72,8 +87,23 @@ final class CustomFieldResource extends Resource
                                     ->live(onBlur: true)
                                     ->required()
                                     ->alphaDash()
-                                    ->unique(table: CustomField::class, column: 'code', ignoreRecord: true, modifyRuleUsing: fn(Unique $rule, Forms\Get $get) => $rule->where('entity_type', $get('entity_type')))
                                     ->maxLength(50)
+                                    ->unique(
+                                        table: CustomField::class,
+                                        column: 'code',
+                                        ignoreRecord: true,
+                                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                                            return $rule->where('entity_type', $get('entity_type'))
+                                                ->when(
+                                                    Utils::isTenantEnabled(),
+                                                    function (Unique $rule) {
+                                                        return $rule->where(
+                                                            config('custom-fields.column_names.tenant_foreign_key'),
+                                                            Filament::getTenant()?->id
+                                                        );
+                                                    });
+                                        },
+                                    )
                                     ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
                                         $set('code', Str::of($state)->slug('_')->toString());
                                     }),

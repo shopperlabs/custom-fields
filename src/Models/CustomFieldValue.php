@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Models\Scopes\TenantScope;
 
 /**
  * @property CustomField $customField
@@ -24,6 +26,7 @@ use Relaticle\CustomFields\Enums\CustomFieldType;
  * @property ?Carbon $date_value
  * @property ?Carbon $datetime_value
  */
+#[ScopedBy([TenantScope::class])]
 final class CustomFieldValue extends Model
 {
     /** @use HasFactory<CustomFieldValueFactory> */

@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Relaticle\CustomFields\Database\Factories\CustomFieldOptionFactory;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
+use Relaticle\CustomFields\Models\Scopes\TenantScope;
 
-#[ScopedBy([SortOrderScope::class])]
+#[ScopedBy([TenantScope::class, SortOrderScope::class])]
 final class CustomFieldOption extends Model
 {
     /** @use HasFactory<CustomFieldOptionFactory> */

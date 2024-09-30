@@ -2,6 +2,8 @@
 
 namespace Relaticle\CustomFields\Support;
 
+use Filament\Facades\Filament;
+
 class Utils
 {
     public static function getResourceCluster(): ?string
@@ -42,5 +44,10 @@ class Utils
     public static function isResourceGloballySearchable(): bool
     {
         return config('custom-fields.custom_fields_resource.is_globally_searchable', false);
+    }
+
+    public static function isTenantEnabled(): bool
+    {
+        return config('custom-fields.tenant_aware', false) && Filament::hasTenancy();
     }
 }

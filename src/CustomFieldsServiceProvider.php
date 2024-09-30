@@ -17,6 +17,7 @@ use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Support\Utils;
 use Relaticle\CustomFields\Testing\TestsFilamentCustomField;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -32,7 +33,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
 
-        if (config('custom-fields.tenant_aware', false) && Filament::hasTenancy()) {
+        if (Utils::isTenantEnabled()) {
             $tenantModel = Filament::getTenantModel();
             $tenantModelInstance = app($tenantModel);
 

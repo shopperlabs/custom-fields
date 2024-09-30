@@ -2,7 +2,6 @@
 
 namespace Relaticle\CustomFields\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 
 interface CustomsFieldsMigrators

@@ -6,6 +6,7 @@ use Filament\Contracts\Plugin;
 use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Relaticle\CustomFields\Filament\Resources\CustomFieldResource;
+use Relaticle\CustomFields\Http\Middleware\ApplyTenantScopes;
 
 class CustomFieldsPlugin implements Plugin
 {
