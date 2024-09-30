@@ -43,7 +43,7 @@ experience throughout your admin panel.
 
 Experience the full functionality of Custom Fields in action.
 
-[**Visit the Demo**](https://custom-fields.relaticle.com)
+[**Visit the Demo**](https://relaticle.com)
 
 ---
 
