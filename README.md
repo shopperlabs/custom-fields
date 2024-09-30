@@ -118,7 +118,7 @@ To install Custom Fields you'll need to add the package to your `composer.json` 
     "repositories": [
         {
             "type": "composer",
-            "url": "https://custom-fields.composer.sh"
+            "url": "https://satis.relaticle.com"
         }
     ]
 }
