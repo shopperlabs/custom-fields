@@ -95,19 +95,14 @@ the plugin.
 - **Laravel**: 10.0 or higher
 - **Filament**: 3.0 or higher
 
-### Activating your license on AnyStack
+### Activating your license on Lemon Squeezy
 
-Custom Fields uses [AnyStack](https://anystack.sh/) to handle payment, licensing, and distribution.
+Custom Fields uses [Lemon Squeezy](https://www.lemonsqueezy.com/) to handle payment and licensing.
+For distribution we use [Satis Relaticle](https://satis.relaticle.com/), a private Composer repository.
 
-During the purchasing process, AnyStack will provide you with a license key. You will also be asked by AnyStack to
-activate your license by providing a `domain`. This is usually the domain of where your final project will live. You’ll
-use this same domain to install locally and in production. Once you have provide a domain, your license key will be
-activated and you can proceed with installing with composer below.
+During the purchasing process, Lemon Squeezy will provide you with a license key.
 
-> Tip: If you missed this step, or if you need to add additional domains for other projects, you can access the activation
-page by going to Transactions in your AnyStack account and then clicking `View details` on the Custom Fields product.
-
-> Tip: You will need both your `license key` and your `domain` to authenticate when you install the package with composer.
+> Tip: You will need your `license key` to authenticate when you install the package with composer.
 
 ### Installing with Composer
 
@@ -135,31 +130,25 @@ Next, you will be prompted to provide your username and password.
 
 ```bash
 Loading composer repositories with package information
-Authentication required (custom-fields.composer.sh):
+Authentication required (satis.relaticle.com):
 Username: [licensee-email]
 Password: [license-key]
 ```
 
-Your username will be your email address and the password will is your license key, followed by a colon (:), followed by
-the domain you are activating. For example, let's say we have the following email and license activation:
+Your username will be your email address and the password will is your license key. 
+For example, let's say we have the following email and license activation:
 
 - Contact email: **myname@example.com**
 - License key: **9f3a2e1d-5b7c-4f86-a9d0-3e1c2b4a5f8e**
-- Activation fingerprint: **my_domain.com**
 
-- You will need to enter the above information as follows when prompted for your credentials:
+You will need to enter the above information as follows when prompted for your credentials:
 
 ```bash
 Loading composer repositories with package information
-Authentication required (custom-fields.composer.sh):
+Authentication required (satis.relaticle.com):
 Username: myname@example.com
-Password: 9f3a2e1d-5b7c-4f86-a9d0-3e1c2b4a5f8e:my_domain.com
+Password: 9f3a2e1d-5b7c-4f86-a9d0-3e1c2b4a5f8e
 ```
-
-The license key and fingerprint should be separated by a colon (:).
-
-> Tip: If you get a 402 error, most likely you forgot to add the colon and fingerprint.
-
 
 ---
 
