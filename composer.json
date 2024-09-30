@@ -7,10 +7,10 @@
         "laravel",
         "custom-fields"
     ],
-    "homepage": "https://github.com/manukminasyan/custom-fields",
+    "homepage": "https://github.com/relaticle/custom-fields",
     "support": {
-        "issues": "https://github.com/manukminasyan/custom-fields/issues",
-        "source": "https://github.com/manukminasyan/custom-fields"
+        "issues": "https://github.com/relaticle/custom-fields/issues",
+        "source": "https://github.com/relaticle/custom-fields"
     },
     "license": "Apache-2.0",
     "authors": [
