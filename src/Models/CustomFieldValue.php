@@ -35,17 +35,7 @@ final class CustomFieldValue extends Model
 
     public $timestamps = false;
 
-    protected $fillable = [
-        'custom_field_id',
-        'text_value',
-        'string_value',
-        'integer_value',
-        'float_value',
-        'json_value',
-        'boolean_value',
-        'date_value',
-        'datetime_value',
-    ];
+    protected $guarded = [];
 
     /**
      * @var array<string, string>

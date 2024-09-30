@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Models\Concerns;
 
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -11,6 +12,7 @@ use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldValue;
+use Relaticle\CustomFields\Support\Utils;
 
 /**
  * @see HasCustomFields
@@ -84,7 +86,7 @@ trait UsesCustomFields
     {
         $customField = $this->customFields()->where('code', $code)->first();
 
-        if (! $customField) {
+        if (!$customField) {
             return null;
         }
 
@@ -99,14 +101,20 @@ trait UsesCustomFields
     {
         $customField = $this->customFields()->where('code', $code)->firstOrFail();
 
-        $customFieldValue = $this->customFieldValues()->firstOrNew(['custom_field_id' => $customField->id]);
+        $data = ['custom_field_id' => $customField->id];
+
+        if (Utils::isTenantEnabled()) {
+            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+        }
+
+        $customFieldValue = $this->customFieldValues()->firstOrNew($data);
 
         $customFieldValue->setValue($value);
         $customFieldValue->save();
     }
 
     /**
-     * @param  array<string, mixed>  $customFields
+     * @param array<string, mixed> $customFields
      */
     public function saveCustomFields(array $customFields): void
     {

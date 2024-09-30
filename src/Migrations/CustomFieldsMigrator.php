@@ -2,7 +2,6 @@
 
 namespace Relaticle\CustomFields\Migrations;
 
-use Filament\Facades\Filament;
 use Illuminate\Support\Facades\DB;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
 use Relaticle\CustomFields\Data\CustomFieldData;
@@ -208,6 +207,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
         return CustomField::query()
             ->forMorphEntity($model)
             ->where('code', $code)
+            ->when(Utils::isTenantEnabled() && $tenantId, fn($query) => $query->where(config('custom-fields.column_names.tenant_foreign_key'), $tenantId))
             ->exists();
     }
 

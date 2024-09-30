@@ -20,10 +20,7 @@ final class CustomFieldOption extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'sort_order'
-    ];
+    protected $guarded = [];
 
     public function __construct(array $attributes = [])
     {
