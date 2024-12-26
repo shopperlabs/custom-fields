@@ -178,7 +178,7 @@ trait InteractsWithCustomFields
      */
     private function getLookupAttributes(string $lookupType): array
     {
-        $lookupModelPath = Relation::getMorphedModel($lookupType);
+        $lookupModelPath = Relation::getMorphedModel($lookupType) ?: $lookupType;
         $lookupInstance = app($lookupModelPath);
 
         $resourcePath = Filament::getModelResource($lookupModelPath);
