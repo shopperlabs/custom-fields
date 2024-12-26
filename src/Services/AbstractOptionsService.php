@@ -26,7 +26,7 @@ abstract class AbstractOptionsService
 
     public static function getDefaultOption(): string
     {
-        return static::getOptions()->keys()->first();
+        return static::getOptions()->keys()->first() ?: '';
     }
 
     protected static function getFilteredResources(): Collection

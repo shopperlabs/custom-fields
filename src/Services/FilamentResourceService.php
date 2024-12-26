@@ -36,7 +36,7 @@ final class FilamentResourceService
      */
     public static function getModelInstance(string $model): Model
     {
-        $model = Relation::getMorphedModel($model);
+        $model = Relation::getMorphedModel($model) ?: $model;
 
         throw_if(! $model, new InvalidArgumentException("Model class not found: {$model}"));
 
