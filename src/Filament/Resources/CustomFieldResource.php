@@ -145,7 +145,12 @@ final class CustomFieldResource extends Resource
                                             ->addActionLabel('Add Option')
                                             ->reorderable()
                                             ->orderColumn('sort_order')
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                                                $data['tenant_id'] = Filament::getTenant()?->id;
+
+                                                return $data;
+                                            })
                                     ])
                             ]),
                         Forms\Components\Tabs\Tab::make('Validation')
