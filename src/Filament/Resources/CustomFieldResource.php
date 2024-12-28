@@ -139,7 +139,7 @@ final class CustomFieldResource extends Resource
                                                     ->required(),
                                             )
                                             ->columns(2)
-                                            ->required()
+                                            ->requiredUnless('type', CustomFieldType::TAGS_INPUT->value)
                                             ->hiddenLabel()
                                             ->defaultItems(1)
                                             ->addActionLabel('Add Option')
