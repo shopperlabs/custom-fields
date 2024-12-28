@@ -51,8 +51,15 @@ abstract class AbstractOptionsService
     protected static function mapResourceToOption(string $resource): array
     {
         $resourceInstance = app($resource);
-        $model = app($resourceInstance->getModel());
+        $model = $resourceInstance->getModel();
+        $modelInstance = app($model);
 
-        return [$model->getMorphClass() => $resourceInstance::getBreadcrumb()];
+        try {
+            $alias = $modelInstance->getMorphClass();
+        }catch (\Exception $e){
+            $alias = $model;
+        }
+
+        return [$alias => $resourceInstance::getBreadcrumb()];
     }
 }
