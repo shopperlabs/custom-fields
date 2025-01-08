@@ -17,6 +17,7 @@ use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Concerns\Activable;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
+use Relaticle\CustomFields\Services\EntityTypeService;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -84,9 +85,12 @@ final class CustomField extends Model
      *
      * @noinspection PhpUnused
      */
-    public function scopeForEntity(Builder $builder, string $entity): Builder
+    public function scopeForEntity(Builder $builder, string $model): Builder
     {
-        return $builder->where('entity_type', app($entity)->getMorphClass());
+        return $builder->where(
+            'entity_type',
+            EntityTypeService::getEntityFromModel($model)
+        );
     }
 
     /**

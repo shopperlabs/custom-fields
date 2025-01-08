@@ -9,7 +9,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 use Relaticle\CustomFields\Filament\Resources\CustomFieldResource;
-use Relaticle\CustomFields\Services\EntityTypeOptionsService;
+use Relaticle\CustomFields\Services\EntityTypeService;
 
 class ManageCustomFields extends ManageRecords
 {
@@ -33,13 +33,13 @@ class ManageCustomFields extends ManageRecords
             CreateAction::make()
                 ->slideOver()
                 ->fillForm([
-                    'entity_type' => $this->entityType ?? EntityTypeOptionsService::getDefaultOption(),
+                    'entity_type' => $this->entityType ?? EntityTypeService::getDefaultOption(),
                 ])
                 ->url(function (array $data): string {
                     return CustomFieldResource::getUrl(parameters: [
                         ...$data,
                         'action' => CreateAction::getDefaultName(),
-                        'entityType' => $this->entityType ?? EntityTypeOptionsService::getDefaultOption()
+                        'entityType' => $this->entityType ?? EntityTypeService::getDefaultOption()
                     ]);
                 }),
         ];
@@ -47,10 +47,10 @@ class ManageCustomFields extends ManageRecords
 
     public function getSubNavigation(): array
     {
-        return EntityTypeOptionsService::getOptions()
+        return EntityTypeService::getOptions()
             ->map(fn ($label, $value) => NavigationItem::make($label)
                 ->url(CustomFieldResource::getUrl('index', ['entityType' => $value]))
-                ->isActiveWhen(fn () => ($this->entityType ?? EntityTypeOptionsService::getDefaultOption()) === $value)
+                ->isActiveWhen(fn () => ($this->entityType ?? EntityTypeService::getDefaultOption()) === $value)
             )
             ->values()
             ->toArray();
@@ -58,6 +58,6 @@ class ManageCustomFields extends ManageRecords
 
     public function table(Table $table): Table
     {
-        return parent::table($table)->modifyQueryUsing(fn (Builder $query): Builder => $query->forMorphEntity($this->entityType ?? EntityTypeOptionsService::getDefaultOption()));
+        return parent::table($table)->modifyQueryUsing(fn (Builder $query): Builder => $query->forMorphEntity($this->entityType ?? EntityTypeService::getDefaultOption()));
     }
 }

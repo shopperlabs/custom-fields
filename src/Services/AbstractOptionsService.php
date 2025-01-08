@@ -52,14 +52,22 @@ abstract class AbstractOptionsService
     {
         $resourceInstance = app($resource);
         $model = $resourceInstance->getModel();
-        $modelInstance = app($model);
-
-        try {
-            $alias = $modelInstance->getMorphClass();
-        }catch (\Exception $e){
-            $alias = $model;
-        }
+        $alias = self::getEntityFromModel($model);
 
         return [$alias => $resourceInstance::getBreadcrumb()];
+    }
+
+    /**
+     * @param string $model
+     * @return string
+     */
+    public static function getEntityFromModel(string $model): string
+    {
+        try {
+            $modelInstance = app($model);
+            return $modelInstance->getMorphClass();
+        }catch (\Exception $e){
+            return $model;
+        }
     }
 }

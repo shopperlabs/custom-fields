@@ -21,8 +21,8 @@ use Relaticle\CustomFields\Filament\Resources\CustomFieldResource\Pages;
 use Relaticle\CustomFields\Filament\Tables\Columns\TypeColumn;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\Scopes\ActivableScope;
-use Relaticle\CustomFields\Services\EntityTypeOptionsService;
-use Relaticle\CustomFields\Services\LookupTypeOptionsService;
+use Relaticle\CustomFields\Services\EntityTypeService;
+use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
 
 final class CustomFieldResource extends Resource
@@ -43,9 +43,9 @@ final class CustomFieldResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('entity_type')
                                     ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
-                                    ->options(EntityTypeOptionsService::getOptions())
+                                    ->options(EntityTypeService::getOptions())
                                     ->searchable()
-                                    ->default(fn() => request('entityType', EntityTypeOptionsService::getDefaultOption()))
+                                    ->default(fn() => request('entityType', EntityTypeService::getDefaultOption()))
                                     ->required(),
                                 TypeField::make('type')
                                     ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
@@ -125,8 +125,8 @@ final class CustomFieldResource extends Resource
                                 Forms\Components\Select::make('lookup_type')
                                     ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'lookup')
                                     ->reactive()
-                                    ->options(LookupTypeOptionsService::getOptions())
-                                    ->default(LookupTypeOptionsService::getDefaultOption())
+                                    ->options(LookupTypeService::getOptions())
+                                    ->default(LookupTypeService::getDefaultOption())
                                     ->required(),
                                 Forms\Components\Fieldset::make('Options')
                                     ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
