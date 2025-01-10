@@ -48,6 +48,6 @@ class Utils
 
     public static function isTenantEnabled(): bool
     {
-        return config('custom-fields.tenant_aware', false) && Filament::hasTenancy();
+        return config('custom-fields.tenant_aware', false);
     }
 }
