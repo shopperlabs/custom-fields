@@ -9,7 +9,7 @@ use Relaticle\CustomFields\Models\Scopes\ActivableScope;
 
 trait Activable
 {
-    const string ACTIVE_COLUMN = 'active';
+    const ACTIVE_COLUMN = 'active';
 
     /**
      * Boot the soft deleting trait for a model.
