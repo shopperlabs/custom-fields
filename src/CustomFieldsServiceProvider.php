@@ -33,16 +33,20 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
 
-        if (Utils::isTenantEnabled() && $tenantModel = Filament::getTenantModel()) {
-            $tenantModelInstance = app($tenantModel);
+        if(Utils::isTenantEnabled()) {
+            foreach (Filament::getPanels() as $panel) {
+                if ($tenantModel = $panel->getTenantModel()) {
+                    $tenantModelInstance = app($tenantModel);
 
-            CustomField::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
-                return $customField->belongsTo($tenantModel, config('custom-fields.column_names.tenant_foreign_key'));
-            });
+                    CustomField::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
+                        return $customField->belongsTo($tenantModel, config('custom-fields.column_names.tenant_foreign_key'));
+                    });
 
-            $tenantModelInstance->resolveRelationUsing('customFields', function (Model $tenantModel) {
-                return $tenantModel->hasMany(CustomField::class, config('custom-fields.column_names.tenant_foreign_key'));
-            });
+                    $tenantModelInstance->resolveRelationUsing('customFields', function (Model $tenantModel) {
+                        return $tenantModel->hasMany(CustomField::class, config('custom-fields.column_names.tenant_foreign_key'));
+                    });
+                }
+            }
         }
     }
 
