@@ -33,8 +33,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
 
-        if (Utils::isTenantEnabled()) {
-            $tenantModel = Filament::getTenantModel();
+        if (Utils::isTenantEnabled() && $tenantModel = Filament::getTenantModel()) {
             $tenantModelInstance = app($tenantModel);
 
             CustomField::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
