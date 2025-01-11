@@ -8,7 +8,7 @@ class Utils
 {
     public static function getResourceCluster(): ?string
     {
-        return config('filament-shield.shield_resource.cluster', null);
+        return config('custom-fields.custom_fields_resource.cluster', null);
     }
 
     public static function getResourceSlug(): string
