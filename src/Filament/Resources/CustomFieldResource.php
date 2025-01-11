@@ -147,7 +147,7 @@ final class CustomFieldResource extends Resource
                                             ->orderColumn('sort_order')
                                             ->columnSpanFull()
                                             ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
-                                                $data['tenant_id'] = Filament::getTenant()?->id;
+                                                $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
 
                                                 return $data;
                                             })
