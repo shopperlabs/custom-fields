@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Models;
 
+use App\Models\CustomFieldSection;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Relaticle\CustomFields\Data\ValidationRuleData;
@@ -104,6 +106,11 @@ final class CustomField extends Model
         return $builder->where('entity_type', $entity);
     }
 
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(CustomFieldSection::class);
+    }
+
     /**
      * @return HasMany<CustomFieldValue>
      */
@@ -126,5 +133,19 @@ final class CustomField extends Model
     public function isSystemDefined(): bool
     {
         return $this->system_defined === true;
+    }
+
+    protected $appends = ['col_span_class'];
+
+    public function getColSpanClassAttribute()
+    {
+        return match ((int) $this->width) {
+            25 => 'col-span-3',
+            33 => 'col-span-4',
+            50 => 'col-span-6',
+            66 => 'col-span-8',
+            75 => 'col-span-9',
+            default => 'col-span-12',
+        };
     }
 }

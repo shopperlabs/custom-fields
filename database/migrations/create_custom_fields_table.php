@@ -13,6 +13,33 @@ return new class extends Migration
     public function up(): void
     {
         /**
+         * Custom Field Sections
+         */
+        Schema::create(config('custom-fields.table_names.custom_field_sections'), function (Blueprint $table): void {
+            $uniqueColumns = ['entity_type', 'code'];
+
+            $table->id();
+
+            if (Utils::isTenantEnabled()) {
+                $table->foreignId(config('custom-fields.column_names.tenant_foreign_key'))->nullable()->index();
+                $uniqueColumns[] = config('custom-fields.column_names.tenant_foreign_key');
+            }
+
+            $table->string('code');
+            $table->string('name');
+            $table->string('entity_type');
+            $table->unsignedBigInteger('sort_order')->nullable();
+
+            $table->boolean('active')->default(true);
+            $table->boolean('system_defined')->default(false);
+
+            $table->unique($uniqueColumns);
+
+            $table->softDeletes();
+            $table->timestamps();
+        });
+
+        /**
          * Custom Fields
          */
         Schema::create(config('custom-fields.table_names.custom_fields'), function (Blueprint $table): void {
@@ -104,6 +131,7 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::dropIfExists(config('custom-fields.table_names.custom_field_sections'));
         Schema::dropIfExists(config('custom-fields.table_names.custom_fields'));
         Schema::dropIfExists(config('custom-fields.table_names.custom_field_options'));
         Schema::dropIfExists(config('custom-fields.table_names.custom_field_values'));
