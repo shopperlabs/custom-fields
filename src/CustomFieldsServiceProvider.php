@@ -15,6 +15,8 @@ use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
+use Relaticle\CustomFields\Livewire\ManageCustomField;
+use Relaticle\CustomFields\Livewire\ManageCustomFieldSection;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Support\Utils;
@@ -48,6 +50,9 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
                 }
             }
         }
+
+        Livewire::component('manage-custom-field-section', ManageCustomFieldSection::class);
+        Livewire::component('manage-custom-field', ManageCustomField::class);
     }
 
     public function configurePackage(Package $package): void

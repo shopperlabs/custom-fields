@@ -1,0 +1,44 @@
+<x-filament::section
+    compact
+    x-sortable-item="{{ $field['id'] }}"
+    class="{{ $field['col_span_class'] }} }}">
+    <div class="flex justify-between">
+        <div class="flex items-center gap-x-2">
+            <div class="border-r py-0.5">
+                <x-filament::icon-button
+                    icon="heroicon-m-bars-4"
+                    color="gray"
+                    x-sortable-handle
+                />
+            </div>
+
+
+            <x-filament::icon
+                :icon="$field['type']->getIcon()"
+                class="h-5 w-5 text-gray-500 dark:text-gray-400"
+                :aria-label="$field['name']"
+            />
+
+            <x-filament::link :href="'#'">
+                {{ $field['name'] }}
+            </x-filament::link>
+        </div>
+
+        <div class="flex items-center gap-x-1 px-2 py-0.5">
+
+            <livewire:width-selector
+                :selected-width="$field['width']"
+                :field-id="$field['id']"
+                wire:key="width-selector-{{ $field['id'] }}"
+            />
+
+            <x-filament::icon-button
+                color="gray"
+                size="xs"
+                icon="heroicon-m-trash"
+                wire:click="openNewUserModal"
+                label="New label"
+            />
+        </div>
+    </div>
+</x-filament::section>
