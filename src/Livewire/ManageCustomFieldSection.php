@@ -11,6 +11,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\ActionSize;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldResource\CustomFieldValidationComponent;
@@ -30,16 +31,24 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
     public string $entityType;
     public CustomFieldSection $section;
 
+    #[Computed]
+    public function fields()
+    {
+        return $this->section->fields()->orderBy('sort_order')->get();
+    }
+
     public function updateFieldsOrder($sectionId, $fields): void
     {
         foreach ($fields as $index => $field) {
             CustomField::query()
                 ->where('id', $field)
                 ->update([
-                    'custom_field_section_id' => $sectionId != 0 ? $sectionId : null,
+                    'custom_field_section_id' => $sectionId,
                     'sort_order' => $index,
                 ]);
         }
+
+        $this->fields = $this->fields();
     }
 
     public function createFieldAction(): Action

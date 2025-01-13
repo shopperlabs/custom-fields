@@ -1,0 +1,36 @@
+<div
+    x-data="{
+        selectedWidth: @entangle('selectedWidth'),
+        widths: @js($widthOptions),
+        isSelected(width) {
+            return width <= this.selectedWidth;
+        }
+    }"
+    class="relative"
+>
+    <div class="w-20 flex relative h-6">
+        <div class="absolute w-20 flex z-10 opacity-70">
+            <template x-for="(width, index) in widths" :key="index">
+                <div
+                    @click="$wire.setWidth(width)"
+                    class="h-6 flex-1 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-colors"
+                    :class="{
+                    'rounded-l-md': index === 0,
+                    'rounded-r-md': index === widths.length - 1
+                }"
+                >
+                    <div
+                        class="h-full w-full border-gray-300 transition-colors duration-200"
+                        :class="{
+                        'bg-blue-500': isSelected(width),
+                        'rounded-l-md': index === 0 && isSelected(width),
+                        'rounded-r-md': index === widths.length - 1 && isSelected(width),
+                        'border-r': index !== widths.length - 1
+                    }"
+                    ></div>
+                </div>
+            </template>
+        </div>
+        <div class="absolute w-full h-full font-semibold text-sm flex items-center justify-center">{{ $selectedWidth }}%</div>
+    </div>
+</div>

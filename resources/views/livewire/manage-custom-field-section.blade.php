@@ -28,13 +28,14 @@
         x-sortable
         x-sortable-group="fields"
         data-section-id="{{ $section['id'] }}"
-        x-on:end.stop="$wire.updateFieldsOrder($event.to.getAttribute('data-section-id'), $event.to.sortable.toArray())"
+        x-on:end.stop="$wire.updateFieldsOrder($event.to.getAttribute('data-section-id'), $event.to.sortable.toArray()) && $wire.$refresh()"
         class="gap-3 grid grid-cols-12"
     >
-        @foreach ($section['fields'] as $field)
+        @foreach ($this->fields as $field)
             @livewire('manage-custom-field', ['field' => $field], key($field['id']))
         @endforeach
-        @if(!count($section['fields']))
+
+        @if(!count($this->fields))
             <div class="col-span-12">
                 <div
                     class="flex justify-center items-center py-3 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
