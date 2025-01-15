@@ -12,7 +12,7 @@
         <div class="absolute w-20 flex z-10 opacity-70">
             <template x-for="(width, index) in widths" :key="index">
                 <div
-                    @click="$wire.setWidth(width)"
+                    @click="$parent.setWidth(width)"
                     class="h-6 flex-1 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-colors"
                     :class="{
                     'rounded-l-md': index === 0,
