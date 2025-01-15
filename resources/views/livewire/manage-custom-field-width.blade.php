@@ -1,5 +1,6 @@
 <div
     x-data="{
+        fieldId: @entangle('fieldId'),
         selectedWidth: @entangle('selectedWidth'),
         widths: @js($widthOptions),
         isSelected(width) {
@@ -12,7 +13,7 @@
         <div class="absolute w-20 flex z-10 opacity-70">
             <template x-for="(width, index) in widths" :key="index">
                 <div
-                    @click="$parent.setWidth(width)"
+                    wire:click="$parent.setWidth(fieldId, width)"
                     class="h-6 flex-1 cursor-pointer bg-gray-200 hover:bg-gray-300 transition-colors"
                     :class="{
                     'rounded-l-md': index === 0,

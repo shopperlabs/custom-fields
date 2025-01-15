@@ -12,6 +12,7 @@ use Filament\Support\Enums\ActionSize;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldResource\CustomFieldValidationComponent;
@@ -37,6 +38,16 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
         return $this->section->fields()->orderBy('sort_order')->get();
     }
 
+    #[On('field-width-updated')]
+    public function fieldWidthUpdated(int $fieldId, int $width): void
+    {
+        // Update the width
+        CustomField::where('id', $fieldId)->update(['width' => $width]);
+
+        // Re-fetch the fields
+        $this->section->refresh();
+    }
+
     public function updateFieldsOrder($sectionId, $fields): void
     {
         foreach ($fields as $index => $field) {
@@ -56,6 +67,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
         return Action::make('createField')
             ->size(ActionSize::ExtraSmall)
             ->label('Create Field')
+            ->model(CustomField::class)
             ->form(function(){
                 return [
                     Forms\Components\Tabs::make()
@@ -153,7 +165,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
                                         ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                         ->schema([
                                             Forms\Components\Repeater::make('options')
-//                                            ->relationship()
+                                            ->relationship()
                                                 ->simple(
                                                     Forms\Components\TextInput::make('name')
                                                         ->columnSpanFull()

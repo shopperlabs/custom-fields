@@ -1,19 +1,15 @@
-<x-filament::section x-sortable-item="{{ $section['id'] }}" compact>
+<x-filament::section x-sortable-item="{{ $section->id }}" compact>
     <x-slot name="heading">
         <div class="flex justify-between">
 
             <div class="flex items-center gap-x-1">
+                <x-filament::icon-button
+                    icon="heroicon-m-bars-4"
+                    color="gray"
+                    x-sortable-handle
+                />
 
-                <div class="border-r">
-                    <x-filament::icon-button
-                        icon="heroicon-m-bars-4"
-                        color="gray"
-                        x-sortable-handle
-                    />
-                </div>
-
-
-                {{$section['name']}}
+                {{$section->name }}
             </div>
 
             <div class="flex items-center gap-x-1">
@@ -27,12 +23,12 @@
     <div
         x-sortable
         x-sortable-group="fields"
-        data-section-id="{{ $section['id'] }}"
+        data-section-id="{{ $section->id }}"
         x-on:end.stop="$wire.updateFieldsOrder($event.to.getAttribute('data-section-id'), $event.to.sortable.toArray()) && $wire.$refresh()"
         class="gap-3 grid grid-cols-12"
     >
         @foreach ($this->fields as $field)
-            @livewire('manage-custom-field', ['field' => $field], key($field['id']))
+            @livewire('manage-custom-field', ['field' => $field], key($field->id . $field->width))
         @endforeach
 
         @if(!count($this->fields))
@@ -46,7 +42,7 @@
     </div>
 
     <x-slot name="footerActions">
-        <x-filament::button size="sm" wire:click="mountAction('createFieldAction', { sectionId: 12345 })">
+        <x-filament::button size="sm" wire:click="mountAction('createFieldAction')">
             Create field
         </x-filament::button>
     </x-slot>

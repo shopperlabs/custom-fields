@@ -4,7 +4,7 @@ namespace Relaticle\CustomFields\Livewire;
 
 use Livewire\Component;
 
-class CustomFieldWidthSelector extends Component
+class ManageCustomFieldWidth extends Component
 {
     public $selectedWidth = 100;
 
@@ -29,14 +29,8 @@ class CustomFieldWidthSelector extends Component
         $this->fieldId = $fieldId;
     }
 
-    public function setWidth($width)
-    {
-        $this->selectedWidth = $width;
-        $this->dispatch('field-width-updated', $this->fieldId, $width);
-    }
-
     public function render()
     {
-        return view('custom-fields::livewire.width-selector');
+        return view('custom-fields::livewire.manage-custom-field-width');
     }
 }

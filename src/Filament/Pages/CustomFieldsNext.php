@@ -58,18 +58,8 @@ class CustomFieldsNext extends Page
             });
     }
 
-    #[On('field-width-updated')]
-    public function fieldWidthUpdated($fieldId, $width): void
-    {
-        CustomField::query()
-            ->where('id', $fieldId)
-            ->update([
-                'width' => $width,
-            ]);
-    }
-
     #[Computed]
-    public function entityTypes()
+    public function entityTypes(): Collection
     {
         return EntityTypeService::getOptions();
     }
