@@ -25,7 +25,7 @@ use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
 
-final class CustomFieldResource extends Resource
+class CustomFieldResource extends Resource
 {
     protected static ?string $model = CustomField::class;
 
