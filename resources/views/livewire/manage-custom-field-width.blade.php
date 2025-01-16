@@ -23,7 +23,7 @@
                     <div
                         class="h-full w-full border-gray-300 transition-colors duration-200"
                         :class="{
-                        'bg-blue-500': isSelected(width),
+                        'bg-blue-600': isSelected(width),
                         'rounded-l-md': index === 0 && isSelected(width),
                         'rounded-r-md': index === widths.length - 1 && isSelected(width),
                         'border-r': index !== widths.length - 1

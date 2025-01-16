@@ -20,15 +20,16 @@
     </x-slot>
 
 
-    <div
+    <x-filament::grid
         x-sortable
         x-sortable-group="fields"
         data-section-id="{{ $section->id }}"
+        default="12"
+        class="gap-4"
         x-on:end.stop="$wire.updateFieldsOrder($event.to.getAttribute('data-section-id'), $event.to.sortable.toArray()) && $wire.$refresh()"
-        class="gap-3 grid grid-cols-12"
     >
         @foreach ($this->fields as $field)
-            @livewire('manage-custom-field', ['field' => $field], key($field->id . $field->width))
+                @livewire('manage-custom-field', ['field' => $field], key($field->id . $field->width->value))
         @endforeach
 
         @if(!count($this->fields))
@@ -39,7 +40,7 @@
                 </div>
             </div>
         @endempty
-    </div>
+    </x-filament::grid>
 
     <x-slot name="footerActions">
         <x-filament::button size="sm" wire:click="mountAction('createFieldAction')">

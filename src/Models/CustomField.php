@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Models;
 
 use App\Models\CustomFieldSection;
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldWidth;
 use Relaticle\CustomFields\Models\Concerns\Activable;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
@@ -46,6 +46,10 @@ final class CustomField extends Model
      */
     protected $guarded = [];
 
+    protected $attributes = [
+        'width' => CustomFieldWidth::_100
+    ];
+
     public function __construct(array $attributes = [])
     {
         if (!isset($this->table)) {
@@ -64,6 +68,7 @@ final class CustomField extends Model
     {
         return [
             'type' => CustomFieldType::class,
+            'width' => CustomFieldWidth::class,
             'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
             'active' => 'boolean',
             'system_defined' => 'boolean',
@@ -133,19 +138,5 @@ final class CustomField extends Model
     public function isSystemDefined(): bool
     {
         return $this->system_defined === true;
-    }
-
-    protected $appends = ['col_span_class'];
-
-    public function getColSpanClassAttribute()
-    {
-        return match ((int) $this->width) {
-            25 => 'col-span-3',
-            33 => 'col-span-4',
-            50 => 'col-span-6',
-            66 => 'col-span-8',
-            75 => 'col-span-9',
-            default => 'col-span-12',
-        };
     }
 }

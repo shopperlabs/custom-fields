@@ -36,7 +36,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
 
-        if(Utils::isTenantEnabled()) {
+        if (Utils::isTenantEnabled()) {
             foreach (Filament::getPanels() as $panel) {
                 if ($tenantModel = $panel->getTenantModel()) {
                     $tenantModelInstance = app($tenantModel);
@@ -127,7 +127,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
 
     protected function getAssetPackageName(): ?string
     {
-        return 'manukminasyan/filament-custom-field';
+        return 'relaticle/custom-fields';
     }
 
     /**
@@ -137,8 +137,8 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('custom-fields', __DIR__ . '/../resources/dist/components/custom-fields.js'),
-            //            Css::make('custom-fields-styles', __DIR__ . '/../resources/dist/custom-fields.css'),
-            //            Js::make('custom-fields-scripts', __DIR__ . '/../resources/dist/custom-fields.js'),
+            // Css::make('custom-fields-styles', __DIR__ . '/../resources/dist/custom-fields.css'),
+            // Js::make('custom-fields-scripts', __DIR__ . '/../resources/dist/custom-fields.js'),
         ];
     }
 

@@ -31,11 +31,6 @@ class ManageCustomField extends Component implements HasForms, HasActions
 
     public CustomField $field;
 
-    public function mount(int | string $record): void
-    {
-        $this->record = $this->resolveRecord($record);
-    }
-
     public function editAction(): Action
     {
         return Action::make('edit')
@@ -44,6 +39,7 @@ class ManageCustomField extends Component implements HasForms, HasActions
             ->icon('heroicon-o-pencil')
             ->color('gray')
             ->model(CustomField::class)
+            ->record($this->field)
             ->form(function(){
                 return [
                     Forms\Components\Tabs::make()
@@ -182,7 +178,7 @@ class ManageCustomField extends Component implements HasForms, HasActions
 
                 return $data;
             })
-            ->action(fn(array $data) => dd($data) && $this->field->update($data))
+            ->action(fn(array $data) => $this->field->update($data))
             ->slideOver();
     }
 
