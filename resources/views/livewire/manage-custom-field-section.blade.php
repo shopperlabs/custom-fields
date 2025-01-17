@@ -1,7 +1,6 @@
 <x-filament::section x-sortable-item="{{ $section->id }}" compact>
     <x-slot name="heading">
         <div class="flex justify-between">
-
             <div class="flex items-center gap-x-1">
                 <x-filament::icon-button
                     icon="heroicon-m-bars-4"
@@ -26,10 +25,10 @@
         data-section-id="{{ $section->id }}"
         default="12"
         class="gap-4"
-        x-on:end.stop="$wire.updateFieldsOrder($event.to.getAttribute('data-section-id'), $event.to.sortable.toArray()) && $wire.$refresh()"
+        @end.stop="$wire.updateFieldsOrder($event.to.getAttribute('data-section-id'), $event.to.sortable.toArray())"
     >
         @foreach ($this->fields as $field)
-                @livewire('manage-custom-field', ['field' => $field], key($field->id . $field->width->value))
+                @livewire('manage-custom-field', ['field' => $field], key($field->id . $field->width->value . str()->random(16)))
         @endforeach
 
         @if(!count($this->fields))

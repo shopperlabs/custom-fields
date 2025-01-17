@@ -58,8 +58,6 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
                     'sort_order' => $index,
                 ]);
         }
-
-        $this->fields = $this->fields();
     }
 
     public function createFieldAction(): Action
@@ -68,7 +66,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             ->size(ActionSize::ExtraSmall)
             ->label('Create Field')
             ->model(CustomField::class)
-            ->form(function(){
+            ->form(function () {
                 return [
                     Forms\Components\Tabs::make()
                         ->tabs([
@@ -83,6 +81,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
                                     TypeField::make('type')
                                         ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
                                         ->reactive()
+                                        ->default(fn() => CustomFieldType::TEXT->value)
                                         ->required(),
                                     Forms\Components\TextInput::make('name')
                                         ->helperText("The field's label shown in the table's and form's.")
@@ -165,7 +164,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
                                         ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                         ->schema([
                                             Forms\Components\Repeater::make('options')
-                                            ->relationship()
+                                                ->relationship()
                                                 ->simple(
                                                     Forms\Components\TextInput::make('name')
                                                         ->columnSpanFull()

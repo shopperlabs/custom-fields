@@ -3,15 +3,11 @@
         compact
     >
         <div class="flex justify-between">
-            <div class="flex items-center gap-x-2">
-                <div class="border-r py-0.5">
-                    <x-filament::icon-button
-                        icon="heroicon-m-bars-4"
-                        color="gray"
-                        x-sortable-handle
-                    />
-                </div>
-
+            <div class="flex items-center gap-x-2 w-full" x-sortable-handle>
+                <x-filament::icon-button
+                    icon="heroicon-m-bars-4"
+                    color="gray"
+                />
 
                 <x-filament::icon
                     :icon="$field->type->getIcon()"
@@ -19,9 +15,7 @@
                     :aria-label="$field->name"
                 />
 
-                <x-filament::link :href="'#'">
-                    {{ $field->name }}
-                </x-filament::link>
+                <span>{{ $field->name }}</span>
             </div>
 
             <div class="flex items-center gap-x-1 px-2 py-0.5">
@@ -37,7 +31,8 @@
             </div>
         </div>
 
-        <x-filament-actions::modals/>
-
     </x-filament::section>
+
+    <x-filament-actions::modals/>
+
 </x-filament::grid.column>
