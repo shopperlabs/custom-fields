@@ -47,6 +47,9 @@ return new class extends Migration
 
             $table->id();
 
+            $table->unsignedBigInteger('custom_field_section_id')->nullable();
+            $table->string('width')->nullable();
+
             if (Utils::isTenantEnabled()) {
                 $table->foreignId(config('custom-fields.column_names.tenant_foreign_key'))->nullable()->index();
                 $uniqueColumns[] = config('custom-fields.column_names.tenant_foreign_key');
