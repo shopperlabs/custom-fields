@@ -2,16 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields;
 
 use Filament\Forms\Components\Select;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\FieldComponentInterface;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\FieldConfigurator;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Services\FilamentResourceService;
 use Throwable;
 
-final readonly class SelectComponent implements AttributeComponentInterface
+final readonly class SelectComponent implements FieldComponentInterface
 {
-    public function __construct(private Configurator $configurator)
+    public function __construct(private FieldConfigurator $configurator)
     {
     }
 

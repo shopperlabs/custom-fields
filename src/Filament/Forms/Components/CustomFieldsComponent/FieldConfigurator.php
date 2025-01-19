@@ -12,7 +12,7 @@ use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
 use Relaticle\CustomFields\Models\CustomField;
 use Spatie\LaravelData\DataCollection;
 
-final readonly class Configurator
+final readonly class FieldConfigurator
 {
     /**
      * @template T of Field

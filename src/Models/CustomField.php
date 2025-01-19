@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Models;
 
-use App\Models\CustomFieldSection;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -113,7 +112,7 @@ final class CustomField extends Model
 
     public function section(): BelongsTo
     {
-        return $this->belongsTo(CustomFieldSection::class);
+        return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
     }
 
     /**

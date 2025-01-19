@@ -2,16 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
+namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields;
 
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Str;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\FieldComponentInterface;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\FieldConfigurator;
 use Relaticle\CustomFields\Models\CustomField;
 
-final readonly class CurrencyComponent implements AttributeComponentInterface
+final readonly class CurrencyComponent implements FieldComponentInterface
 {
-    public function __construct(private Configurator $configurator) {}
+    public function __construct(private FieldConfigurator $configurator) {}
 
     public function make(CustomField $customField): Field
     {

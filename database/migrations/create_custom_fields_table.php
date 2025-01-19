@@ -27,8 +27,11 @@ return new class extends Migration
 
             $table->string('code');
             $table->string('name');
+            $table->string('type');
             $table->string('entity_type');
             $table->unsignedBigInteger('sort_order')->nullable();
+
+            $table->string('description')->nullable();
 
             $table->boolean('active')->default(true);
             $table->boolean('system_defined')->default(false);

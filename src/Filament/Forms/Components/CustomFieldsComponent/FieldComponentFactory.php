@@ -8,13 +8,31 @@ use Filament\Forms\Components\Field;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\CheckboxComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\CheckboxListComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\ColorPickerComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\CurrencyComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\DateComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\DateTimeComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\LinkComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\MarkdownEditorComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\MultiSelectComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\NumberComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\RadioComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\RichEditorComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\SelectComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\TagsInputComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\TextareaFieldComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\TextInputComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\ToggleButtonsComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Fields\ToggleComponent;
 use Relaticle\CustomFields\Models\CustomField;
 use RuntimeException;
 
-final class CustomFieldComponentFactory
+final class FieldComponentFactory
 {
     /**
-     * @var array<string, class-string<AttributeComponentInterface>>
+     * @var array<string, class-string<FieldComponentInterface>>
      */
     private array $componentMap = [
         CustomFieldType::TEXT->value => TextInputComponent::class,
@@ -27,7 +45,7 @@ final class CustomFieldComponentFactory
         CustomFieldType::TAGS_INPUT->value => TagsInputComponent::class,
         CustomFieldType::LINK->value => LinkComponent::class,
         CustomFieldType::COLOR_PICKER->value => ColorPickerComponent::class,
-        CustomFieldType::TEXTAREA->value => TextareaAttributeComponent::class,
+        CustomFieldType::TEXTAREA->value => TextareaFieldComponent::class,
         CustomFieldType::CURRENCY->value => CurrencyComponent::class,
         CustomFieldType::DATE->value => DateComponent::class,
         CustomFieldType::DATE_TIME->value => DateTimeComponent::class,
@@ -38,7 +56,7 @@ final class CustomFieldComponentFactory
     ];
 
     /**
-     * @var array<class-string<AttributeComponentInterface>, AttributeComponentInterface>
+     * @var array<class-string<FieldComponentInterface>, FieldComponentInterface>
      */
     private array $instanceCache = [];
 
@@ -57,8 +75,8 @@ final class CustomFieldComponentFactory
         if (! isset($this->instanceCache[$componentClass])) {
             $component = $this->container->make($componentClass);
 
-            if (! $component instanceof AttributeComponentInterface) {
-                throw new RuntimeException("Component class {$componentClass} must implement AttributeComponentInterface");
+            if (! $component instanceof FieldComponentInterface) {
+                throw new RuntimeException("Component class {$componentClass} must implement FieldComponentInterface");
             }
 
             $this->instanceCache[$componentClass] = $component;
@@ -66,6 +84,8 @@ final class CustomFieldComponentFactory
             $component = $this->instanceCache[$componentClass];
         }
 
-        return $component->make($customField);
+        return $component->make($customField)
+            ->columnSpan($customField->width->getSpanValue())
+            ->inlineLabel(false);
     }
 }

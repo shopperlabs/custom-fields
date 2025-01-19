@@ -7,7 +7,7 @@ namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent
 use Filament\Forms\Components\Field;
 use Relaticle\CustomFields\Models\CustomField;
 
-interface AttributeComponentInterface
+interface FieldComponentInterface
 {
     public function make(CustomField $customField): Field;
 }

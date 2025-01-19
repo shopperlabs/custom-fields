@@ -134,6 +134,9 @@ class CustomFieldsNext extends Page
                     ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
                         $set('code', Str::of($state)->slug('_')->toString());
                     }),
+                Forms\Components\Textarea::make('description')
+                    ->maxLength(255)
+                    ->nullable()
             ])
             ->mutateFormDataUsing(function (array $data): array {
                 $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
