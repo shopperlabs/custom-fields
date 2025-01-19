@@ -12,7 +12,6 @@ use Filament\Support\Enums\ActionSize;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Support\Utils;
@@ -162,6 +161,10 @@ class CustomFieldsNext extends Page
             ->modalWidth('max-w-2xl');
     }
 
+    /**
+     * @param $sections
+     * @return void
+     */
     public function updateSectionsOrder($sections): void
     {
         foreach ($sections as $index => $section) {
@@ -173,7 +176,10 @@ class CustomFieldsNext extends Page
         }
     }
 
-    public function storeDefaultSection(): void
+    /**
+     * @return void
+     */
+    private function storeDefaultSection(): void
     {
         if ($this->sections->isEmpty()) {
             $newSection = $this->storeSection([
@@ -194,8 +200,13 @@ class CustomFieldsNext extends Page
         }
     }
 
-    public function storeSection(array $data): CustomFieldSection
+    /**
+     * @param array $data
+     * @return CustomFieldSection
+     */
+    private function storeSection(array $data): CustomFieldSection
     {
+        $data['type'] ??= CustomFieldSectionType::SECTION->value;
         return CustomFieldSection::create($data);
     }
 }
