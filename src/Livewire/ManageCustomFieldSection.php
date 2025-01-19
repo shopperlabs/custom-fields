@@ -219,6 +219,8 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             ->iconButton()
             ->icon('heroicon-m-pencil')
             ->color('gray')
+            ->model(CustomFieldSection::class)
+            ->record($this->section)
             ->form([
                 Forms\Components\TextInput::make('name')
                     ->required()
