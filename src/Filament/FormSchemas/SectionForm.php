@@ -17,6 +17,7 @@ class SectionForm implements FormInterface
         return [
             Forms\Components\Grid::make(12)->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('custom-fields::custom-fields.section.form.name'))
                     ->required()
                     ->live(onBlur: true)
                     ->maxLength(50)
@@ -47,6 +48,7 @@ class SectionForm implements FormInterface
                     })
                     ->columnSpan(6),
                 Forms\Components\TextInput::make('code')
+                    ->label(__('custom-fields::custom-fields.section.form.code'))
                     ->required()
                     ->alphaDash()
                     ->maxLength(50)
@@ -70,12 +72,14 @@ class SectionForm implements FormInterface
                     })
                     ->columnSpan(6),
                 Forms\Components\Select::make('type')
+                    ->label(__('custom-fields::custom-fields.section.form.type'))
                     ->reactive()
                     ->default(CustomFieldSectionType::SECTION->value)
                     ->options(CustomFieldSectionType::class)
                     ->required()
                     ->columnSpan(12),
                 Forms\Components\Textarea::make('description')
+                    ->label(__('custom-fields::custom-fields.section.form.description'))
                     ->visible(fn(Forms\Get $get): bool => $get('type') === CustomFieldSectionType::SECTION->value)
                     ->maxLength(255)
                     ->nullable()

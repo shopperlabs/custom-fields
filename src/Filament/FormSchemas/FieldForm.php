@@ -21,20 +21,23 @@ class FieldForm implements FormInterface
         return [
             Forms\Components\Tabs::make()
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('General')
+                    Forms\Components\Tabs\Tab::make(__('custom-fields::custom-fields.field.form.general'))
                         ->schema([
                             Forms\Components\Select::make('entity_type')
+                                ->label(__('custom-fields::custom-fields.field.form.entity_type'))
                                 ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
                                 ->options(EntityTypeService::getOptions())
                                 ->searchable()
                                 ->default(fn() => request('entityType', EntityTypeService::getDefaultOption()))
                                 ->required(),
                             TypeField::make('type')
+                                ->label(__('custom-fields::custom-fields.field.form.type'))
                                 ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
                                 ->reactive()
                                 ->required(),
                             Forms\Components\TextInput::make('name')
-                                ->helperText("The field's label shown in the table's and form's.")
+                                ->label(__('custom-fields::custom-fields.field.form.name'))
+                                ->helperText(__('custom-fields::custom-fields.field.form.name_helper_text'))
                                 ->live(onBlur: true)
                                 ->required()
                                 ->maxLength(50)
@@ -65,7 +68,8 @@ class FieldForm implements FormInterface
                                     $set('code', Str::of($state)->slug('_')->toString());
                                 }),
                             Forms\Components\TextInput::make('code')
-                                ->helperText('Unique code to identify this field throughout the resource.')
+                                ->label(__('custom-fields::custom-fields.field.form.code'))
+                                ->helperText(__('custom-fields::custom-fields.field.form.code_helper_text'))
                                 ->live(onBlur: true)
                                 ->required()
                                 ->alphaDash()
@@ -90,11 +94,12 @@ class FieldForm implements FormInterface
                                     $set('code', Str::of($state)->slug('_')->toString());
                                 }),
                             Forms\Components\Select::make('options_lookup_type')
+                                ->label(__('custom-fields::custom-fields.field.form.options_lookup_type.label'))
                                 ->visible(fn(Forms\Get $get): bool => in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                 ->reactive()
                                 ->options([
-                                    'options' => 'Options',
-                                    'lookup' => 'Lookup',
+                                    'options' => __('custom-fields::custom-fields.field.form.options_lookup_type.options'),
+                                    'lookup' => __('custom-fields::custom-fields.field.form.options_lookup_type.lookup'),
                                 ])
                                 ->afterStateHydrated(function (Forms\Components\Select $component, $state, $record): void {
                                     if (blank($state)) {
@@ -105,12 +110,14 @@ class FieldForm implements FormInterface
                                 ->dehydrated(false)
                                 ->required(),
                             Forms\Components\Select::make('lookup_type')
+                                ->label(__('custom-fields::custom-fields.field.form.lookup_type.label'))
                                 ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'lookup')
                                 ->reactive()
                                 ->options(LookupTypeService::getOptions())
                                 ->default(LookupTypeService::getDefaultOption())
                                 ->required(),
-                            Forms\Components\Fieldset::make('Options')
+                            Forms\Components\Fieldset::make('options')
+                                ->label(__('custom-fields::custom-fields.field.form.options.label'))
                                 ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                 ->schema([
                                     Forms\Components\Repeater::make('options')
@@ -124,7 +131,7 @@ class FieldForm implements FormInterface
                                         ->requiredUnless('type', CustomFieldType::TAGS_INPUT->value)
                                         ->hiddenLabel()
                                         ->defaultItems(1)
-                                        ->addActionLabel('Add Option')
+                                        ->addActionLabel(__('custom-fields::custom-fields.field.form.options.add'))
                                         ->reorderable()
                                         ->orderColumn('sort_order')
                                         ->columnSpanFull()
@@ -137,7 +144,7 @@ class FieldForm implements FormInterface
                                         })
                                 ])
                         ]),
-                    Forms\Components\Tabs\Tab::make('Validation')
+                    Forms\Components\Tabs\Tab::make(__('custom-fields::custom-fields.field.form.validation.label'))
                         ->schema([
                             CustomFieldValidationComponent::make(),
                         ]),
