@@ -3,6 +3,7 @@
 namespace Relaticle\CustomFields\Filament\Pages;
 
 use Illuminate\Support\Collection;
+use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Models\CustomFieldSection;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
@@ -83,60 +84,72 @@ class CustomFieldsNext extends Page
                 'class' => 'h-36 flex justify-center items-center rounded-lg border-gray-300 hover:border-gray-400 border-dashed',
             ])
             ->form([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->live(onBlur: true)
-                    ->maxLength(50)
-                    ->unique(
-                        table: CustomFieldSection::class,
-                        column: 'name',
-                        ignoreRecord: true,
-                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
-                            return $rule->when(
-                                Utils::isTenantEnabled(),
-                                function (Unique $rule) {
-                                    return $rule->where(
-                                        config('custom-fields.column_names.tenant_foreign_key'),
-                                        Filament::getTenant()?->id
-                                    );
-                                });
-                        },
-                    )
-                    ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?string $old, ?string $state): void {
-                        $old ??= '';
-                        $state ??= '';
+                Forms\Components\Grid::make(12)->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->live(onBlur: true)
+                        ->maxLength(50)
+                        ->unique(
+                            table: CustomFieldSection::class,
+                            column: 'name',
+                            ignoreRecord: true,
+                            modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                                return $rule->when(
+                                    Utils::isTenantEnabled(),
+                                    function (Unique $rule) {
+                                        return $rule->where(
+                                            config('custom-fields.column_names.tenant_foreign_key'),
+                                            Filament::getTenant()?->id
+                                        );
+                                    });
+                            },
+                        )
+                        ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?string $old, ?string $state): void {
+                            $old ??= '';
+                            $state ??= '';
 
-                        if (($get('code') ?? '') !== Str::of($old)->slug('_')->toString()) {
-                            return;
-                        }
+                            if (($get('code') ?? '') !== Str::of($old)->slug('_')->toString()) {
+                                return;
+                            }
 
-                        $set('code', Str::of($state)->slug('_')->toString());
-                    }),
-                Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->alphaDash()
-                    ->maxLength(50)
-                    ->unique(
-                        table: CustomFieldSection::class,
-                        column: 'code',
-                        ignoreRecord: true,
-                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
-                            return $rule->when(
-                                Utils::isTenantEnabled(),
-                                function (Unique $rule) {
-                                    return $rule->where(
-                                        config('custom-fields.column_names.tenant_foreign_key'),
-                                        Filament::getTenant()?->id
-                                    );
-                                });
-                        },
-                    )
-                    ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
-                        $set('code', Str::of($state)->slug('_')->toString());
-                    }),
-                Forms\Components\Textarea::make('description')
-                    ->maxLength(255)
-                    ->nullable()
+                            $set('code', Str::of($state)->slug('_')->toString());
+                        })
+                        ->columnSpan(6),
+                    Forms\Components\TextInput::make('code')
+                        ->required()
+                        ->alphaDash()
+                        ->maxLength(50)
+                        ->unique(
+                            table: CustomFieldSection::class,
+                            column: 'code',
+                            ignoreRecord: true,
+                            modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                                return $rule->when(
+                                    Utils::isTenantEnabled(),
+                                    function (Unique $rule) {
+                                        return $rule->where(
+                                            config('custom-fields.column_names.tenant_foreign_key'),
+                                            Filament::getTenant()?->id
+                                        );
+                                    });
+                            },
+                        )
+                        ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
+                            $set('code', Str::of($state)->slug('_')->toString());
+                        })
+                        ->columnSpan(6),
+                    Forms\Components\Select::make('type')
+                        ->reactive()
+                        ->default(CustomFieldSectionType::SECTION->value)
+                        ->options(CustomFieldSectionType::class)
+                        ->required()
+                        ->columnSpan(12),
+                    Forms\Components\Textarea::make('description')
+                        ->visible(fn(Forms\Get $get): bool => $get('type') === CustomFieldSectionType::SECTION->value)
+                        ->maxLength(255)
+                        ->nullable()
+                        ->columnSpan(12),
+                ])
             ])
             ->mutateFormDataUsing(function (array $data): array {
                 $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;

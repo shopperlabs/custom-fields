@@ -224,8 +224,6 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             ->record($this->section)
             ->form([
                 Forms\Components\Grid::make(12)->schema([
-
-
                     Forms\Components\TextInput::make('name')
                         ->required()
                         ->live(onBlur: true)
