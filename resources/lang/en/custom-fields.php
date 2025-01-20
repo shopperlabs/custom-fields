@@ -1,5 +1,4 @@
 <?php
-
 return [
     'nav' => [
         'label' => 'Custom Fields',
@@ -39,7 +38,11 @@ return [
             ],
             'validation' => [
                 'label' => 'Validation',
+                'rules' => 'Validation Rules',
+                'rules_hint' => 'To add validation rules, select an custom field type.',
+                'add_rule' => 'Add Rule',
             ]
         ]
     ],
 ];
+

@@ -32,6 +32,7 @@ final class CustomFieldValidationComponent extends Component
     private function buildValidationRulesRepeater(): Forms\Components\Repeater
     {
         return Forms\Components\Repeater::make('validation_rules')
+            ->label(__('custom-fields::custom-fields.field.form.validation.rules'))
             ->schema([
                 Forms\Components\Grid::make(3)
                     ->schema([
@@ -73,11 +74,11 @@ final class CustomFieldValidationComponent extends Component
             ->hint(function (Get $get): string {
                 $isTypeSelected = $get('type') && CustomFieldType::tryFrom($get('type'));
 
-                return $isTypeSelected ? '' : 'To add validation rules, select an custom field type.';
+                return $isTypeSelected ? '' : __('custom-fields::custom-fields.field.form.validation.rules_hint');
             })
             ->hiddenLabel()
             ->defaultItems(0)
-            ->addActionLabel('Add Validation Rule')
+            ->addActionLabel(__('custom-fields::custom-fields.field.form.validation.add_rule'))
             ->columnSpanFull();
     }
 
