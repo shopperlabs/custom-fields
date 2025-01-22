@@ -113,7 +113,7 @@ class UpgradeCustomFieldsToV2Command extends Command
                     // Create a new section for each entity type
                     $section = CustomFieldSection::create([
                         'entity_type' => $entityType,
-                        'name' => 'New Section',
+                        'name' => __('custom-fields::custom-fields.section.default.new_section'),
                         'code' => 'new_section',
                         'type' => CustomFieldSectionType::HEADLESS,
                     ]);

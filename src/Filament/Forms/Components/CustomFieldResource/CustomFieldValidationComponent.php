@@ -37,7 +37,7 @@ final class CustomFieldValidationComponent extends Component
                 Forms\Components\Grid::make(3)
                     ->schema([
                         Forms\Components\Select::make('name')
-                            ->label('Rule')
+                            ->label(__('custom-fields::custom-fields.field.form.validation.rule'))
                             ->placeholder('Select Rule')
                             ->options(function (Get $get) {
                                 $existingRules = $get('../../validation_rules') ?? [];
@@ -60,6 +60,7 @@ final class CustomFieldValidationComponent extends Component
                             })
                             ->columnSpan(1),
                         Forms\Components\Placeholder::make('description')
+                            ->label(__('custom-fields::custom-fields.field.form.validation.description'))
                             ->content(fn (Get $get): string => CustomFieldValidationRule::getDescriptionForRule($get('name')))
                             ->columnSpan(2),
                         $this->buildRuleParametersRepeater(),
@@ -85,9 +86,10 @@ final class CustomFieldValidationComponent extends Component
     private function buildRuleParametersRepeater(): Forms\Components\Repeater
     {
         return Forms\Components\Repeater::make('parameters')
+            ->label(__('custom-fields::custom-fields.field.form.validation.parameters'))
             ->simple(
                 Forms\Components\TextInput::make('value')
-                    ->label('Parameter Value')
+                    ->label(__('custom-fields::custom-fields.field.form.validation.parameters_value'))
                     ->required()
                     ->hiddenLabel()
                     ->maxLength(255),
@@ -98,7 +100,7 @@ final class CustomFieldValidationComponent extends Component
             ->maxItems(fn (Get $get): int => CustomFieldValidationRule::getAllowedParametersCountForRule($get('name')))
             ->reorderable(false)
             ->defaultItems(1)
-            ->addActionLabel('Add Parameter');
+            ->addActionLabel(__('custom-fields::custom-fields.field.form.validation.add_parameter'));
     }
 
     /**

@@ -133,7 +133,6 @@ enum CustomFieldValidationRule: string implements HasLabel
         };
     }
 
-
     /**
      * Check if the validation rule has any parameters.
      */
@@ -146,97 +145,12 @@ enum CustomFieldValidationRule: string implements HasLabel
 
     public function getLabel(): string
     {
-        return ucfirst(str_replace('_', ' ', $this->name));
+        return __('custom-fields::custom-fields.validation.labels.' . $this->name);
     }
 
     public function getDescription(): string
     {
-        return match ($this) {
-            self::ACCEPTED => 'The field must be accepted.',
-            self::ACCEPTED_IF => 'The field must be accepted when another field has a given value.',
-            self::ACTIVE_URL => 'The field must be a valid URL and must have a valid A or AAAA record',
-            self::AFTER => 'The field must be a date after the given date.',
-            self::AFTER_OR_EQUAL => 'The field must be a date after or equal to the given date.',
-            self::ALPHA => 'The field must contain only alphabetic characters.',
-            self::ALPHA_DASH => 'The field must contain only alpha-numeric characters, dashes, and underscores.',
-            self::ALPHA_NUM => 'The field must contain only alpha-numeric characters.',
-            self::ARRAY => 'The field must be an array.',
-            self::ASCII => 'The field must contain only ASCII characters.',
-            self::BEFORE => 'The field must be a date before the given date.',
-            self::BEFORE_OR_EQUAL => 'The field must be a date before or equal to the given date.',
-            self::BETWEEN => 'The field must be between the given values.',
-            self::BOOLEAN => 'The field must be a boolean value.',
-            self::CONFIRMED => 'The field must have a matching confirmation field.',
-            self::CURRENT_PASSWORD => 'The field must match the user\'s current password.',
-            self::DATE => 'The field must be a valid date.',
-            self::DATE_EQUALS => 'The field must be a date equal to the given date.',
-            self::DATE_FORMAT => 'The field must match the given date format.',
-            self::DECIMAL => 'The field must have the specified number of decimal places.',
-            self::DECLINED => 'The field must be declined.',
-            self::DECLINED_IF => 'The field must be declined when another field has a given value.',
-            self::DIFFERENT => 'The field must have a different value than the specified field.',
-            self::DIGITS => 'The field must be numeric and have an exact length.',
-            self::DIGITS_BETWEEN => 'The field must be numeric and have a length between the given values.',
-            self::DIMENSIONS => 'The field must be an image that meets the dimension constraints.',
-            self::DISTINCT => 'The field must not have any duplicate values.',
-            self::DOESNT_START_WITH => 'The field must not start with one of the given values.',
-            self::DOESNT_END_WITH => 'The field must not end with one of the given values.',
-            self::EMAIL => 'The field must be a valid email address.',
-            self::ENDS_WITH => 'The field must end with one of the given values.',
-            self::ENUM => 'The field must be a valid enum value.',
-            self::EXCLUDE => 'The field must be excluded from the data.',
-            self::EXCLUDE_IF => 'The field must be excluded if another field has a given value.',
-            self::EXCLUDE_UNLESS => 'The field must be excluded unless another field has a given value.',
-            self::EXISTS => 'The field must exist in the database.',
-            self::FILE => 'The field must be a successfully uploaded file.',
-            self::FILLED => 'The field must not be empty when present.',
-            self::GT => 'The field must be greater than the given field.',
-            self::GTE => 'The field must be greater than or equal to the given field.',
-            self::IMAGE => 'The field must be an image.',
-            self::IN => 'The field must be included in the given list of values.',
-            self::IN_ARRAY => 'The field must exist in another field\'s values.',
-            self::INTEGER => 'The field must be an integer.',
-            self::IP => 'The field must be a valid IP address.',
-            self::IPV4 => 'The field must be a valid IPv4 address.',
-            self::IPV6 => 'The field must be a valid IPv6 address.',
-            self::JSON => 'The field must be a valid JSON string.',
-            self::LT => 'The field must be less than the given field.',
-            self::LTE => 'The field must be less than or equal to the given field.',
-            self::MAC_ADDRESS => 'The field must be a valid MAC address.',
-            self::MAX => 'The field must not be greater than the given value.',
-            self::MAX_DIGITS => 'The field must not have more than the specified number of digits.',
-            self::MIMES => 'The file must be of the specified MIME types.',
-            self::MIMETYPES => 'The file must match one of the given MIME types.',
-            self::MIN => 'The field must be at least the given value.',
-            self::MIN_DIGITS => 'The field must have at least the specified number of digits.',
-            self::MULTIPLE_OF => 'The field must be a multiple of the given value.',
-            self::NOT_IN => 'The field must not be included in the given list of values.',
-            self::NOT_REGEX => 'The field must not match the given regular expression.',
-            self::NUMERIC => 'The field must be numeric.',
-            self::PASSWORD => 'The field must match the user\'s password.',
-            self::PRESENT => 'The field must be present in the input data.',
-            self::PROHIBITED => 'The field is prohibited.',
-            self::PROHIBITED_IF => 'The field is prohibited when another field has a given value.',
-            self::PROHIBITED_UNLESS => 'The field is prohibited unless another field has a given value.',
-            self::PROHIBITS => 'The field prohibits other fields from being present.',
-            self::REGEX => 'The field must match the given regular expression.',
-            self::REQUIRED => 'The field is required.',
-            self::REQUIRED_IF => 'The field is required when another field has a given value.',
-            self::REQUIRED_UNLESS => 'The field is required unless another field has a given value.',
-            self::REQUIRED_WITH => 'The field is required when any of the other specified fields are present.',
-            self::REQUIRED_WITH_ALL => 'The field is required when all of the other specified fields are present.',
-            self::REQUIRED_WITHOUT => 'The field is required when any of the other specified fields are not present.',
-            self::REQUIRED_WITHOUT_ALL => 'The field is required when all of the other specified fields are not present.',
-            self::SAME => 'The field value must match the specified field\'s value.',
-            self::SIZE => 'The field must have the specified size.',
-            self::STARTS_WITH => 'The field must start with one of the given values.',
-            self::STRING => 'The field must be a string.',
-            self::TIMEZONE => 'The field must be a valid timezone identifier.',
-            self::UNIQUE => 'The field must be unique in the specified database table.',
-            self::UPPERCASE => 'The field must be uppercase.',
-            self::URL => 'The field must be a valid URL.',
-            self::UUID => 'The field must be a valid UUID.',
-        };
+        return __('custom-fields::custom-fields.validation.descriptions.' . $this->name);
     }
 
     public static function hasParameterForRule(?string $rule): bool
@@ -248,23 +162,26 @@ enum CustomFieldValidationRule: string implements HasLabel
         return self::tryFrom($rule)?->hasParameter() ?? false;
     }
 
-    public static function getAllowedParametersCountForRule(?string $rule): int {
+    public static function getAllowedParametersCountForRule(?string $rule): int
+    {
         if ($rule === null) {
             return 0;
         }
 
         // If we get -1 as the allowed parameter count, it means that the rule allows any number of parameters.
         // Otherwise, we return the allowed parameter count.
-        return self::tryFrom($rule)?->allowedParameterCount() === -1 ? 30 : self::tryFrom($rule)?->allowedParameterCount();
+        $allowedCount = self::tryFrom($rule)?->allowedParameterCount();
+
+        return $allowedCount === -1 ? 30 : $allowedCount ?? 0;
     }
 
     public static function getDescriptionForRule(?string $rule): string
     {
         if ($rule === null) {
-            return 'Select a rule to see its description.';
+            return __('custom-fields::custom-fields.validation.select_rule_description');
         }
 
-        return self::tryFrom($rule)?->getDescription() ?? 'Select a rule to see its description.';
+        return self::tryFrom($rule)?->getDescription() ?? __('custom-fields::custom-fields.validation.select_rule_description');
     }
 
     /**
@@ -284,7 +201,8 @@ enum CustomFieldValidationRule: string implements HasLabel
 
         $label = $enum->getLabel();
         if ($parameters !== []) {
-            $label .= ' ('.implode(', ', array_column($parameters, 'value')).')';
+            $values = implode(', ', array_column($parameters, 'value'));
+            $label .= ' (' . $values . ')';
         }
 
         return $label;

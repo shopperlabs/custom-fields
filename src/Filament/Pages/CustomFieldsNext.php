@@ -71,7 +71,7 @@ class CustomFieldsNext extends Page
     {
         return Action::make('createSection')
             ->size(ActionSize::ExtraSmall)
-            ->label('Add Section')
+            ->label(__('custom-fields::custom-fields.section.form.add_section'))
             ->icon('heroicon-s-plus')
             ->color('gray')
             ->button()
@@ -114,7 +114,7 @@ class CustomFieldsNext extends Page
         if ($this->sections->isEmpty()) {
             $newSection = $this->storeSection([
                 'entity_type' => $this->currentEntityType,
-                'name' => 'New Section',
+                'name' => __('custom-fields::custom-fields.section.default.new_section'),
                 'code' => 'new_section',
             ]);
 
