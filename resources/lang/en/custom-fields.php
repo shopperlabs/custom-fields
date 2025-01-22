@@ -40,6 +40,7 @@ return [
                 'label' => 'Options',
                 'add' => 'Add Option',
             ],
+            'add_field' => 'Add Field',
             'validation' => [
                 'label' => 'Validation',
                 'rules' => 'Validation Rules',

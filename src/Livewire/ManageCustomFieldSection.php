@@ -58,7 +58,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
     {
         return Action::make('createField')
             ->size(ActionSize::ExtraSmall)
-            ->label('Create Field')
+            ->label(__('custom-fields::custom-fields.field.form.add_field'))
             ->model(CustomField::class)
             ->form(FieldForm::schema())
             ->fillForm([

@@ -42,9 +42,7 @@
     </x-filament::grid>
 
     <x-slot name="footerActions">
-        <x-filament::button size="sm" wire:click="mountAction('createFieldAction')">
-            Create field
-        </x-filament::button>
+        {{ $this->createFieldAction() }}
     </x-slot>
 
     <x-filament-actions::modals/>
