@@ -2,20 +2,27 @@
 
 namespace Relaticle\CustomFields\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
+use Relaticle\CustomFields\Models\Concerns\Activable;
+use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
+use Relaticle\CustomFields\Models\Scopes\TenantScope;
 use Relaticle\CustomFields\Services\EntityTypeService;
 
+#[ScopedBy([TenantScope::class, SortOrderScope::class])]
 class CustomFieldSection extends Model
 {
+    use Activable;
+
     /**
      * @var array<int, string>
      */
     protected $guarded = [];
 
-    protected function casts()
+    protected function casts(): array
     {
         return [
             'type' => CustomFieldSectionType::class
@@ -30,5 +37,13 @@ class CustomFieldSection extends Model
     public function scopeForEntityType(Builder $query, string $model)
     {
         return $query->where('entity_type', EntityTypeService::getEntityFromModel($model));
+    }
+
+    /**
+     * Determine if the model instance is user defined.
+     */
+    public function isSystemDefined(): bool
+    {
+        return $this->system_defined === true;
     }
 }

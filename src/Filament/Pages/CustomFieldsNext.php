@@ -41,6 +41,7 @@ class CustomFieldsNext extends Page
     public function sections(): Collection
     {
         return CustomFieldSection::query()
+            ->withDeactivated()
             ->forEntityType($this->currentEntityType)
             ->with([
                 'fields' => function ($query) {

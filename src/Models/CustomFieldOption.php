@@ -18,7 +18,6 @@ final class CustomFieldOption extends Model
 {
     /** @use HasFactory<CustomFieldOptionFactory> */
     use HasFactory;
-    use SoftDeletes;
 
     protected $guarded = [];
 

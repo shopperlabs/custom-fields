@@ -31,7 +31,6 @@ final class CustomFieldValue extends Model
 {
     /** @use HasFactory<CustomFieldValueFactory> */
     use HasFactory;
-    use SoftDeletes;
 
     public $timestamps = false;
 

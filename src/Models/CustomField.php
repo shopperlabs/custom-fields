@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
@@ -37,7 +36,6 @@ final class CustomField extends Model
 {
     /** @use HasFactory<CustomFieldFactory> */
     use HasFactory;
-    use SoftDeletes;
     use Activable;
 
     /**

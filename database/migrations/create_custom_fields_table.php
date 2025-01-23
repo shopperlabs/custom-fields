@@ -38,7 +38,6 @@ return new class extends Migration
 
             $table->unique($uniqueColumns);
 
-            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -72,7 +71,6 @@ return new class extends Migration
 
             $table->unique($uniqueColumns);
 
-            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -96,7 +94,6 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->unsignedBigInteger('sort_order')->nullable();
 
-            $table->softDeletes();
             $table->timestamps();
 
             $table->unique($uniqueColumns);
@@ -128,8 +125,6 @@ return new class extends Migration
             $table->date('date_value')->nullable();
             $table->dateTime('datetime_value')->nullable();
             $table->json('json_value')->nullable();
-
-            $table->softDeletes();
 
             $table->unique($uniqueColumns, 'custom_field_values_entity_type_unique');
         });

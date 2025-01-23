@@ -3,6 +3,7 @@
 namespace Relaticle\CustomFields\Livewire;
 
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
@@ -29,7 +30,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
     #[Computed]
     public function fields()
     {
-        return $this->section->fields()->orderBy('sort_order')->get();
+        return $this->section->fields()->orderBy('sort_order')->withDeactivated()->get();
     }
 
     #[On('field-width-updated')]
@@ -54,6 +55,59 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
         }
     }
 
+    public function actions(): ActionGroup
+    {
+        return ActionGroup::make([
+            $this->editAction(),
+            $this->activateAction(),
+            $this->deactivateAction(),
+            $this->deleteAction(),
+        ]);
+    }
+
+    public function editAction(): Action
+    {
+        return Action::make('edit')
+            ->icon('heroicon-o-pencil')
+            ->model(CustomFieldSection::class)
+            ->record($this->section)
+            ->form(SectionForm::schema())
+            ->fillForm($this->section->toArray())
+            ->action(fn(array $data) => $this->section->update($data))
+            ->modalWidth('max-w-2xl');
+    }
+
+    public function activateAction(): Action
+    {
+        return Action::make('activate')
+            ->icon('heroicon-o-archive-box')
+            ->model(CustomFieldSection::class)
+            ->record($this->section)
+            ->visible(fn(CustomFieldSection $record): bool => !$record->isActive())
+            ->action(fn() => $this->section->activate());
+    }
+
+    public function deactivateAction(): Action
+    {
+        return Action::make('deactivate')
+            ->icon('heroicon-o-archive-box-x-mark')
+            ->model(CustomFieldSection::class)
+            ->record($this->section)
+            ->visible(fn(CustomFieldSection $record): bool => $record->isActive())
+            ->action(fn() => $this->section->deactivate());
+    }
+
+    public function deleteAction(): Action
+    {
+        return Action::make('delete')
+            ->requiresConfirmation()
+            ->icon('heroicon-o-trash')
+            ->model(CustomFieldSection::class)
+            ->record($this->section)
+            ->visible(fn(CustomFieldSection $record): bool => !$record->isActive() && !$record->isSystemDefined())
+            ->action(fn() => $this->section->delete());
+    }
+
     public function createFieldAction(): Action
     {
         return Action::make('createField')
@@ -75,30 +129,6 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             })
             ->action(fn(array $data) => CustomField::create($data))
             ->slideOver();
-    }
-
-    public function editAction(): Action
-    {
-        return Action::make('edit')
-            ->iconButton()
-            ->icon('heroicon-m-pencil')
-            ->color('gray')
-            ->model(CustomFieldSection::class)
-            ->record($this->section)
-            ->form(SectionForm::schema())
-            ->fillForm($this->section->toArray())
-            ->action(fn(array $data) => $this->section->update($data))
-            ->modalWidth('max-w-2xl');
-    }
-
-    public function deleteAction(): Action
-    {
-        return Action::make('delete')
-            ->requiresConfirmation()
-            ->iconButton()
-            ->icon('heroicon-m-trash')
-            ->color('gray')
-            ->action(fn() => $this->section->delete());
     }
 
     public function render()

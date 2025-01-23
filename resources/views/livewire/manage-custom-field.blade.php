@@ -5,7 +5,7 @@
         <div class="flex justify-between">
             <div class="flex items-center gap-x-2 w-full" x-sortable-handle>
                 <x-filament::icon-button
-                    icon="heroicon-m-bars-4"
+                    icon="heroicon-m-bars-3"
                     color="gray"
                 />
 
@@ -16,6 +16,11 @@
                 />
 
                 <span>{{ $field->name }}</span>
+                @if(!$field->isActive())
+                    <x-filament::badge color="warning" size="sm">
+                        {{ __('custom-fields::custom-fields.common.inactive') }}
+                    </x-filament::badge>
+                @endif
             </div>
 
             <div class="flex items-center gap-x-1 px-2 py-0.5">
@@ -26,8 +31,7 @@
                     wire:key="manage-custom-field-width-{{ $field->id }}"
                 />
 
-                {{ $this->editAction() }}
-                {{ $this->deleteAction() }}
+                {{ $this->actions() }}
             </div>
         </div>
 

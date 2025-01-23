@@ -10,7 +10,7 @@
     class="relative"
 >
     <div class="w-20 flex relative h-6">
-        <div class="absolute w-20 flex z-10 opacity-70">
+        <div class="absolute w-20 flex opacity-70" style="z-index: 1">
             <template x-for="(width, index) in widths" :key="index">
                 <div
                     wire:click="$parent.setWidth(fieldId, width)"

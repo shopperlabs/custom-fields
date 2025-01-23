@@ -229,6 +229,10 @@ return [
             'UUID' => 'The field must be a valid UUID.',
         ],
         'select_rule_description' => 'Select a rule to see its description.',
-    ]
+    ],
+
+    'common' => [
+        'inactive' => 'Inactive',
+    ],
 ];
 

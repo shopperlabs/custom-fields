@@ -30,7 +30,6 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
     public function find(string $model, string $code): CustomFieldsMigrator
     {
         $this->customField = CustomField::query()
-            ->withTrashed()
             ->forMorphEntity(EntityTypeService::getEntityFromModel($model))
             ->where('code', $code)
             ->firstOrFail();

@@ -9,11 +9,15 @@
                 />
 
                 {{$section->name }}
+                @if(!$section->isActive())
+                    <x-filament::badge color="warning" size="sm">
+                        {{ __('custom-fields::custom-fields.common.inactive') }}
+                    </x-filament::badge>
+                @endif
             </div>
 
             <div class="flex items-center gap-x-1">
-                {{ $this->editAction }}
-                {{ $this->deleteAction }}
+                {{ $this->actions() }}
             </div>
         </div>
     </x-slot>
@@ -28,7 +32,7 @@
         @end.stop="$wire.updateFieldsOrder($event.to.getAttribute('data-section-id'), $event.to.sortable.toArray())"
     >
         @foreach ($this->fields as $field)
-                @livewire('manage-custom-field', ['field' => $field], key($field->id . $field->width->value . str()->random(16)))
+            @livewire('manage-custom-field', ['field' => $field], key($field->id . $field->width->value . str()->random(16)))
         @endforeach
 
         @if(!count($this->fields))
