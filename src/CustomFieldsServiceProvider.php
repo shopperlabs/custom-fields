@@ -21,6 +21,7 @@ use Relaticle\CustomFields\Livewire\ManageCustomFieldSection;
 use Relaticle\CustomFields\Livewire\ManageCustomFieldWidth;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Support\Utils;
 use Relaticle\CustomFields\Testing\TestsFilamentCustomField;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -41,6 +42,10 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
             foreach (Filament::getPanels() as $panel) {
                 if ($tenantModel = $panel->getTenantModel()) {
                     $tenantModelInstance = app($tenantModel);
+
+                    CustomFieldSection::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
+                        return $customField->belongsTo($tenantModel, config('custom-fields.column_names.tenant_foreign_key'));
+                    });
 
                     CustomField::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
                         return $customField->belongsTo($tenantModel, config('custom-fields.column_names.tenant_foreign_key'));
