@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Data;
 
-use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-final class CustomFieldData extends Data
+final class CustomFieldSectionData extends Data
 {
     /**
      * Create a new instance of the CustomFieldData class.
@@ -22,12 +22,9 @@ final class CustomFieldData extends Data
     public function __construct(
         public string $name,
         public string $code,
-        public CustomFieldType $type,
         public string $entityType,
-        public CustomFieldSectionData $section,
+        public CustomFieldSectionType $type = CustomFieldSectionType::SECTION,
         public bool $active = true,
         public bool $systemDefined = false,
-        public ?array $options = null,
-        public ?string $lookupType = null
     ) {}
 }

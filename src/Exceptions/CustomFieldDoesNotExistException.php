@@ -16,8 +16,13 @@ class CustomFieldDoesNotExistException extends Exception
         return new self("Could not delete custom field `{$code}` because it does not exist");
     }
 
-    public static function whenRestoring(string $code): self
+    public static function whenActivating(string $code): self
     {
-        return new self("Could not restore custom field `{$code}` because it does not exist");
+        return new self("Could not activate custom field `{$code}` because it does not exist");
+    }
+
+    public static function whenDeactivating(string $code): self
+    {
+        return new self("Could not deactivate custom field `{$code}` because it does not exist");
     }
 }

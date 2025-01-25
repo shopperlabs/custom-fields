@@ -75,19 +75,34 @@ class UpgradeCustomFieldsToV2Command extends Command
 
                 $table->unique($uniqueColumns);
 
-                $table->softDeletes();
                 $table->timestamps();
             });
         }
 
         // Add 'custom_field_section_id' and 'width' columns to 'custom_fields' table if they don't exist
-        Schema::table('custom_fields', function (Blueprint $table) {
+        Schema::table(config('custom-fields.table_names.custom_fields'), function (Blueprint $table) {
             if (!Schema::hasColumn('custom_fields', 'custom_field_section_id')) {
                 $table->unsignedBigInteger('custom_field_section_id')->nullable()->after('id');
             }
 
             if (!Schema::hasColumn('custom_fields', 'width')) {
                 $table->string('width')->nullable()->after('custom_field_section_id');
+            }
+
+            $table->dropSoftDeletes();
+        });
+
+        // Remove 'deleted_at' column from 'custom_field_options' table if it exists
+        Schema::table(config('custom-fields.table_names.custom_field_options'), function (Blueprint $table) {
+            if (Schema::hasColumn('custom_fields', 'deleted_at')) {
+                $table->dropColumn('deleted_at');
+            }
+        });
+
+        // Remove 'deleted_at' column from 'custom_field_values' table if it exists
+        Schema::create(config('custom-fields.table_names.custom_field_values'), function (Blueprint $table): void {
+            if (Schema::hasColumn('custom_fields', 'deleted_at')) {
+                $table->dropColumn('deleted_at');
             }
         });
 
