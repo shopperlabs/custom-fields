@@ -48,7 +48,7 @@ class UpgradeCustomFieldsCommand extends Command
      */
     private function updateDatabaseSchema(): void
     {
-        $this->info('Updating database schema...');
+        $this->info('--- Updating database schema...');
 
         // Create 'custom_field_sections' table if it doesn't exist
         if (!Schema::hasTable('custom_field_sections')) {
@@ -77,32 +77,42 @@ class UpgradeCustomFieldsCommand extends Command
 
                 $table->timestamps();
             });
+
+            $this->info('Table `custom_field_sections` created successfully.');
         }
 
         // Add 'custom_field_section_id' and 'width' columns to 'custom_fields' table if they don't exist
         Schema::table(config('custom-fields.table_names.custom_fields'), function (Blueprint $table) {
             if (!Schema::hasColumn('custom_fields', 'custom_field_section_id')) {
                 $table->unsignedBigInteger('custom_field_section_id')->nullable()->after('id');
+                $this->info('Added `custom_field_section_id` column to `custom_fields` table.');
             }
 
             if (!Schema::hasColumn('custom_fields', 'width')) {
                 $table->string('width')->nullable()->after('custom_field_section_id');
+                $this->info('Added `width` column to `custom_fields` table.');
             }
 
             $table->dropSoftDeletes();
+
+            $this->info('Removed `deleted_at` column from `custom_fields` table.');
         });
 
         // Remove 'deleted_at' column from 'custom_field_options' table if it exists
         Schema::table(config('custom-fields.table_names.custom_field_options'), function (Blueprint $table) {
             if (Schema::hasColumn('custom_fields', 'deleted_at')) {
-                $table->dropColumn('deleted_at');
+                $table->dropSoftDeletes();
+
+                $this->info('Removed `deleted_at` column from `custom_field_options` table.');
             }
         });
 
         // Remove 'deleted_at' column from 'custom_field_values' table if it exists
         Schema::create(config('custom-fields.table_names.custom_field_values'), function (Blueprint $table): void {
             if (Schema::hasColumn('custom_fields', 'deleted_at')) {
-                $table->dropColumn('deleted_at');
+                $table->dropSoftDeletes();
+
+                $this->info('Removed `deleted_at` column from `custom_field_values` table.');
             }
         });
 
@@ -115,7 +125,7 @@ class UpgradeCustomFieldsCommand extends Command
      */
     private function updateExistingData(): void
     {
-        $this->info('Updating existing data...');
+        $this->info('--- Updating existing data...');
 
         // Use a transaction to ensure data integrity
         DB::transaction(function () {
