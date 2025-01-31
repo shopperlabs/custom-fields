@@ -26,6 +26,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
 
     public string $entityType;
     public CustomFieldSection $section;
+    public bool $isDeletable = true;
 
     #[Computed]
     public function fields()
@@ -40,6 +41,12 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
         CustomField::where('id', $fieldId)->update(['width' => $width]);
 
         // Re-fetch the fields
+        $this->section->refresh();
+    }
+
+    #[On('field-deleted')]
+    public function fieldDeleted(): void
+    {
         $this->section->refresh();
     }
 
@@ -105,7 +112,8 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             ->model(CustomFieldSection::class)
             ->record($this->section)
             ->visible(fn(CustomFieldSection $record): bool => !$record->isActive() && !$record->isSystemDefined())
-            ->action(fn() => $this->section->delete());
+            ->disabled(fn(CustomFieldSection $record): bool => !$this->isDeletable)
+            ->action(fn() => $this->section->delete() && $this->dispatch('section-deleted'));
     }
 
     public function createFieldAction(): Action

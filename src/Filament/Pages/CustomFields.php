@@ -3,6 +3,7 @@
 namespace Relaticle\CustomFields\Filament\Pages;
 
 use Illuminate\Support\Collection;
+use Livewire\Attributes\On;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Filament\FormSchemas\SectionForm;
 use Relaticle\CustomFields\Models\CustomFieldSection;
@@ -50,11 +51,8 @@ class CustomFields extends Page
                         ->orderBy('sort_order');
                 }
             ])
-            ->orderBy('sort_order') // Adjust as necessary based on your sorting preference
-            ->get()
-            ->map(function ($section) {
-                return $section;
-            });
+            ->orderBy('sort_order')
+            ->get();
     }
 
     #[Computed]
@@ -141,6 +139,11 @@ class CustomFields extends Page
         return CustomFieldSection::create($data);
     }
 
+    #[On('section-deleted')]
+    public function sectionDeleted(): void
+    {
+        $this->sections = $this->sections->filter(fn($section) => $section->exists);
+    }
 
     public static function getCluster(): ?string
     {

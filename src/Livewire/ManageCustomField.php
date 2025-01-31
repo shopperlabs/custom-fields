@@ -78,7 +78,7 @@ class ManageCustomField extends Component implements HasForms, HasActions
             ->model(CustomField::class)
             ->record($this->field)
             ->visible(fn(CustomField $record): bool => !$record->isActive() && !$record->isSystemDefined())
-            ->action(fn() => $this->field->delete());
+            ->action(fn() => $this->field->delete() && $this->dispatch('field-deleted'));
     }
 
     public function setWidth(int $fieldId, int $width): void

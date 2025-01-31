@@ -15,7 +15,7 @@
         class="flex flex-col gap-y-6"
     >
         @foreach ($this->sections as $section)
-            @livewire('manage-custom-field-section', ['entityType' => $this->currentEntityType, 'section' => $section], key($section->id . str()->random(16)))
+            @livewire('manage-custom-field-section', ['entityType' => $this->currentEntityType, 'section' => $section, 'isDeletable' => $this->sections()->count() > 1], key($section->id . str()->random(16)))
         @endforeach
 
         {{ $this->createSectionAction }}
