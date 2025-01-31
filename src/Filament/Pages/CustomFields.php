@@ -179,11 +179,4 @@ class CustomFields extends Page
     {
         return Utils::getResourceSlug();
     }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return Utils::isResourceNavigationBadgeEnabled()
-            ? strval(static::getEloquentQuery()->count())
-            : null;
-    }
 }
