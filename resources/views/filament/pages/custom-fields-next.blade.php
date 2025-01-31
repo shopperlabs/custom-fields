@@ -2,7 +2,7 @@
     <x-filament::tabs label="Content tabs" contained>
         @foreach ($this->entityTypes as $key => $label)
             <x-filament::tabs.item active="{{ $key === $this->currentEntityType }}"
-                                   wire:click="setCurrentEntityType('{{ $key }}')">
+                                   wire:click="setCurrentEntityType('{{ addslashes($key) }}')">
                 {{ $label }}
             </x-filament::tabs.item>
         @endforeach
