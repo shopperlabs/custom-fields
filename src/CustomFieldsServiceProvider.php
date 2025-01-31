@@ -14,7 +14,7 @@ use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
-use Relaticle\CustomFields\Commands\UpgradeCustomFieldsToV2Command;
+use Relaticle\CustomFields\Commands\UpgradeCustomFieldsCommand;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
 use Relaticle\CustomFields\Livewire\ManageCustomField;
 use Relaticle\CustomFields\Livewire\ManageCustomFieldSection;
@@ -155,7 +155,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         return [
             FilamentCustomFieldCommand::class,
-            UpgradeCustomFieldsToV2Command::class,
+            UpgradeCustomFieldsCommand::class,
         ];
     }
 

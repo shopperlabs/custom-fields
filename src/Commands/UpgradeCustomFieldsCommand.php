@@ -14,25 +14,25 @@ use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Support\Utils;
 
-class UpgradeCustomFieldsToV2Command extends Command
+class UpgradeCustomFieldsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'custom-fields:upgrade-v2';
+    protected $signature = 'custom-fields:upgrade';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Upgrade the Custom Fields Filament Plugin to version 2.';
+    protected $description = 'Upgrade the Custom Fields Filament Plugin to version 1.0';
 
     public function handle(): void
     {
-        $this->info('Starting the upgrade of Custom Fields Filament Plugin to version 2...');
+        $this->info('Starting the upgrade of Custom Fields Filament Plugin to version 1.0...');
 
         // 1. Update Database Schema
         $this->updateDatabaseSchema();
