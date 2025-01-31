@@ -7,14 +7,12 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Concerns\InteractsWithRecord;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\View\View;
 use Livewire\Component;
 use Relaticle\CustomFields\Filament\FormSchemas\FieldForm;
 use Relaticle\CustomFields\Models\CustomField;
-use Relaticle\CustomFields\Support\Utils;
 
 class ManageCustomField extends Component implements HasForms, HasActions
 {
@@ -48,13 +46,6 @@ class ManageCustomField extends Component implements HasForms, HasActions
             ->record($this->field)
             ->form(FieldForm::schema())
             ->fillForm($this->field->toArray())
-            ->mutateFormDataUsing(function (array $data): array {
-                if (Utils::isTenantEnabled()) {
-                    $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
-                }
-
-                return $data;
-            })
             ->action(fn(array $data) => $this->field->update($data))
             ->slideOver();
     }
