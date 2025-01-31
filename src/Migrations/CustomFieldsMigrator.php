@@ -112,7 +112,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
         try {
             DB::beginTransaction();
 
-            $data = $this->customFieldData->except('options')->toArray();
+            $data = $this->customFieldData->except('section', 'options')->toArray();
             $sectionData =  $this->customFieldData->section->toArray();
 
             if (Utils::isTenantEnabled()) {
