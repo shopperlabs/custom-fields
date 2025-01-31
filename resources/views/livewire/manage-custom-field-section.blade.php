@@ -36,12 +36,13 @@
         @endforeach
 
         @if(!count($this->fields))
-            <div class="col-span-12">
-                <div
-                    class="flex justify-center items-center py-3 border border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
-                    <span class="text-gray-500 dark:text-gray-400 text-sm">Add or drag fields here</span>
-                </div>
-            </div>
+            <x-filament::grid.column default="12">
+                <x-filament-tables::empty-state
+                    icon="heroicon-o-x-mark"
+                    heading="No fields"
+                    description="Add or drag fields here"
+                />
+            </x-filament::grid.column>
         @endempty
     </x-filament::grid>
 
