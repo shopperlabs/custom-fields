@@ -14,9 +14,14 @@ use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
+use Relaticle\CustomFields\Commands\UpgradeCustomFieldsCommand;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
+use Relaticle\CustomFields\Livewire\ManageCustomField;
+use Relaticle\CustomFields\Livewire\ManageCustomFieldSection;
+use Relaticle\CustomFields\Livewire\ManageCustomFieldWidth;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Support\Utils;
 use Relaticle\CustomFields\Testing\TestsFilamentCustomField;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -33,10 +38,14 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
 
-        if(Utils::isTenantEnabled()) {
+        if (Utils::isTenantEnabled()) {
             foreach (Filament::getPanels() as $panel) {
                 if ($tenantModel = $panel->getTenantModel()) {
                     $tenantModelInstance = app($tenantModel);
+
+                    CustomFieldSection::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
+                        return $customField->belongsTo($tenantModel, config('custom-fields.column_names.tenant_foreign_key'));
+                    });
 
                     CustomField::resolveRelationUsing('team', function (CustomField $customField) use ($tenantModel) {
                         return $customField->belongsTo($tenantModel, config('custom-fields.column_names.tenant_foreign_key'));
@@ -48,6 +57,10 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
                 }
             }
         }
+
+        Livewire::component('manage-custom-field-section', ManageCustomFieldSection::class);
+        Livewire::component('manage-custom-field', ManageCustomField::class);
+        Livewire::component('manage-custom-field-width', ManageCustomFieldWidth::class);
     }
 
     public function configurePackage(Package $package): void
@@ -120,7 +133,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
 
     protected function getAssetPackageName(): ?string
     {
-        return 'manukminasyan/filament-custom-field';
+        return 'relaticle/custom-fields';
     }
 
     /**
@@ -130,8 +143,8 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('custom-fields', __DIR__ . '/../resources/dist/components/custom-fields.js'),
-            //            Css::make('custom-fields-styles', __DIR__ . '/../resources/dist/custom-fields.css'),
-            //            Js::make('custom-fields-scripts', __DIR__ . '/../resources/dist/custom-fields.js'),
+            // Css::make('custom-fields-styles', __DIR__ . '/../resources/dist/custom-fields.css'),
+            // Js::make('custom-fields-scripts', __DIR__ . '/../resources/dist/custom-fields.js'),
         ];
     }
 
@@ -142,6 +155,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         return [
             FilamentCustomFieldCommand::class,
+            UpgradeCustomFieldsCommand::class,
         ];
     }
 

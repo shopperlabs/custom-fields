@@ -145,11 +145,11 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::BEFORE_OR_EQUAL,
                 CustomFieldValidationRule::DATE_FORMAT,
             ],
-            self::TOGGLE => [
+            self::TOGGLE, self::TOGGLE_BUTTONS, self::CHECKBOX => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::BOOLEAN,
             ],
-            self::SELECT => [
+            self::SELECT, self::RADIO => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::IN,
             ],
@@ -173,38 +173,16 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::URL,
             ],
-            self::CHECKBOX => [
-                CustomFieldValidationRule::REQUIRED,
-                CustomFieldValidationRule::BOOLEAN,
-            ],
-            self::CHECKBOX_LIST => [
+            self::CHECKBOX_LIST, self::TAGS_INPUT => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::ARRAY,
                 CustomFieldValidationRule::MIN,
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
             ],
-            self::RADIO => [
-                CustomFieldValidationRule::REQUIRED,
-                CustomFieldValidationRule::IN,
-            ],
-            self::RICH_EDITOR => [
+            self::RICH_EDITOR, self::MARKDOWN_EDITOR => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::STRING,
-                CustomFieldValidationRule::MIN,
-                CustomFieldValidationRule::MAX,
-                CustomFieldValidationRule::BETWEEN,
-            ],
-            self::MARKDOWN_EDITOR => [
-                CustomFieldValidationRule::REQUIRED,
-                CustomFieldValidationRule::STRING,
-                CustomFieldValidationRule::MIN,
-                CustomFieldValidationRule::MAX,
-                CustomFieldValidationRule::BETWEEN,
-            ],
-            self::TAGS_INPUT => [
-                CustomFieldValidationRule::REQUIRED,
-                CustomFieldValidationRule::ARRAY,
                 CustomFieldValidationRule::MIN,
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
@@ -212,10 +190,6 @@ enum CustomFieldType: string implements HasLabel
             self::COLOR_PICKER => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::STRING,
-            ],
-            self::TOGGLE_BUTTONS => [
-                CustomFieldValidationRule::REQUIRED,
-                CustomFieldValidationRule::BOOLEAN,
             ],
         };
     }

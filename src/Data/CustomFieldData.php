@@ -24,6 +24,7 @@ final class CustomFieldData extends Data
         public string $code,
         public CustomFieldType $type,
         public string $entityType,
+        public CustomFieldSectionData $section,
         public bool $active = true,
         public bool $systemDefined = false,
         public ?array $options = null,

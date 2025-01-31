@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Models;
 
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldWidth;
 use Relaticle\CustomFields\Models\Concerns\Activable;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
@@ -36,13 +36,16 @@ final class CustomField extends Model
 {
     /** @use HasFactory<CustomFieldFactory> */
     use HasFactory;
-    use SoftDeletes;
     use Activable;
 
     /**
      * @var array<int, string>
      */
     protected $guarded = [];
+
+    protected $attributes = [
+        'width' => CustomFieldWidth::_100
+    ];
 
     public function __construct(array $attributes = [])
     {
@@ -62,6 +65,7 @@ final class CustomField extends Model
     {
         return [
             'type' => CustomFieldType::class,
+            'width' => CustomFieldWidth::class,
             'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
             'active' => 'boolean',
             'system_defined' => 'boolean',
@@ -102,6 +106,11 @@ final class CustomField extends Model
     public function scopeForMorphEntity(Builder $builder, string $entity): Builder
     {
         return $builder->where('entity_type', $entity);
+    }
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
     }
 
     /**

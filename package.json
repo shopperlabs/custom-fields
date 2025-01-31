@@ -3,9 +3,16 @@
     "type": "module",
     "scripts": {
         "dev": "node bin/build.js --dev",
-        "build": "node bin/build.js"
+        "build:styles": "npx tailwindcss -i resources/css/index.css -o resources/dist/custom-fields.css --postcss --minify",
+        "build:scripts": "node bin/build.js",
+        "build": "npm run build:styles && npm run build:scripts"
     },
     "devDependencies": {
-        "esbuild": "^0.17.19"
+        "esbuild": "^0.17.19",
+        "cssnano": "^6.0.1",
+        "postcss": "^8.4.27",
+        "postcss-cli": "^10.1.0",
+        "postcss-nesting": "^13.0.0",
+        "tailwindcss": "^3.4.1"
     }
 }
