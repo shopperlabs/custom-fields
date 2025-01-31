@@ -82,13 +82,6 @@ class CustomFields extends Page
                 'class' => 'h-36 flex justify-center items-center rounded-lg border-gray-300 hover:border-gray-400 border-dashed',
             ])
             ->form(SectionForm::schema())
-            ->mutateFormDataUsing(function (array $data): array {
-                $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
-
-                $data['entity_type'] = $this->currentEntityType;
-
-                return $data;
-            })
             ->action(fn(array $data) => $this->storeSection($data))
             ->modalWidth('max-w-2xl');
     }
@@ -138,7 +131,13 @@ class CustomFields extends Page
      */
     private function storeSection(array $data): CustomFieldSection
     {
+        if(Utils::isTenantEnabled()) {
+            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+        }
+
         $data['type'] ??= CustomFieldSectionType::SECTION->value;
+        $data['entity_type'] = $this->currentEntityType;
+
         return CustomFieldSection::create($data);
     }
 
