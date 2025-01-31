@@ -33,7 +33,7 @@ class UpdateExistingData
             $command->line($entityTypes->implode(', '));
             $command->newLine();
 
-            $progressBar = $command->output->createProgressBar($entityTypes->count());
+            $progressBar = $command->getOutput()->createProgressBar($entityTypes->count());
             $progressBar->start();
 
             foreach ($entityTypes as $entityType) {
