@@ -143,7 +143,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('custom-fields', __DIR__ . '/../resources/dist/components/custom-fields.js'),
-             Css::make('custom-fields', __DIR__ . '/../resources/dist/custom-fields.css'),
+             Css::make('custom-fields', __DIR__ . '/../resources/dist/custom-fields.css')->loadedOnRequest()
             // Js::make('custom-fields-scripts', __DIR__ . '/../resources/dist/custom-fields.js'),
         ];
     }
