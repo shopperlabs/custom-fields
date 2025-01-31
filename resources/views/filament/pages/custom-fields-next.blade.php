@@ -1,5 +1,5 @@
-<x-filament-panels::page>
-    <div class="custom-fields-component">
+<div class="custom-fields-component">
+    <x-filament-panels::page>
         <x-filament::tabs label="Content tabs" contained>
             @foreach ($this->entityTypes as $key => $label)
                 <x-filament::tabs.item active="{{ $key === $this->currentEntityType }}"
@@ -22,5 +22,5 @@
 
             {{ $this->createSectionAction }}
         </div>
-    </div>
-</x-filament-panels::page>
+    </x-filament-panels::page>
+</div>
