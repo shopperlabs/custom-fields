@@ -1,2 +1,4 @@
-@tailwind components;
-@tailwind utilities;
+.custom-fields-component {
+    @tailwind components;
+    @tailwind utilities;
+}
