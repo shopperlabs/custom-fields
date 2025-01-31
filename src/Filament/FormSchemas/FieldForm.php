@@ -3,16 +3,16 @@
 namespace Relaticle\CustomFields\Filament\FormSchemas;
 
 use Filament\Facades\Filament;
+use Filament\Forms;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use Relaticle\CustomFields\Enums\CustomFieldType;
-use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldResource\CustomFieldValidationComponent;
+use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldValidationComponent;
 use Relaticle\CustomFields\Filament\Forms\Components\TypeField;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
-use Filament\Forms;
 
 class FieldForm implements FormInterface
 {

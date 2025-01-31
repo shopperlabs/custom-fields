@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldResource;
+namespace Relaticle\CustomFields\Filament\Forms\Components;
 
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
 use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
 
 final class CustomFieldValidationComponent extends Component
 {

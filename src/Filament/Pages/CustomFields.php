@@ -14,8 +14,9 @@ use Livewire\Attributes\Computed;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Livewire\Attributes\Url;
+use Relaticle\CustomFields\Support\Utils;
 
-class CustomFieldsNext extends Page
+class CustomFields extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-m-document-text';
 
@@ -139,5 +140,50 @@ class CustomFieldsNext extends Page
     {
         $data['type'] ??= CustomFieldSectionType::SECTION->value;
         return CustomFieldSection::create($data);
+    }
+
+
+    public static function getCluster(): ?string
+    {
+        return Utils::getResourceCluster() ?? static::$cluster;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Utils::isResourceNavigationRegistered();
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return Utils::isResourceNavigationGroupEnabled()
+            ? __('custom-fields::custom-fields.nav.group')
+            : '';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('custom-fields::custom-fields.nav.label');
+    }
+
+    public static function getNavigationIcon(): string
+    {
+        return __('custom-fields::custom-fields.nav.icon');
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return Utils::getResourceNavigationSort();
+    }
+
+    public static function getSlug(): string
+    {
+        return Utils::getResourceSlug();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Utils::isResourceNavigationBadgeEnabled()
+            ? strval(static::getEloquentQuery()->count())
+            : null;
     }
 }

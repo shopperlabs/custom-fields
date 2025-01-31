@@ -5,7 +5,6 @@ namespace Relaticle\CustomFields\Services;
 use Filament\Facades\Filament;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
-use Relaticle\CustomFields\Filament\Resources\CustomFieldResource;
 
 abstract class AbstractOptionsService
 {
@@ -21,7 +20,7 @@ abstract class AbstractOptionsService
     public static function getOptions(): Collection
     {
         return static::getFilteredResources()
-            ->mapWithKeys(fn (string $resource) => static::mapResourceToOption($resource));
+            ->mapWithKeys(fn(string $resource) => static::mapResourceToOption($resource));
     }
 
     public static function getDefaultOption(): string
@@ -32,7 +31,7 @@ abstract class AbstractOptionsService
     protected static function getFilteredResources(): Collection
     {
         return collect(Filament::getResources())
-            ->reject(fn (string $resource) => static::shouldRejectResource($resource));
+            ->reject(fn(string $resource) => static::shouldRejectResource($resource));
     }
 
     protected static function shouldRejectResource(string $resource): bool
@@ -40,8 +39,7 @@ abstract class AbstractOptionsService
         $allowedResources = config(static::$allowedConfigKey, []);
         $disallowedResources = config(static::$disallowedConfigKey, []);
 
-        return $resource === CustomFieldResource::class
-            || (! empty($allowedResources) && ! in_array($resource, $allowedResources))
+        return (!empty($allowedResources) && !in_array($resource, $allowedResources))
             || in_array($resource, $disallowedResources);
     }
 
@@ -66,7 +64,7 @@ abstract class AbstractOptionsService
         try {
             $modelInstance = app($model);
             return $modelInstance->getMorphClass();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return $model;
         }
     }
