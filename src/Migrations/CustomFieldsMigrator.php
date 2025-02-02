@@ -60,7 +60,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
                 'name' => $section,
                 'code' => Str::of($section)->slug('_')->toString(),
                 'entity_type' => $entityType,
-                'type' => CustomFieldSectionType::SECTION,
+                'type' => CustomFieldSectionType::HEADLESS,
                 'active' => $active,
                 'system_defined' => $systemDefined,
             ]),
