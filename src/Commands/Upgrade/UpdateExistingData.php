@@ -24,7 +24,7 @@ class UpdateExistingData
                 ->whereNull('custom_field_section_id')
                 ->select('entity_type', 'tenant_id');
 
-            if ($customFields->isEmpty()) {
+            if ($customFields->doesntExist()) {
                 $command->info('No custom fields found that require updating.');
                 return;
             }
