@@ -20,46 +20,38 @@ class UpdateExistingData
         $command->newLine();
 
         DB::transaction(function () use ($command, $isDryRun): void {
-            $entityTypes = CustomField::query()
+            $customFields = CustomField::query()
                 ->whereNull('custom_field_section_id')
-                ->pluck('entity_type');
+                ->select('entity_type', 'tenant_id');
 
-            if ($entityTypes->isEmpty()) {
+            if ($customFields->isEmpty()) {
                 $command->info('No custom fields found that require updating.');
                 return;
             }
 
-            $command->info('Updating custom fields for the following entity types:');
-            $command->line($entityTypes->implode(', '));
-            $command->newLine();
-
-            $progressBar = $command->getOutput()->createProgressBar($entityTypes->count());
-            $progressBar->start();
-
-            foreach ($entityTypes as $entityType) {
+            foreach ($customFields as $customField) {
                 if ($isDryRun) {
-                    $command->line("A new section would be created for entity type `{$entityType}`.");
+                    $command->line("Custom field `{$customField['name']}` will be moved to a new section.");
                 } else {
-                    $section = CustomFieldSection::create([
-                        'entity_type' => $entityType,
+                    $sectionData = [
+                        'entity_type' => $customField['entityType'],
                         'name' => __('custom-fields::custom-fields.section.default.new_section'),
                         'code' => 'new_section',
                         'type' => CustomFieldSectionType::HEADLESS,
+                        'tenant_id' => $customField['tenant_id'],
+                    ];
+
+                    $section = CustomFieldSection::create($sectionData);
+
+                    $customField->update([
+                        'custom_field_section_id' => $section->id,
+                        'width' => CustomFieldWidth::_100,
                     ]);
 
-                    CustomField::whereNull('custom_field_section_id')
-                        ->where('entity_type', $entityType)
-                        ->update([
-                            'custom_field_section_id' => $section->id,
-                            'width' => CustomFieldWidth::_100,
-                        ]);
-
-                    $command->line("Custom fields for entity type `{$entityType}` have been updated.");
+                    $command->line("Custom field `{$customField['name']}` has been moved to a new section.");
                 }
-                $progressBar->advance();
             }
 
-            $progressBar->finish();
             $command->newLine(2);
             $command->info('Existing data update step completed.');
         });
