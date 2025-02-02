@@ -113,19 +113,21 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
             DB::beginTransaction();
 
             $data = $this->customFieldData->except('section', 'options')->toArray();
-            $sectionData =  $this->customFieldData->section->toArray();
+
+            $sectionData = $this->customFieldData->section->toArray();
+            $sectionAttributes = [
+                'entity_type' => $this->customFieldData->entityType,
+                'code' => $this->customFieldData->section->code
+            ];
 
             if (Utils::isTenantEnabled()) {
                 $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
                 $sectionData[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
+                $sectionAttributes[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
             }
 
             $section = CustomFieldSection::firstOrCreate(
-                [
-                    'entity_type' => $this->customFieldData->entityType,
-                    'code' => $this->customFieldData->section->code,
-                    'tenant_id' => $this->tenantId,
-                ],
+                $sectionAttributes,
                 $sectionData
             );
 
@@ -233,7 +235,19 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
      */
     protected function createOptions(CustomField $customField, array $options): void
     {
-        $customField->options()->createMany(collect($options)->map(fn($value) => ['name' => $value])->toArray());
+        $customField->options()->createMany(
+            collect($options)
+                ->map(function ($value) {
+                    $data = ['name' => $value];
+
+                    if (Utils::isTenantEnabled()) {
+                        $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
+                    }
+
+                    return $data;
+                })
+                ->toArray()
+        );
     }
 
     /**
