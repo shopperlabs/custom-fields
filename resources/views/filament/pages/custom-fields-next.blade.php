@@ -1,15 +1,14 @@
-<div class="custom-fields-component">
-    <x-filament-panels::page>
-        <x-filament::tabs label="Content tabs" contained>
-            @foreach ($this->entityTypes as $key => $label)
-                <x-filament::tabs.item active="{{ $key === $this->currentEntityType }}"
-                                       wire:click="setCurrentEntityType('{{ addslashes($key) }}')">
-                    {{ $label }}
-                </x-filament::tabs.item>
-            @endforeach
-        </x-filament::tabs>
+<x-filament-panels::page>
+    <x-filament::tabs label="Content tabs" contained>
+        @foreach ($this->entityTypes as $key => $label)
+            <x-filament::tabs.item active="{{ $key === $this->currentEntityType }}"
+                                   wire:click="setCurrentEntityType('{{ addslashes($key) }}')">
+                {{ $label }}
+            </x-filament::tabs.item>
+        @endforeach
+    </x-filament::tabs>
 
-
+    <div class="custom-fields-component">
         <div
             x-sortable
             wire:end.stop="updateSectionsOrder($event.target.sortable.toArray())"
@@ -22,5 +21,5 @@
 
             {{ $this->createSectionAction }}
         </div>
-    </x-filament-panels::page>
-</div>
+    </div>
+</x-filament-panels::page>
