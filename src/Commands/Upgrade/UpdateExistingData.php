@@ -34,7 +34,7 @@ class UpdateExistingData
                     $command->line("Custom field `{$customField['name']}` will be moved to a new section.");
                 } else {
                     $sectionData = [
-                        'entity_type' => $customField['entityType'],
+                        'entity_type' => $customField['entity_type'],
                         'name' => __('custom-fields::custom-fields.section.default.new_section'),
                         'code' => 'new_section',
                         'type' => CustomFieldSectionType::HEADLESS,
