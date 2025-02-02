@@ -12,6 +12,8 @@ final readonly class FieldsetComponent implements SectionComponentInterface
 {
     public function make(CustomFieldSection $customFieldSection): Fieldset
     {
-        return Fieldset::make("custom_fields.{$customFieldSection->code}")->label($customFieldSection->name);
+        return Fieldset::make("custom_fields.{$customFieldSection->code}")
+            ->label($customFieldSection->name)
+            ->columns(12);
     }
 }

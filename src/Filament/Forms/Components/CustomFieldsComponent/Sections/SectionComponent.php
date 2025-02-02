@@ -12,6 +12,8 @@ final readonly class SectionComponent implements SectionComponentInterface
 {
     public function make(CustomFieldSection $customFieldSection): Section
     {
-        return Section::make($customFieldSection->name)->description($customFieldSection->description);
+        return Section::make($customFieldSection->name)
+            ->description($customFieldSection->description)
+            ->columns(12);
     }
 }

@@ -11,9 +11,6 @@ use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Field
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\SectionComponentFactory;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Group;
 
 final class CustomFieldsComponent extends Component
 {
@@ -38,22 +35,6 @@ final class CustomFieldsComponent extends Component
      */
     protected function generateSchema(): array
     {
-//        dd(
-//            $this->getModel(),
-//            CustomFieldSection::query()
-//                ->with('fields')
-//                ->forEntityType($this->getModel())
-//                ->get()
-//                ->map(function (CustomFieldSection $section) {
-//                    return $this->sectionComponentFactory->create($section)->schema(
-//                        function () use ($section) {
-//                            return $section->fields->map(function (CustomField $customField) {
-//                                return $this->fieldComponentFactory->create($customField);
-//                            })->toArray();
-//                        }
-//                    );
-//                })
-//        );
         return CustomFieldSection::query()
             ->with('fields')
             ->forEntityType($this->getModel())
