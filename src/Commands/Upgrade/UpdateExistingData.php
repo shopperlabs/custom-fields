@@ -29,7 +29,7 @@ class UpdateExistingData
                 return;
             }
 
-            foreach ($customFields as $customField) {
+            foreach ($customFields->get() as $customField) {
                 if ($isDryRun) {
                     $command->line("Custom field `{$customField['name']}` will be moved to a new section.");
                 } else {
