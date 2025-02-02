@@ -22,7 +22,7 @@ class UpdateExistingData
         DB::transaction(function () use ($command, $isDryRun): void {
             $customFields = CustomField::query()
                 ->whereNull('custom_field_section_id')
-                ->select('entity_type', 'tenant_id');
+                ->select('name', 'entity_type', 'tenant_id');
 
             if ($customFields->doesntExist()) {
                 $command->info('No custom fields found that require updating.');
@@ -41,7 +41,7 @@ class UpdateExistingData
                         'tenant_id' => $customField['tenant_id'],
                     ];
 
-                    $section = CustomFieldSection::create($sectionData);
+                    $section = CustomFieldSection::firstOrCreate($sectionData);
 
                     $customField->update([
                         'custom_field_section_id' => $section->id,
