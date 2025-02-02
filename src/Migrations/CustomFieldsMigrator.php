@@ -124,6 +124,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
                 [
                     'entity_type' => $this->customFieldData->entityType,
                     'code' => $this->customFieldData->section->code,
+                    'tenant_id' => $this->tenantId,
                 ],
                 $sectionData
             );
