@@ -79,7 +79,7 @@ class CustomFields extends Page
             ->extraAttributes([
                 'class' => 'h-36 flex justify-center items-center rounded-lg border-gray-300 hover:border-gray-400 border-dashed',
             ])
-            ->form(SectionForm::schema())
+            ->form(SectionForm::entityType($this->currentEntityType)->schema())
             ->action(fn(array $data) => $this->storeSection($data))
             ->modalWidth('max-w-2xl');
     }

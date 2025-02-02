@@ -78,7 +78,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             ->icon('heroicon-o-pencil')
             ->model(CustomFieldSection::class)
             ->record($this->section)
-            ->form(SectionForm::schema())
+            ->form(SectionForm::entityType($this->entityType)->schema())
             ->fillForm($this->section->toArray())
             ->action(fn(array $data) => $this->section->update($data))
             ->modalWidth('max-w-2xl');

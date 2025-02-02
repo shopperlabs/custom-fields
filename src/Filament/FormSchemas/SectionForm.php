@@ -10,8 +10,16 @@ use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Support\Utils;
 use Filament\Forms;
 
-class SectionForm implements FormInterface
+class SectionForm implements FormInterface, SectionFormInterface
 {
+    private static string $entityType;
+
+    public static function entityType(string $entityType): self
+    {
+        self::$entityType = $entityType;
+        return new self;
+    }
+
     public static function schema(): array
     {
         return [
@@ -28,12 +36,13 @@ class SectionForm implements FormInterface
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
                             return $rule->when(
                                 Utils::isTenantEnabled(),
-                                function (Unique $rule) {
-                                    return $rule->where(
+                                fn(Unique $rule) => $rule
+                                    ->where(
                                         config('custom-fields.column_names.tenant_foreign_key'),
                                         Filament::getTenant()?->id
-                                    );
-                                });
+                                    )
+                                    ->where('entity_type', self::$entityType)
+                            );
                         },
                     )
                     ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?string $old, ?string $state): void {
@@ -59,12 +68,13 @@ class SectionForm implements FormInterface
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
                             return $rule->when(
                                 Utils::isTenantEnabled(),
-                                function (Unique $rule) {
-                                    return $rule->where(
+                                fn(Unique $rule) => $rule
+                                    ->where(
                                         config('custom-fields.column_names.tenant_foreign_key'),
                                         Filament::getTenant()?->id
-                                    );
-                                });
+                                    )
+                                    ->where('entity_type', self::$entityType)
+                            );
                         },
                     )
                     ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
