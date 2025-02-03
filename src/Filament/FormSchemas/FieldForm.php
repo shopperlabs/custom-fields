@@ -16,8 +16,34 @@ use Relaticle\CustomFields\Support\Utils;
 
 class FieldForm implements FormInterface
 {
-    public static function schema(): array
+    public static function schema(bool $withOptionsRelationship = true): array
     {
+        $optionsRepeater = Forms\Components\Repeater::make('options')
+            ->simple(
+                Forms\Components\TextInput::make('name')
+                    ->columnSpanFull()
+                    ->required(),
+            )
+            ->columns(2)
+            ->requiredUnless('type', CustomFieldType::TAGS_INPUT->value)
+            ->hiddenLabel()
+            ->defaultItems(1)
+            ->addActionLabel(__('custom-fields::custom-fields.field.form.options.add'))
+            ->reorderable()
+            ->orderColumn('sort_order')
+            ->columnSpanFull()
+            ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                if (Utils::isTenantEnabled()) {
+                    $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+                }
+
+                return $data;
+            });
+
+        if ($withOptionsRelationship) {
+            $optionsRepeater = $optionsRepeater->relationship();
+        }
+
         return [
             Forms\Components\Tabs::make()
                 ->tabs([
@@ -25,9 +51,8 @@ class FieldForm implements FormInterface
                         ->schema([
                             Forms\Components\Select::make('entity_type')
                                 ->label(__('custom-fields::custom-fields.field.form.entity_type'))
-                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
                                 ->options(EntityTypeService::getOptions())
-                                ->searchable()
+                                ->disabled()
                                 ->default(fn() => request('entityType', EntityTypeService::getDefaultOption()))
                                 ->required(),
                             TypeField::make('type')
@@ -120,28 +145,7 @@ class FieldForm implements FormInterface
                                 ->label(__('custom-fields::custom-fields.field.form.options.label'))
                                 ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                 ->schema([
-                                    Forms\Components\Repeater::make('options')
-                                        ->relationship()
-                                        ->simple(
-                                            Forms\Components\TextInput::make('name')
-                                                ->columnSpanFull()
-                                                ->required(),
-                                        )
-                                        ->columns(2)
-                                        ->requiredUnless('type', CustomFieldType::TAGS_INPUT->value)
-                                        ->hiddenLabel()
-                                        ->defaultItems(1)
-                                        ->addActionLabel(__('custom-fields::custom-fields.field.form.options.add'))
-                                        ->reorderable()
-                                        ->orderColumn('sort_order')
-                                        ->columnSpanFull()
-                                        ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
-                                            if (Utils::isTenantEnabled()) {
-                                                $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
-                                            }
-
-                                            return $data;
-                                        })
+                                    $optionsRepeater
                                 ])
                         ]),
                     Forms\Components\Tabs\Tab::make(__('custom-fields::custom-fields.field.form.validation.label'))

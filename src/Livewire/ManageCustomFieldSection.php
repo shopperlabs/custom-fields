@@ -122,7 +122,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             ->size(ActionSize::ExtraSmall)
             ->label(__('custom-fields::custom-fields.field.form.add_field'))
             ->model(CustomField::class)
-            ->form(FieldForm::schema())
+            ->form(FieldForm::schema(withOptionsRelationship: false))
             ->fillForm([
                 'entity_type' => $this->entityType,
             ])
@@ -131,11 +131,33 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
                     $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
                 }
 
-                $data['custom_field_section_id'] = $this->section->id;
-
-                return $data;
+                return [
+                    ...$data,
+                    'entity_type' => $this->entityType,
+                    'custom_field_section_id' => $this->section->id,
+                ];
             })
-            ->action(fn(array $data) => CustomField::create($data))
+            ->action(function (array $data) {
+                $options = collect($data['options'] ?? [])->filter()
+                    ->map(function ($option) {
+                        $data = [
+                            'name' => $option
+                        ];
+
+                        if (Utils::isTenantEnabled()) {
+                            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+                        }
+
+                        return $data;
+                    })
+                    ->values();
+
+                unset($data['options']);
+
+                $customField = CustomField::create($data);
+
+                $customField->options()->createMany($options);
+            })
             ->slideOver();
     }
 
