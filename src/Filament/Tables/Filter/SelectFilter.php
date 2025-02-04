@@ -12,9 +12,13 @@ use Throwable;
 
 final readonly class SelectFilter implements FieldFilterInterface
 {
+    /**
+     * @throws Throwable
+     */
     public function make(CustomField $customField): FilamentSelectFilter
     {
         $filter = FilamentSelectFilter::make("custom_fields.{$customField->code}")
+            ->multiple()
             ->label($customField->name)
             ->searchable()
             ->options($customField->options);
@@ -26,11 +30,12 @@ final readonly class SelectFilter implements FieldFilterInterface
         }
 
         $filter->query(
-            fn (array $data, Builder $query): Builder =>
-            $query->when(
-                $data['value'],
-                fn (Builder $query, $value): Builder => $query->whereHas('customFieldValues', function (Builder $query) use ($customField, $value) {
-                    $query->where('custom_field_id', $customField->id)->where('integer_value', $value);
+            fn(array $data, Builder $query): Builder => $query->when(
+                !empty($data['values']),
+                fn(Builder $query): Builder => $query->whereHas('customFieldValues', function (Builder $query) use ($customField, $data) {
+                    $query->where('custom_field_id', $customField->id)
+                        ->when($customField->getValueColumn() === 'json_value', fn(Builder $query) => $query->whereJsonContains($customField->getValueColumn(), $data['values']))
+                        ->when($customField->getValueColumn() !== 'json_value', fn(Builder $query) => $query->whereIn($customField->getValueColumn(), $data['values']));
                 }),
             )
         );

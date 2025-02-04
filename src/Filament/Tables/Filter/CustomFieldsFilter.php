@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Filament\Tables\Filter;
 
 use Filament\Tables\Filters\BaseFilter;
+use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\CustomField;
 
 final readonly class CustomFieldsFilter
@@ -18,7 +19,7 @@ final readonly class CustomFieldsFilter
 
         return $instance->customFields()
             ->with('options')
-            ->whereIn('type', ['toggle', 'select'])
+            ->whereIn('type', CustomFieldType::filterable()->pluck('value'))
             ->get()
             ->map(fn (CustomField $customField) => $fieldFilterFactory->create($customField))
             ->toArray();

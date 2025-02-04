@@ -18,7 +18,11 @@ final class FieldFilterFactory
      */
     private array $componentMap = [
         CustomFieldType::SELECT->value => SelectFilter::class,
+        CustomFieldType::MULTI_SELECT->value => SelectFilter::class,
+        CustomFieldType::CHECKBOX->value => TernaryFilter::class,
+        CustomFieldType::CHECKBOX_LIST->value => SelectFilter::class,
         CustomFieldType::TOGGLE->value => TernaryFilter::class,
+        CustomFieldType::TOGGLE_BUTTONS->value => SelectFilter::class,
     ];
 
     /**
