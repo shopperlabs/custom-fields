@@ -7,12 +7,12 @@ namespace Relaticle\CustomFields\Filament\Tables\Concerns;
 use Filament\Facades\Filament;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Exceptions\MissingRecordTitleAttributeException;
+use Relaticle\CustomFields\Filament\Tables\Filter\CustomFieldsFilter;
 use Relaticle\CustomFields\Models\CustomField;
 use Throwable;
 
@@ -35,45 +35,11 @@ trait InteractsWithCustomFields
             ...$this->getCustomFieldColumns($instance),
         ])->filters([
             ...$this->table->getFilters(),
-            ...$this->getCustomFieldFilters($instance),
+            ...CustomFieldsFilter::all($instance)
         ]);
 
         return $this->table;
     }
-
-    private function getCustomFieldFilters($instance): array
-    {
-        return $instance->customFields()
-            ->with('options')
-            ->get()
-            ->map(fn(CustomField $customField) => $this->createCustomFieldFilter($customField))
-            ->toArray();
-    }
-
-    private function createCustomFieldFilter(CustomField $customField): mixed
-    {
-        return match ($customField->type) {
-            CustomFieldType::TOGGLE => $this->createFilterForToggle($customField),
-//            CustomFieldType::DATE => $this->createFilterForDate($customField),
-//            CustomFieldType::DATE_TIME => $this->createFilterForDateTime($customField),
-//            CustomFieldType::SELECT => $this->createFilterForSelect($customField),
-//            CustomFieldType::MULTI_SELECT => $this->createFilterForMultiSelect($customField),
-            default => $this->createFilterForToggle($customField),
-        };
-    }
-
-    private function createFilterForToggle(CustomField $customField): TernaryFilter
-    {
-        return TernaryFilter::make("custom_fields.$customField->code")
-            ->label($customField->name)
-            ->options([
-                'true' => 'Yes',
-                'false' => 'No',
-            ]);
-    }
-
-
-    //--------------------------------------------------------------------------------
 
     /**
      * Get custom custom field columns for the table.
