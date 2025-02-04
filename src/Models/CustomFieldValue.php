@@ -14,6 +14,8 @@ use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
+use Relaticle\CustomFields\Support\FieldTypeUtils;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property CustomField $customField
@@ -83,10 +85,20 @@ final class CustomFieldValue extends Model
             'float_value' => 'float',
             'json_value' => 'collection',
             'boolean_value' => 'boolean',
-            'date_value' => 'date',
             'datetime_value' => 'datetime',
         ];
+    }
 
+    /**
+     * Set the value of the date_value attribute.
+     */
+    protected function dateValue(): Attribute
+    {
+        return Attribute::make(
+            set: function ($value) {
+                return $value ? Carbon::createFromFormat(FieldTypeUtils::getDateFormat(), $value) : null;
+            },
+        );
     }
 
     /**
@@ -108,7 +120,6 @@ final class CustomFieldValue extends Model
     public function getValue(): mixed
     {
         $column = $this->getValueColumn();
-
         return $this->$column;
     }
 

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Support;
 
-use Filament\Facades\Filament;
-
 class Utils
 {
     public static function getResourceCluster(): ?string
