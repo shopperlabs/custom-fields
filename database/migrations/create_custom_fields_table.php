@@ -132,9 +132,9 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists(config('custom-fields.table_names.custom_field_sections'));
-        Schema::dropIfExists(config('custom-fields.table_names.custom_fields'));
-        Schema::dropIfExists(config('custom-fields.table_names.custom_field_options'));
         Schema::dropIfExists(config('custom-fields.table_names.custom_field_values'));
+        Schema::dropIfExists(config('custom-fields.table_names.custom_field_options'));
+        Schema::dropIfExists(config('custom-fields.table_names.custom_fields'));
+        Schema::dropIfExists(config('custom-fields.table_names.custom_field_sections'));
     }
 };
