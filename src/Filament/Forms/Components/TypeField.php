@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields\Filament\Forms\Components;
 
 use Filament\Forms\Components\Select;

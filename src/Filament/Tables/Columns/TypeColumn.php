@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
