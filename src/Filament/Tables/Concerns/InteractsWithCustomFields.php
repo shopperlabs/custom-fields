@@ -7,6 +7,7 @@ namespace Relaticle\CustomFields\Filament\Tables\Concerns;
 use Filament\Facades\Filament;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
@@ -26,13 +27,53 @@ trait InteractsWithCustomFields
     {
         $instance = app(self::getModel());
 
+
+        // TODO: Create factories for creating both columns and filters
+
         $this->table->columns([
             ...$this->table->getColumns(),
             ...$this->getCustomFieldColumns($instance),
+        ])->filters([
+            ...$this->table->getFilters(),
+            ...$this->getCustomFieldFilters($instance),
         ]);
 
         return $this->table;
     }
+
+    private function getCustomFieldFilters($instance): array
+    {
+        return $instance->customFields()
+            ->with('options')
+            ->get()
+            ->map(fn(CustomField $customField) => $this->createCustomFieldFilter($customField))
+            ->toArray();
+    }
+
+    private function createCustomFieldFilter(CustomField $customField): mixed
+    {
+        return match ($customField->type) {
+            CustomFieldType::TOGGLE => $this->createFilterForToggle($customField),
+//            CustomFieldType::DATE => $this->createFilterForDate($customField),
+//            CustomFieldType::DATE_TIME => $this->createFilterForDateTime($customField),
+//            CustomFieldType::SELECT => $this->createFilterForSelect($customField),
+//            CustomFieldType::MULTI_SELECT => $this->createFilterForMultiSelect($customField),
+            default => $this->createFilterForToggle($customField),
+        };
+    }
+
+    private function createFilterForToggle(CustomField $customField): TernaryFilter
+    {
+        return TernaryFilter::make("custom_fields.$customField->code")
+            ->label($customField->name)
+            ->options([
+                'true' => 'Yes',
+                'false' => 'No',
+            ]);
+    }
+
+
+    //--------------------------------------------------------------------------------
 
     /**
      * Get custom custom field columns for the table.
@@ -42,7 +83,7 @@ trait InteractsWithCustomFields
         return $instance->customFields()
             ->with('options')
             ->get()
-            ->map(fn (CustomField $customField) => $this->createCustomFieldColumn($customField)
+            ->map(fn(CustomField $customField) => $this->createCustomFieldColumn($customField)
                 ->toggleable(
                     condition: config('custom-fields.resource.table.columns_toggleable.enabled', true),
                     isToggledHiddenByDefault: config('custom-fields.resource.table.columns_toggleable.hidden_by_default', true)
@@ -74,7 +115,7 @@ trait InteractsWithCustomFields
         return TextColumn::make("custom_fields.$customField->code")
             ->date()
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code));
+            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));
     }
 
     /**
@@ -85,7 +126,7 @@ trait InteractsWithCustomFields
         return TextColumn::make("custom_fields.$customField->code")
             ->dateTime()
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code));
+            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));
     }
 
     /**
@@ -95,7 +136,7 @@ trait InteractsWithCustomFields
     {
         return TextColumn::make("custom_fields.$customField->code")
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code));
+            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));
     }
 
     /**
@@ -106,7 +147,7 @@ trait InteractsWithCustomFields
         return IconColumn::make("custom_fields.$customField->code")
             ->boolean()
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code) ?? false);
+            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code) ?? false);
     }
 
     /**
@@ -116,7 +157,7 @@ trait InteractsWithCustomFields
     {
         return TextColumn::make("custom_fields.$customField->code")
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $this->getSelectColumnValue($record, $customField));
+            ->getStateUsing(fn($record) => $this->getSelectColumnValue($record, $customField));
     }
 
     /**
@@ -126,7 +167,7 @@ trait InteractsWithCustomFields
     {
         return TextColumn::make("custom_fields.$customField->code")
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $this->getMultiSelectColumnValue($record, $customField));
+            ->getStateUsing(fn($record) => $this->getMultiSelectColumnValue($record, $customField));
     }
 
     /**
@@ -139,7 +180,7 @@ trait InteractsWithCustomFields
         $value = $record->getCustomFieldValue($customField->code);
         $lookupValue = $this->resolveLookupValues([$value], $customField)->first();
 
-        return (string) $lookupValue;
+        return (string)$lookupValue;
     }
 
     /**
@@ -162,7 +203,7 @@ trait InteractsWithCustomFields
      */
     private function resolveLookupValues(array $values, CustomField $customField): Collection
     {
-        if (! isset($customField->lookup_type)) {
+        if (!isset($customField->lookup_type)) {
             return $customField->options->whereIn('id', $values)->pluck('name');
         }
 
