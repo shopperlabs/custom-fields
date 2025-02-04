@@ -39,7 +39,7 @@ final readonly class FieldConfigurator
                 });
             })
             ->dehydrated(fn($state): bool => $state !== null && $state !== '')
-            ->required($customField->validation_rules->toCollection()->contains('name', CustomFieldValidationRule::REQUIRED->value))
+            ->required($this->isRequired($customField))
             ->rules($this->convertRulesToFilamentFormat($customField->validation_rules));
     }
 
@@ -64,8 +64,12 @@ final readonly class FieldConfigurator
         })->toArray();
     }
 
-    public function isRequired()
+    /**
+     * @param CustomField $customField
+     * @return bool
+     */
+    public function isRequired(CustomField $customField): bool
     {
-        return collect($this->rules()[$this->handle])->contains('required');
+        return $customField->validation_rules->toCollection()->contains('name', CustomFieldValidationRule::REQUIRED->value);
     }
 }

@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Exceptions\MissingRecordTitleAttributeException;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Support\FieldTypeUtils;
 use Throwable;
 
 trait InteractsWithCustomFields
@@ -72,7 +73,7 @@ trait InteractsWithCustomFields
     private function createColumnForDate(CustomField $customField): TextColumn
     {
         return TextColumn::make("custom_fields.$customField->code")
-            ->date()
+            ->date(FieldTypeUtils::getDateDisplayFormat())
             ->label($customField->name)
             ->getStateUsing(fn ($record) => $record->getCustomFieldValue($customField->code));
     }
