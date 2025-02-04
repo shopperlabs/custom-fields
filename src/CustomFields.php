@@ -6,7 +6,7 @@ class CustomFields
 {
 
     /**
-     * The custom field model that should be used by Jetstream.
+     * The custom field model that should be used by Custom Fields.
      *
      * @var string
      */
@@ -36,7 +36,7 @@ class CustomFields
     }
 
     /**
-     * Specify the custom field model that should be used by Jetstream.
+     * Specify the custom field model that should be used by Custom Fields.
      *
      * @param string $model
      * @return static
