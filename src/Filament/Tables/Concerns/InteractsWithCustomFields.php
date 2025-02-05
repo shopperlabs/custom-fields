@@ -20,9 +20,6 @@ trait InteractsWithCustomFields
     {
         $instance = app(self::getModel());
 
-
-        // TODO: Create factories for creating both columns and filters
-
         $this->table->columns([
             ...$this->table->getColumns(),
             ...CustomFieldsColumn::all($instance),
