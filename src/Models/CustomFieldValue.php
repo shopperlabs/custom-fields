@@ -102,6 +102,18 @@ final class CustomFieldValue extends Model
     }
 
     /**
+     * Set the value of the datetime_value attribute.
+     */
+    protected function datetimeValue(): Attribute
+    {
+        return Attribute::make(
+            set: function ($value) {
+                return $value ? Carbon::createFromFormat(FieldTypeUtils::getDateTimeFormat(), $value) : null;
+            },
+        );
+    }
+
+    /**
      * @return BelongsTo<CustomField, CustomFieldValue>
      */
     public function customField(): BelongsTo

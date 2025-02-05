@@ -8,6 +8,7 @@ use Filament\Tables\Columns\Column as BaseColumn;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\CustomField;
 use Filament\Tables\Columns\TextColumn as BaseTextColumn;
+use Relaticle\CustomFields\Support\FieldTypeUtils;
 
 final readonly class DateTimeColumn implements ColumnInterface
 {
@@ -15,10 +16,10 @@ final readonly class DateTimeColumn implements ColumnInterface
     {
         return BaseTextColumn::make("custom_fields.$customField->code")
             ->when($customField->type === CustomFieldType::DATE_TIME, function($column){
-                $column->dateTime();
+                $column->dateTime(FieldTypeUtils::getDateTimeDisplayFormat());
             })
             ->when($customField->type === CustomFieldType::DATE, function($column){
-                $column->date();
+                $column->date(FieldTypeUtils::getDateDisplayFormat());
             })
             ->label($customField->name)
             ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));

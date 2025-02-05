@@ -17,7 +17,7 @@ final readonly class DateComponent implements FieldComponentInterface
 
     public function make(CustomField $customField): Field
     {
-        $field =  DatePicker::make("custom_fields.{$customField->code}")
+        $field = DatePicker::make("custom_fields.{$customField->code}")
             ->native(FieldTypeUtils::isDatePickerNative())
             ->format(FieldTypeUtils::getDateFormat())
             ->displayFormat(FieldTypeUtils::getDateDisplayFormat())
