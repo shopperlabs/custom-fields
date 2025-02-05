@@ -7,6 +7,7 @@ namespace Relaticle\CustomFields\Filament\Tables\Filter;
 use Filament\Tables\Filters\BaseFilter;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Support\Utils;
 
 final readonly class CustomFieldsFilter
 {
@@ -15,6 +16,10 @@ final readonly class CustomFieldsFilter
      */
     public static function all($instance): array
     {
+        if(Utils::isTableFiltersEnabled() === false) {
+            return [];
+        }
+
         $fieldFilterFactory = new FieldFilterFactory(app());
 
         return $instance->customFields()

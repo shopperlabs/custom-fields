@@ -43,6 +43,16 @@ class Utils
         return config('custom-fields.custom_fields_resource.navigation_group', true);
     }
 
+    public static function isTableColumnsEnabled(): bool
+    {
+        return config('custom-fields.resource.table.columns.enabled', true);
+    }
+
+    public static function isTableFiltersEnabled(): bool
+    {
+        return config('custom-fields.resource.table.filters.enabled', true);
+    }
+
     public static function isResourceGloballySearchable(): bool
     {
         return config('custom-fields.custom_fields_resource.is_globally_searchable', false);
