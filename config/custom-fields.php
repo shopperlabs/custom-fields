@@ -65,6 +65,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Custom Field Types Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the Custom Field Types.
+    | This allows you to customize the behavior of the field types.
+    |
+    */
+    'field_types_configuration' => [
+        'date' => [
+            'native' => false,
+            'format' => 'Y-m-d',
+            'display_format' => null
+        ],
+        'date_time' => [
+            'native' => false,
+            'format' => 'Y-m-d H:i:s',
+            'display_format' => null
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Lookup Resources Configuration
     |--------------------------------------------------------------------------
     |
