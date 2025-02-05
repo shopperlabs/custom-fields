@@ -10,7 +10,7 @@ use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Services\FilamentResourceService;
 use Throwable;
 
-final readonly class SelectFilter implements FieldFilterInterface
+final readonly class SelectFilter implements FilterInterface
 {
     /**
      * @throws Throwable

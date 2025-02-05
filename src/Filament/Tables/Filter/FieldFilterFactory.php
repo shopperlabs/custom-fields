@@ -14,7 +14,7 @@ use RuntimeException;
 final class FieldFilterFactory
 {
     /**
-     * @var array<string, class-string<FieldFilterInterface>>
+     * @var array<string, class-string<FilterInterface>>
      */
     private array $componentMap = [
         CustomFieldType::SELECT->value => SelectFilter::class,
@@ -26,7 +26,7 @@ final class FieldFilterFactory
     ];
 
     /**
-     * @var array<class-string<FieldFilterInterface>, FieldFilterInterface>
+     * @var array<class-string<FilterInterface>, FilterInterface>
      */
     private array $instanceCache = [];
 
@@ -45,7 +45,7 @@ final class FieldFilterFactory
         if (! isset($this->instanceCache[$filterClass])) {
             $component = $this->container->make($filterClass);
 
-            if (! $component instanceof FieldFilterInterface) {
+            if (! $component instanceof FilterInterface) {
                 throw new RuntimeException("Component class {$filterClass} must implement FieldFilterInterface");
             }
 

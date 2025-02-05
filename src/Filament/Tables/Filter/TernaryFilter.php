@@ -8,7 +8,7 @@ use Filament\Tables\Filters\TernaryFilter as FilamentTernaryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Relaticle\CustomFields\Models\CustomField;
 
-final readonly class TernaryFilter implements FieldFilterInterface
+final readonly class TernaryFilter implements FilterInterface
 {
     public function make(CustomField $customField): FilamentTernaryFilter
     {
