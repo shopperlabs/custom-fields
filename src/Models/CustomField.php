@@ -136,4 +136,15 @@ final class CustomField extends Model
     {
         return $this->system_defined === true;
     }
+
+    /**
+     * @return string
+     */
+    public function getValueColumn(): string
+    {
+        $type = $this->type->value;
+
+        return CustomFieldValue::$valueColumns[$type]
+            ?? throw new \InvalidArgumentException("Unsupported custom field type: {$type}");
+    }
 }

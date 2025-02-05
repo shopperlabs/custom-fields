@@ -80,7 +80,7 @@ enum CustomFieldType: string implements HasLabel
     }
 
     /**
-     * @return array
+     * @return Collection
      */
     public static function optionables(): Collection
     {
@@ -89,6 +89,22 @@ enum CustomFieldType: string implements HasLabel
             self::SELECT,
             self::CHECKBOX_LIST,
             self::TAGS_INPUT,
+            self::TOGGLE_BUTTONS,
+            self::RADIO,
+        ]);
+    }
+
+    /**
+     * @return Collection
+     */
+    public static function filterable(): Collection
+    {
+        return collect([
+            self::CHECKBOX,
+            self::CHECKBOX_LIST,
+            self::SELECT,
+            self::MULTI_SELECT,
+            self::TOGGLE,
             self::TOGGLE_BUTTONS,
             self::RADIO,
         ]);

@@ -50,9 +50,15 @@ return [
     */
     'resource' => [
         'table' => [
+            'columns' => [
+                'enabled' => true,
+            ],
             'columns_toggleable' => [
                 'enabled' => true,
                 'hidden_by_default' => true,
+            ],
+            'filters' => [
+                'enabled' => true,
             ],
         ],
     ],

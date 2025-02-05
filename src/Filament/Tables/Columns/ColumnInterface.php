@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
+use Relaticle\CustomFields\Models\CustomField;
 
-class TypeColumn extends Column
+interface ColumnInterface
 {
-    protected string $view = 'custom-fields::filament.tables.columns.type';
+    public function make(CustomField $customField): Column;
 }
