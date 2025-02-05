@@ -20,13 +20,15 @@ trait InteractsWithCustomFields
     {
         $instance = app(self::getModel());
 
-        $this->table->columns([
-            ...$this->table->getColumns(),
-            ...CustomFieldsColumn::all($instance),
-        ])->filters([
-            ...$this->table->getFilters(),
-            ...CustomFieldsFilter::all($instance)
-        ]);
+        $this->table
+            ->columns([
+                ...$this->table->getColumns(),
+                ...CustomFieldsColumn::all($instance),
+            ])
+            ->filters([
+                ...$this->table->getFilters(),
+                ...CustomFieldsFilter::all($instance)
+            ]);
 
         return $this->table;
     }

@@ -6,7 +6,6 @@ namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
 use Illuminate\Contracts\Container\Container;
-use InvalidArgumentException;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\CustomField;
 use RuntimeException;
@@ -42,10 +41,10 @@ final class FieldColumnFactory
         $customFieldType = $customField->type->value;
 
         if (!isset($this->componentMap[$customFieldType])) {
-            throw new InvalidArgumentException("No column registered for custom field type: {$customFieldType}");
+            $filterClass = TextColumn::class;
+        }else{
+            $filterClass = $this->componentMap[$customFieldType];
         }
-
-        $filterClass = $this->componentMap[$customFieldType];
 
         if (!isset($this->instanceCache[$filterClass])) {
             $component = $this->container->make($filterClass);
