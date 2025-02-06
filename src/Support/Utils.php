@@ -46,7 +46,7 @@ class Utils
         return config('custom-fields.tenant_aware', false);
     }
 
-    public static function isValuesEncryptionEnabled(): bool
+    public static function isValuesEncryptionFeatureEnabled(): bool
     {
         return config('custom-fields.features.encryption.enabled', false);
     }

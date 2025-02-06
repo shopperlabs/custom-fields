@@ -137,7 +137,7 @@ final class CustomField extends Model
      */
     public function isSystemDefined(): bool
     {
-        return $this->system_defined === true;
+        return $this->settings->system_defined === true;
     }
 
     /**
@@ -145,7 +145,6 @@ final class CustomField extends Model
      */
     public function getValueColumn(): string
     {
-//        dd(1);
-//        return CustomFieldValue::getValueColumn($this->type);
+        return CustomFieldValue::getValueColumn();
     }
 }

@@ -118,7 +118,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            if(Utils::isValuesEncryptionEnabled()) {
+            if(Utils::isValuesEncryptionFeatureEnabled()) {
                 $table->text('string_value')->nullable();
                 $table->text('text_value')->nullable();
                 $table->text('boolean_value')->nullable();

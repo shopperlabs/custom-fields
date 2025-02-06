@@ -19,6 +19,9 @@ use Relaticle\CustomFields\Support\Utils;
  */
 trait UsesCustomFields
 {
+    /**
+     * @param $attributes
+     */
     public function __construct($attributes = [])
     {
         // Ensure custom fields are included in a fillable array
@@ -82,6 +85,10 @@ trait UsesCustomFields
         return $this->morphMany(CustomFieldValue::class, 'entity');
     }
 
+    /**
+     * @param string $code
+     * @return mixed
+     */
     public function getCustomFieldValue(string $code): mixed
     {
         $customField = $this->customFields()->where('code', $code)->first();
@@ -93,7 +100,7 @@ trait UsesCustomFields
         $customFieldValue = $this->customFieldValues()
             ->where('custom_field_id', $customField->id);
 
-        if (Utils::isValuesEncryptionEnabled() && $customField?->settings?->encrypted) {
+        if (Utils::isValuesEncryptionFeatureEnabled() && $customField->settings->encrypted) {
             $customFieldValue = $customFieldValue->withCasts(['text_value' => 'encrypted']);
         }
 
@@ -103,6 +110,11 @@ trait UsesCustomFields
         return $customFieldValue instanceof Collection ? $customFieldValue->toArray() : $customFieldValue;
     }
 
+    /**
+     * @param string $code
+     * @param mixed $value
+     * @return void
+     */
     public function saveCustomFieldValue(string $code, mixed $value): void
     {
         $customField = $this->customFields()->where('code', $code)->firstOrFail();
@@ -115,7 +127,7 @@ trait UsesCustomFields
 
         $customFieldValue = $this->customFieldValues();
 
-        if (Utils::isValuesEncryptionEnabled() && $customField?->settings?->encrypted) {
+        if (Utils::isValuesEncryptionFeatureEnabled() && $customField->settings->encrypted) {
             $customFieldValue->withCasts(['text_value' => 'encrypted']);
         }
 
@@ -126,6 +138,7 @@ trait UsesCustomFields
 
     /**
      * @param array<string, mixed> $customFields
+     * @return void
      */
     public function saveCustomFields(array $customFields): void
     {

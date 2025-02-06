@@ -26,7 +26,6 @@ final class CustomFieldData extends Data
         public string $entityType,
         public CustomFieldSectionData $section,
         public bool $active = true, // TODO: Remove
-        public bool $systemDefined = false, // TODO: Remove
         public ?array $options = null,
         public ?string $lookupType = null,
         public ?CustomFieldSettingsData $settings = null,

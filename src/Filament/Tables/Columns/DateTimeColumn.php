@@ -16,10 +16,10 @@ final readonly class DateTimeColumn implements ColumnInterface
     {
         return BaseTextColumn::make("custom_fields.$customField->code")
             ->when($customField->type === CustomFieldType::DATE_TIME, function($column){
-                $column->dateTime(FieldTypeUtils::getDateTimeDisplayFormat());
+                $column->dateTime(FieldTypeUtils::getDateTimeFormat());
             })
             ->when($customField->type === CustomFieldType::DATE, function($column){
-                $column->date(FieldTypeUtils::getDateDisplayFormat());
+                $column->date(FieldTypeUtils::getDateFormat());
             })
             ->label($customField->name)
             ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));

@@ -12,9 +12,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
+use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
-use Relaticle\CustomFields\Support\FieldTypeUtils;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property CustomField $customField
@@ -51,30 +50,6 @@ final class CustomFieldValue extends Model
     }
 
     /**
-     * Set the value of the date_value attribute.
-     */
-    protected function dateValue(): Attribute
-    {
-        return Attribute::make(
-            set: function ($value) {
-                return $value ? Carbon::createFromFormat(FieldTypeUtils::getDateFormat(), $value) : null;
-            },
-        );
-    }
-
-    /**
-     * Set the value of the datetime_value attribute.
-     */
-    protected function datetimeValue(): Attribute
-    {
-        return Attribute::make(
-            set: function ($value) {
-                return $value ? Carbon::createFromFormat(FieldTypeUtils::getDateTimeFormat(), $value) : null;
-            },
-        );
-    }
-
-    /**
      * @return BelongsTo<CustomField, CustomFieldValue>
      */
     public function customField(): BelongsTo
@@ -90,15 +65,37 @@ final class CustomFieldValue extends Model
         return $this->morphTo();
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue(): mixed
     {
         $column = $this->getValueColumn();
-        return $this->$column;
+
+        $value = $this->$column;
+
+        return match ($this->customField->type) {
+            CustomFieldType::DATE => $value instanceof Carbon ? $value->toDateString() : $value,
+            CustomFieldType::DATE_TIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
+            CustomFieldType::TOGGLE, CustomFieldType::CHECKBOX => (bool)$value,
+            CustomFieldType::CHECKBOX_LIST,
+            CustomFieldType::MULTI_SELECT,
+            CustomFieldType::TAGS_INPUT,
+            CustomFieldType::TOGGLE_BUTTONS, => $value ? json_decode($value) : [],
+            default => $value,
+        };
     }
 
+    /**
+     * @param mixed $value
+     * @return void
+     */
     public function setValue(mixed $value): void
     {
         $column = $this->getValueColumn();
+
+        $value = gettype($value) === 'array' ? json_encode($value) : $value;
+
         $this->$column = $value;
     }
 }
