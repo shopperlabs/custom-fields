@@ -158,4 +158,18 @@ return [
     'column_names' => [
         'tenant_foreign_key' => 'tenant_id',
     ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Encryption Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the encryption of custom field values.
+    | This allows you to enable or disable encryption of custom field values.
+    |
+    */
+    'encryption' => [
+        'enabled' => true,
+    ],
 ];

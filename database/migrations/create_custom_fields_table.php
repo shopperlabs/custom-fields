@@ -117,14 +117,25 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->string('string_value')->nullable();
-            $table->text('text_value')->nullable();
-            $table->boolean('boolean_value')->nullable();
-            $table->integer('integer_value')->nullable();
-            $table->double('float_value')->nullable();
-            $table->date('date_value')->nullable();
-            $table->dateTime('datetime_value')->nullable();
-            $table->json('json_value')->nullable();
+            if(Utils::isValuesEncryptionEnabled()) {
+                $table->text('string_value')->nullable();
+                $table->text('text_value')->nullable();
+                $table->text('boolean_value')->nullable();
+                $table->text('integer_value')->nullable();
+                $table->text('float_value')->nullable();
+                $table->text('date_value')->nullable();
+                $table->text('datetime_value')->nullable();
+                $table->text('json_value')->nullable();
+            }else {
+                $table->string('string_value')->nullable();
+                $table->text('text_value')->nullable();
+                $table->boolean('boolean_value')->nullable();
+                $table->integer('integer_value')->nullable();
+                $table->double('float_value')->nullable();
+                $table->date('date_value')->nullable();
+                $table->dateTime('datetime_value')->nullable();
+                $table->json('json_value')->nullable();
+            }
 
             $table->unique($uniqueColumns, 'custom_field_values_entity_type_unique');
         });

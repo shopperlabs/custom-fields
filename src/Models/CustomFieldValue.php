@@ -16,6 +16,7 @@ use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
 use Relaticle\CustomFields\Support\FieldTypeUtils;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Relaticle\CustomFields\Support\Utils;
 
 /**
  * @property CustomField $customField
@@ -37,31 +38,6 @@ final class CustomFieldValue extends Model
 
     protected $guarded = [];
 
-    /**
-     * @var array<string, string>
-     */
-    public static array $valueColumns = [
-        CustomFieldType::TEXT->value => 'text_value',
-        CustomFieldType::NUMBER->value => 'integer_value',
-        CustomFieldType::CHECKBOX->value => 'boolean_value',
-        CustomFieldType::CHECKBOX_LIST->value => 'json_value',
-        CustomFieldType::TEXTAREA->value => 'text_value',
-        CustomFieldType::TOGGLE_BUTTONS->value => 'json_value',
-        CustomFieldType::TAGS_INPUT->value => 'json_value',
-        CustomFieldType::LINK->value => 'string_value',
-        CustomFieldType::RICH_EDITOR->value => 'text_value',
-        CustomFieldType::MARKDOWN_EDITOR->value => 'text_value',
-        CustomFieldType::RADIO->value => 'integer_value',
-        CustomFieldType::SELECT->value => 'integer_value',
-        CustomFieldType::COLOR_PICKER->value => 'string_value',
-        CustomFieldType::CURRENCY->value => 'float_value',
-        CustomFieldType::MULTI_SELECT->value => 'json_value',
-        CustomFieldType::TOGGLE->value => 'boolean_value',
-        CustomFieldType::DATE->value => 'date_value',
-        CustomFieldType::DATE_TIME->value => 'datetime_value',
-    ];
-
-
     public function __construct(array $attributes = [])
     {
         if (!isset($this->table)) {
@@ -71,6 +47,20 @@ final class CustomFieldValue extends Model
         parent::__construct($attributes);
     }
 
+    public static function getValueColumn(CustomFieldType $type): string
+    {
+        return match ($type) {
+            CustomFieldType::TEXT, CustomFieldType::TEXTAREA, CustomFieldType::RICH_EDITOR, CustomFieldType::MARKDOWN_EDITOR => 'text_value',
+            CustomFieldType::NUMBER, CustomFieldType::RADIO, CustomFieldType::SELECT => 'integer_value',
+            CustomFieldType::CHECKBOX, CustomFieldType::TOGGLE => 'boolean_value',
+            CustomFieldType::CHECKBOX_LIST, CustomFieldType::TOGGLE_BUTTONS, CustomFieldType::TAGS_INPUT, CustomFieldType::MULTI_SELECT => 'json_value',
+            CustomFieldType::LINK, CustomFieldType::COLOR_PICKER => 'string_value',
+            CustomFieldType::CURRENCY => 'float_value',
+            CustomFieldType::DATE => 'date_value',
+            CustomFieldType::DATE_TIME => 'datetime_value',
+        };
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -78,6 +68,18 @@ final class CustomFieldValue extends Model
      */
     protected function casts(): array
     {
+        if (Utils::isValuesEncryptionEnabled()) {
+            return [
+                'string_value' => 'encrypted',
+                'text_value' => 'encrypted',
+                'integer_value' => 'encrypted',
+                'float_value' => 'encrypted',
+                'json_value' => 'encrypted:collection',
+                'boolean_value' => 'encrypted',
+                'datetime_value' => 'encrypted',
+            ];
+        }
+
         return [
             'string_value' => 'string',
             'text_value' => 'string',
@@ -131,21 +133,13 @@ final class CustomFieldValue extends Model
 
     public function getValue(): mixed
     {
-        $column = $this->getValueColumn();
+        $column = $this->getValueColumn($this->customField->type);
         return $this->$column;
     }
 
     public function setValue(mixed $value): void
     {
-        $column = $this->getValueColumn();
+        $column = $this->getValueColumn($this->customField->type);
         $this->$column = $value;
-    }
-
-    public function getValueColumn(): string
-    {
-        $type = $this->customField->type->value;
-
-        return self::$valueColumns[$type]
-            ?? throw new \InvalidArgumentException("Unsupported custom field type: {$type}");
     }
 }

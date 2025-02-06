@@ -60,4 +60,9 @@ class Utils
     {
         return config('custom-fields.tenant_aware', false);
     }
+
+    public static function isValuesEncryptionEnabled(): bool
+    {
+        return config('custom-fields.encryption.enabled', false);
+    }
 }
