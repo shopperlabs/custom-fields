@@ -120,6 +120,11 @@ class FieldForm implements FormInterface
                                 ->afterStateUpdated(function (Forms\Set $set, ?string $state): void {
                                     $set('code', Str::of($state)->slug('_')->toString());
                                 }),
+                            Forms\Components\Toggle::make('settings.encrypted')
+                                ->inline(false)
+//                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
+                                ->label(__('custom-fields::custom-fields.field.form.encrypted'))
+                                ->default(false),
                             Forms\Components\Select::make('options_lookup_type')
                                 ->label(__('custom-fields::custom-fields.field.form.options_lookup_type.label'))
                                 ->visible(fn(Forms\Get $get): bool => in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))

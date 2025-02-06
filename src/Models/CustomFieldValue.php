@@ -12,11 +12,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
-use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
 use Relaticle\CustomFields\Support\FieldTypeUtils;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Relaticle\CustomFields\Support\Utils;
 
 /**
  * @property CustomField $customField
@@ -47,48 +45,9 @@ final class CustomFieldValue extends Model
         parent::__construct($attributes);
     }
 
-    public static function getValueColumn(CustomFieldType $type): string
+    public static function getValueColumn(): string
     {
-        return match ($type) {
-            CustomFieldType::TEXT, CustomFieldType::TEXTAREA, CustomFieldType::RICH_EDITOR, CustomFieldType::MARKDOWN_EDITOR => 'text_value',
-            CustomFieldType::NUMBER, CustomFieldType::RADIO, CustomFieldType::SELECT => 'integer_value',
-            CustomFieldType::CHECKBOX, CustomFieldType::TOGGLE => 'boolean_value',
-            CustomFieldType::CHECKBOX_LIST, CustomFieldType::TOGGLE_BUTTONS, CustomFieldType::TAGS_INPUT, CustomFieldType::MULTI_SELECT => 'json_value',
-            CustomFieldType::LINK, CustomFieldType::COLOR_PICKER => 'string_value',
-            CustomFieldType::CURRENCY => 'float_value',
-            CustomFieldType::DATE => 'date_value',
-            CustomFieldType::DATE_TIME => 'datetime_value',
-        };
-    }
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        if (Utils::isValuesEncryptionEnabled()) {
-            return [
-                'string_value' => 'encrypted',
-                'text_value' => 'encrypted',
-                'integer_value' => 'encrypted',
-                'float_value' => 'encrypted',
-                'json_value' => 'encrypted:collection',
-                'boolean_value' => 'encrypted',
-                'datetime_value' => 'encrypted',
-            ];
-        }
-
-        return [
-            'string_value' => 'string',
-            'text_value' => 'string',
-            'integer_value' => 'integer',
-            'float_value' => 'float',
-            'json_value' => 'collection',
-            'boolean_value' => 'boolean',
-            'datetime_value' => 'datetime',
-        ];
+        return 'text_value';
     }
 
     /**
@@ -133,13 +92,13 @@ final class CustomFieldValue extends Model
 
     public function getValue(): mixed
     {
-        $column = $this->getValueColumn($this->customField->type);
+        $column = $this->getValueColumn();
         return $this->$column;
     }
 
     public function setValue(mixed $value): void
     {
-        $column = $this->getValueColumn($this->customField->type);
+        $column = $this->getValueColumn();
         $this->$column = $value;
     }
 }

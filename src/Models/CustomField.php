@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Relaticle\CustomFields\Data\CustomFieldSettingsData;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
@@ -27,6 +28,7 @@ use Spatie\LaravelData\DataCollection;
  * @property string $entity_type
  * @property string $lookup_type
  * @property DataCollection<int, ValidationRuleData> $validation_rules
+ * @property CustomFieldSettingsData $settings
  * @property int $sort_order
  * @property bool $active
  * @property bool $system_defined
@@ -67,8 +69,9 @@ final class CustomField extends Model
             'type' => CustomFieldType::class,
             'width' => CustomFieldWidth::class,
             'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
-            'active' => 'boolean',
-            'system_defined' => 'boolean',
+            'active' => 'boolean', // TODO: Remove
+            'system_defined' => 'boolean', // TODO: Remove
+            'settings' => CustomFieldSettingsData::class . ':default',
         ];
     }
 
@@ -142,6 +145,7 @@ final class CustomField extends Model
      */
     public function getValueColumn(): string
     {
-        return CustomFieldValue::getValueColumn($this->type);
+//        dd(1);
+//        return CustomFieldValue::getValueColumn($this->type);
     }
 }

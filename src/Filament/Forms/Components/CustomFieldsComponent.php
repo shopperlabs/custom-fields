@@ -6,7 +6,6 @@ namespace Relaticle\CustomFields\Filament\Forms\Components;
 
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
-use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\FieldComponentFactory;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\SectionComponentFactory;
 use Relaticle\CustomFields\Models\CustomField;
@@ -50,16 +49,5 @@ final class CustomFieldsComponent extends Component
                 );
             })
             ->toArray();
-    }
-
-    /**
-     * @return Collection<int, CustomField>
-     */
-    protected function getCustomFields(): Collection
-    {
-        return CustomField::query()
-            ->with(['section', 'options'])
-            ->forEntity($this->getModel())
-            ->get();
     }
 }

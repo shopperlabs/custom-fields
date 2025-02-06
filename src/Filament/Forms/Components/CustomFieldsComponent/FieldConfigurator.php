@@ -31,6 +31,7 @@ final readonly class FieldConfigurator
                 $component->state(match ($customField->type) {
                     CustomFieldType::DATE => $value instanceof Carbon ? $value->toDateString() : $value,
                     CustomFieldType::DATE_TIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
+                    CustomFieldType::TOGGLE => (bool)$value,
                     CustomFieldType::CHECKBOX_LIST,
                     CustomFieldType::MULTI_SELECT,
                     CustomFieldType::TAGS_INPUT,

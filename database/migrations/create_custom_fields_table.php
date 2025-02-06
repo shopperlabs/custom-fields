@@ -65,9 +65,10 @@ return new class extends Migration
             $table->unsignedBigInteger('sort_order')->nullable();
             $table->json('validation_rules')->nullable();
 
-            $table->boolean('active')->default(true);
-            $table->boolean('system_defined')->default(false);
+            $table->boolean('active')->default(true); // TODO: Remove
+            $table->boolean('system_defined')->default(false); // TODO: Remove
 
+            $table->json('settings')->nullable();
 
             $table->unique($uniqueColumns);
 

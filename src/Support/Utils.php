@@ -26,16 +26,6 @@ class Utils
         return config('custom-fields.custom_fields_resource.navigation_sort');
     }
 
-    public static function isResourceNavigationBadgeEnabled(): bool
-    {
-        return config('custom-fields.custom_fields_resource.navigation_badge', false);
-    }
-
-    public static function isScopedToTenant(): bool
-    {
-        return config('custom-fields.custom_fields_resource.is_scoped_to_tenant', true);
-    }
-
     public static function isResourceNavigationGroupEnabled(): bool
     {
         return config('custom-fields.custom_fields_resource.navigation_group', true);
@@ -43,17 +33,12 @@ class Utils
 
     public static function isTableColumnsEnabled(): bool
     {
-        return config('custom-fields.resource.table.columns.enabled', true);
+        return config('custom-fields.features.table.columns.enabled', true);
     }
 
     public static function isTableFiltersEnabled(): bool
     {
-        return config('custom-fields.resource.table.filters.enabled', true);
-    }
-
-    public static function isResourceGloballySearchable(): bool
-    {
-        return config('custom-fields.custom_fields_resource.is_globally_searchable', false);
+        return config('custom-fields.features.table.filters.enabled', true);
     }
 
     public static function isTenantEnabled(): bool
@@ -63,6 +48,6 @@ class Utils
 
     public static function isValuesEncryptionEnabled(): bool
     {
-        return config('custom-fields.encryption.enabled', false);
+        return config('custom-fields.features.encryption.enabled', false);
     }
 }

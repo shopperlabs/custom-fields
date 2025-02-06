@@ -90,8 +90,14 @@ trait UsesCustomFields
             return null;
         }
 
-        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id)->first();
+        $customFieldValue = $this->customFieldValues()
+            ->where('custom_field_id', $customField->id);
 
+        if (Utils::isValuesEncryptionEnabled() && $customField?->settings?->encrypted) {
+            $customFieldValue = $customFieldValue->withCasts(['text_value' => 'encrypted']);
+        }
+
+        $customFieldValue = $customFieldValue->first();
         $customFieldValue = $customFieldValue ? $customFieldValue->getValue() : null;
 
         return $customFieldValue instanceof Collection ? $customFieldValue->toArray() : $customFieldValue;
@@ -107,8 +113,13 @@ trait UsesCustomFields
             $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
         }
 
-        $customFieldValue = $this->customFieldValues()->firstOrNew($data);
+        $customFieldValue = $this->customFieldValues();
 
+        if (Utils::isValuesEncryptionEnabled() && $customField?->settings?->encrypted) {
+            $customFieldValue->withCasts(['text_value' => 'encrypted']);
+        }
+
+        $customFieldValue = $customFieldValue->firstOrNew($data);
         $customFieldValue->setValue($value);
         $customFieldValue->save();
     }
