@@ -25,7 +25,7 @@ final readonly class CustomFieldsFilter
         return $instance->customFields()
             ->with('options')
             ->whereIn('type', CustomFieldType::filterable()->pluck('value'))
-            ->whereJsonDoesntContain('settings->encrypted', [true])
+            ->nonEncrypted()
             ->get()
             ->map(fn (CustomField $customField) => $fieldFilterFactory->create($customField))
             ->toArray();

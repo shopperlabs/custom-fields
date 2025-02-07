@@ -25,6 +25,7 @@ final class CustomFieldSectionData extends Data
         public string $entityType,
         public CustomFieldSectionType $type = CustomFieldSectionType::SECTION,
         public bool $active = true,
+        public bool $systemDefined = false,
         public ?CustomFieldSectionSettingsData $settings = null
     ) {}
 }

@@ -46,7 +46,7 @@ final class CustomField extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'width' => CustomFieldWidth::_100
+        'width' => CustomFieldWidth::_100,
     ];
 
     public function __construct(array $attributes = [])
@@ -69,10 +69,34 @@ final class CustomField extends Model
             'type' => CustomFieldType::class,
             'width' => CustomFieldWidth::class,
             'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
-            'active' => 'boolean', // TODO: Remove
-            'system_defined' => 'boolean', // TODO: Remove
+            'active' => 'boolean',
+            'system_defined' => 'boolean',
             'settings' => CustomFieldSettingsData::class . ':default',
         ];
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
+    }
+
+    /**
+     * @return HasMany<CustomFieldValue>
+     */
+    public function values(): HasMany
+    {
+        return $this->hasMany(CustomFieldValue::class);
+    }
+
+    /**
+     * @return HasMany<CustomFieldOption>
+     */
+    public function options(): HasMany
+    {
+        return $this->hasMany(CustomFieldOption::class);
     }
 
     /**
@@ -111,25 +135,18 @@ final class CustomField extends Model
         return $builder->where('entity_type', $entity);
     }
 
-    public function section(): BelongsTo
-    {
-        return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
-    }
 
     /**
-     * @return HasMany<CustomFieldValue>
+     * Scope to filter non-encrypted fields including NULL settings
+     *
+     * @param Builder $query
+     * @return Builder
      */
-    public function values(): HasMany
+    public function scopeNonEncrypted(Builder $query): Builder
     {
-        return $this->hasMany(CustomFieldValue::class);
-    }
-
-    /**
-     * @return HasMany<CustomFieldOption>
-     */
-    public function options(): HasMany
-    {
-        return $this->hasMany(CustomFieldOption::class);
+        return $query->where(function($query) {
+            $query->whereNull('settings')->orWhereJsonDoesntContain('settings->encrypted', [true]);
+        });
     }
 
     /**
