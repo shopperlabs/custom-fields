@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Relaticle\CustomFields\Data\CustomFieldSettingsData;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
@@ -27,6 +28,7 @@ use Spatie\LaravelData\DataCollection;
  * @property string $entity_type
  * @property string $lookup_type
  * @property DataCollection<int, ValidationRuleData> $validation_rules
+ * @property CustomFieldSettingsData $settings
  * @property int $sort_order
  * @property bool $active
  * @property bool $system_defined
@@ -44,7 +46,7 @@ final class CustomField extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'width' => CustomFieldWidth::_100
+        'width' => CustomFieldWidth::_100,
     ];
 
     public function __construct(array $attributes = [])
@@ -69,7 +71,32 @@ final class CustomField extends Model
             'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
             'active' => 'boolean',
             'system_defined' => 'boolean',
+            'settings' => CustomFieldSettingsData::class . ':default',
         ];
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
+    }
+
+    /**
+     * @return HasMany<CustomFieldValue>
+     */
+    public function values(): HasMany
+    {
+        return $this->hasMany(CustomFieldValue::class);
+    }
+
+    /**
+     * @return HasMany<CustomFieldOption>
+     */
+    public function options(): HasMany
+    {
+        return $this->hasMany(CustomFieldOption::class);
     }
 
     /**
@@ -108,25 +135,18 @@ final class CustomField extends Model
         return $builder->where('entity_type', $entity);
     }
 
-    public function section(): BelongsTo
-    {
-        return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
-    }
 
     /**
-     * @return HasMany<CustomFieldValue>
+     * Scope to filter non-encrypted fields including NULL settings
+     *
+     * @param Builder<CustomField> $query
+     * @return Builder<CustomField>
      */
-    public function values(): HasMany
+    public function scopeNonEncrypted(Builder $query): Builder
     {
-        return $this->hasMany(CustomFieldValue::class);
-    }
-
-    /**
-     * @return HasMany<CustomFieldOption>
-     */
-    public function options(): HasMany
-    {
-        return $this->hasMany(CustomFieldOption::class);
+        return $query->where(function($query) {
+            $query->whereNull('settings')->orWhereJsonDoesntContain('settings->encrypted', [true]);
+        });
     }
 
     /**
@@ -142,9 +162,6 @@ final class CustomField extends Model
      */
     public function getValueColumn(): string
     {
-        $type = $this->type->value;
-
-        return CustomFieldValue::$valueColumns[$type]
-            ?? throw new \InvalidArgumentException("Unsupported custom field type: {$type}");
+        return CustomFieldValue::getValueColumn($this->type);
     }
 }

@@ -13,10 +13,18 @@ use Throwable;
 
 final readonly class SelectComponent implements FieldComponentInterface
 {
+    /**
+     * @param FieldConfigurator $configurator
+     */
     public function __construct(private FieldConfigurator $configurator)
     {
     }
 
+    /**
+     * @param CustomField $customField
+     * @return Select
+     * @throws Throwable
+     */
     public function make(CustomField $customField): Select
     {
         $field = Select::make("custom_fields.{$customField->code}")->searchable();
@@ -40,8 +48,16 @@ final readonly class SelectComponent implements FieldComponentInterface
         $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($lookupType);
         $globalSearchableAttributes = FilamentResourceService::getGlobalSearchableAttributes($lookupType);
 
-        // TODO: Check tenant support for below queries and other lookups
         return $select
+            ->options(function () use ($select, $entityInstance, $recordTitleAttribute) {
+                if (!$select->isPreloaded()) {
+                    return [];
+                }
+
+                return $entityInstance::query()
+                    ->pluck($recordTitleAttribute, 'id')
+                    ->toArray();
+            })
             ->getSearchResultsUsing(fn(string $search): array => $entityInstance->query()
                 ->whereAny($globalSearchableAttributes, 'like', "%{$search}%")
                 ->limit(50)

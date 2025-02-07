@@ -20,8 +20,8 @@ final readonly class DateComponent implements FieldComponentInterface
         $field = DatePicker::make("custom_fields.{$customField->code}")
             ->native(FieldTypeUtils::isDatePickerNative())
             ->format(FieldTypeUtils::getDateFormat())
-            ->displayFormat(FieldTypeUtils::getDateDisplayFormat())
-            ->placeholder(FieldTypeUtils::getDateDisplayFormat());
+            ->displayFormat(FieldTypeUtils::getDateFormat())
+            ->placeholder(FieldTypeUtils::getDateFormat());
 
         return $this->configurator->configure($field, $customField);
     }

@@ -3,40 +3,17 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Custom Fields Resource Configuration
+    | Features
     |--------------------------------------------------------------------------
     |
-    | This section controls the Custom Fields resource.
-    | This allows you to customize the behavior of the resource.
+    | This section controls the features of the Custom Fields package.
+    | You can enable or disable features as needed.
     |
     */
-    'custom_fields_resource' => [
-        'should_register_navigation' => true,
-        'slug' => 'custom-fields',
-        'navigation_sort' => -1,
-        'navigation_badge' => false,
-        'navigation_group' => true,
-        'is_globally_searchable' => false,
-        'is_scoped_to_tenant' => true,
-        'cluster' => null,
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Entity Resources Configuration
-    |--------------------------------------------------------------------------
-    |
-    | This section controls which Filament resources are allowed or disallowed
-    | to have custom fields. You can specify allowed resources, disallowed
-    | resources, or leave them empty to use default behavior.
-    |
-    */
-    'allowed_entity_resources' => [
-        // App\Filament\Resources\UserResource::class,
-    ],
-
-    'disallowed_entity_resources' => [
-        //
+    'features' => [
+        'encryption' => [
+            'enabled' => true,
+        ],
     ],
 
     /*
@@ -83,6 +60,41 @@ return [
             'format' => 'Y-m-d H:i:s',
             'display_format' => null
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Fields Resource Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the Custom Fields resource.
+    | This allows you to customize the behavior of the resource.
+    |
+    */
+    'custom_fields_resource' => [
+        'should_register_navigation' => true,
+        'slug' => 'custom-fields',
+        'navigation_sort' => -1,
+        'navigation_group' => true,
+        'cluster' => null,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Entity Resources Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This section controls which Filament resources are allowed or disallowed
+    | to have custom fields. You can specify allowed resources, disallowed
+    | resources, or leave them empty to use default behavior.
+    |
+    */
+    'allowed_entity_resources' => [
+        // App\Filament\Resources\UserResource::class,
+    ],
+
+    'disallowed_entity_resources' => [
+        //
     ],
 
     /*

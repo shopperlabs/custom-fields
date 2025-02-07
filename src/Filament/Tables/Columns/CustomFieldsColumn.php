@@ -26,8 +26,8 @@ final readonly class CustomFieldsColumn
             ->get()
             ->map(fn(CustomField $customField) => $fieldColumnFactory->create($customField)
                 ->toggleable(
-                    condition: config('custom-fields.resource.table.columns_toggleable.enabled', true),
-                    isToggledHiddenByDefault: config('custom-fields.resource.table.columns_toggleable.hidden_by_default', true)
+                    condition: Utils::isTableColumnsToggleableEnabled(),
+                    isToggledHiddenByDefault: Utils::isTableColumnsToggleableHiddenByDefault()
                 )
             )
             ->toArray();

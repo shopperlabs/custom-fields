@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Support\Utils;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         /**
@@ -35,6 +34,8 @@ return new class extends Migration
 
             $table->boolean('active')->default(true);
             $table->boolean('system_defined')->default(false);
+
+            $table->json('settings')->nullable();
 
             $table->unique($uniqueColumns);
 
@@ -68,6 +69,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->boolean('system_defined')->default(false);
 
+            $table->json('settings')->nullable();
 
             $table->unique($uniqueColumns);
 
@@ -117,8 +119,8 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->string('string_value')->nullable();
-            $table->text('text_value')->nullable();
+            $table->text('string_value')->nullable();
+            $table->longText('text_value')->nullable();
             $table->boolean('boolean_value')->nullable();
             $table->integer('integer_value')->nullable();
             $table->double('float_value')->nullable();

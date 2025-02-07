@@ -27,16 +27,7 @@ final readonly class FieldConfigurator
             ->reactive()
             ->afterStateHydrated(function ($component, $state, $record) use ($customField): void {
                 $value = $record?->getCustomFieldValue($customField->code);
-
-                $component->state(match ($customField->type) {
-                    CustomFieldType::DATE => $value instanceof Carbon ? $value->toDateString() : $value,
-                    CustomFieldType::DATE_TIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
-                    CustomFieldType::CHECKBOX_LIST,
-                    CustomFieldType::MULTI_SELECT,
-                    CustomFieldType::TAGS_INPUT,
-                    CustomFieldType::TOGGLE_BUTTONS, => is_array($value) ? $value : [],
-                    default => $value,
-                });
+                $component->state($value);
             })
             ->dehydrated(fn($state): bool => $state !== null && $state !== '')
             ->required($this->isRequired($customField))

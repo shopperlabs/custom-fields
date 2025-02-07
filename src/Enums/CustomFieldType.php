@@ -79,6 +79,7 @@ enum CustomFieldType: string implements HasLabel
         ];
     }
 
+
     /**
      * @return Collection
      */
@@ -91,6 +92,20 @@ enum CustomFieldType: string implements HasLabel
             self::TAGS_INPUT,
             self::TOGGLE_BUTTONS,
             self::RADIO,
+        ]);
+    }
+
+    /**
+     * @return Collection
+     */
+    public static function encryptables(): Collection
+    {
+        return collect([
+            self::TEXT,
+            self::TEXTAREA,
+            self::RICH_EDITOR,
+            self::MARKDOWN_EDITOR,
+            self::LINK,
         ]);
     }
 

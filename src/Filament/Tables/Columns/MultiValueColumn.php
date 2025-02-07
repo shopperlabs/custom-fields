@@ -19,6 +19,7 @@ final readonly class MultiValueColumn implements ColumnInterface
     {
         return BaseTextColumn::make("custom_fields.$customField->code")
             ->label($customField->name)
+            ->sortable(false)
             ->getStateUsing(fn($record) => $this->getMultiSelectColumnValue($record, $customField));
     }
 

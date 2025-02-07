@@ -19,6 +19,9 @@ use Relaticle\CustomFields\Support\Utils;
  */
 trait UsesCustomFields
 {
+    /**
+     * @param $attributes
+     */
     public function __construct($attributes = [])
     {
         // Ensure custom fields are included in a fillable array
@@ -82,6 +85,10 @@ trait UsesCustomFields
         return $this->morphMany(CustomFieldValue::class, 'entity');
     }
 
+    /**
+     * @param string $code
+     * @return mixed
+     */
     public function getCustomFieldValue(string $code): mixed
     {
         $customField = $this->customFields()->where('code', $code)->first();
@@ -90,13 +97,24 @@ trait UsesCustomFields
             return null;
         }
 
-        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id)->first();
+        $customFieldValue = $this->customFieldValues()
+            ->where('custom_field_id', $customField->id);
 
+        if ($customField->settings->encrypted) {
+            $customFieldValue = $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
+        }
+
+        $customFieldValue = $customFieldValue->first();
         $customFieldValue = $customFieldValue ? $customFieldValue->getValue() : null;
 
         return $customFieldValue instanceof Collection ? $customFieldValue->toArray() : $customFieldValue;
     }
 
+    /**
+     * @param string $code
+     * @param mixed $value
+     * @return void
+     */
     public function saveCustomFieldValue(string $code, mixed $value): void
     {
         $customField = $this->customFields()->where('code', $code)->firstOrFail();
@@ -107,14 +125,20 @@ trait UsesCustomFields
             $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
         }
 
-        $customFieldValue = $this->customFieldValues()->firstOrNew($data);
+        $customFieldValue = $this->customFieldValues();
 
+        if ($customField->settings->encrypted) {
+            $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
+        }
+
+        $customFieldValue = $customFieldValue->firstOrNew($data);
         $customFieldValue->setValue($value);
         $customFieldValue->save();
     }
 
     /**
      * @param array<string, mixed> $customFields
+     * @return void
      */
     public function saveCustomFields(array $customFields): void
     {
