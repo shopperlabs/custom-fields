@@ -101,7 +101,7 @@ trait UsesCustomFields
             ->where('custom_field_id', $customField->id);
 
         if (Utils::isValuesEncryptionFeatureEnabled() && $customField->settings->encrypted) {
-            $customFieldValue = $customFieldValue->withCasts(['text_value' => 'encrypted']);
+            $customFieldValue = $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
         }
 
         $customFieldValue = $customFieldValue->first();
@@ -128,7 +128,7 @@ trait UsesCustomFields
         $customFieldValue = $this->customFieldValues();
 
         if (Utils::isValuesEncryptionFeatureEnabled() && $customField->settings->encrypted) {
-            $customFieldValue->withCasts(['text_value' => 'encrypted']);
+            $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
         }
 
         $customFieldValue = $customFieldValue->firstOrNew($data);

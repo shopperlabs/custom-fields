@@ -145,6 +145,6 @@ final class CustomField extends Model
      */
     public function getValueColumn(): string
     {
-        return CustomFieldValue::getValueColumn();
+        return CustomFieldValue::getValueColumn($this->type);
     }
 }
