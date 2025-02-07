@@ -139,8 +139,8 @@ final class CustomField extends Model
     /**
      * Scope to filter non-encrypted fields including NULL settings
      *
-     * @param Builder $query
-     * @return Builder
+     * @param Builder<CustomField> $query
+     * @return Builder<CustomField>
      */
     public function scopeNonEncrypted(Builder $query): Builder
     {
