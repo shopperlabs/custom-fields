@@ -24,6 +24,7 @@ use Relaticle\CustomFields\Services\EntityTypeService;
  * @property CustomFieldSectionSettingsData $settings
  * @property int $sort_order
  * @property bool $active
+ * @property bool $system_defined
  */
 #[ScopedBy([TenantScope::class, SortOrderScope::class])]
 class CustomFieldSection extends Model
@@ -58,6 +59,6 @@ class CustomFieldSection extends Model
      */
     public function isSystemDefined(): bool
     {
-        return $this->settings->system_defined === true;
+        return $this->system_defined === true;
     }
 }

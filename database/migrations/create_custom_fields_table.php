@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Support\Utils;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         /**
@@ -35,6 +34,8 @@ return new class extends Migration
 
             $table->boolean('active')->default(true);
             $table->boolean('system_defined')->default(false);
+
+            $table->json('settings')->nullable();
 
             $table->unique($uniqueColumns);
 
@@ -65,8 +66,8 @@ return new class extends Migration
             $table->unsignedBigInteger('sort_order')->nullable();
             $table->json('validation_rules')->nullable();
 
-            $table->boolean('active')->default(true); // TODO: Remove
-            $table->boolean('system_defined')->default(false); // TODO: Remove
+            $table->boolean('active')->default(true);
+            $table->boolean('system_defined')->default(false);
 
             $table->json('settings')->nullable();
 
@@ -118,25 +119,14 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            if(Utils::isValuesEncryptionFeatureEnabled()) {
-                $table->text('string_value')->nullable();
-                $table->text('text_value')->nullable();
-                $table->text('boolean_value')->nullable();
-                $table->text('integer_value')->nullable();
-                $table->text('float_value')->nullable();
-                $table->text('date_value')->nullable();
-                $table->text('datetime_value')->nullable();
-                $table->text('json_value')->nullable();
-            }else {
-                $table->string('string_value')->nullable();
-                $table->text('text_value')->nullable();
-                $table->boolean('boolean_value')->nullable();
-                $table->integer('integer_value')->nullable();
-                $table->double('float_value')->nullable();
-                $table->date('date_value')->nullable();
-                $table->dateTime('datetime_value')->nullable();
-                $table->json('json_value')->nullable();
-            }
+            $table->text('string_value')->nullable();
+            $table->longText('text_value')->nullable();
+            $table->boolean('boolean_value')->nullable();
+            $table->integer('integer_value')->nullable();
+            $table->double('float_value')->nullable();
+            $table->date('date_value')->nullable();
+            $table->dateTime('datetime_value')->nullable();
+            $table->json('json_value')->nullable();
 
             $table->unique($uniqueColumns, 'custom_field_values_entity_type_unique');
         });

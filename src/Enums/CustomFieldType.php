@@ -98,6 +98,20 @@ enum CustomFieldType: string implements HasLabel
     /**
      * @return Collection
      */
+    public static function encryptables(): Collection
+    {
+        return collect([
+            self::TEXT,
+            self::TEXTAREA,
+            self::RICH_EDITOR,
+            self::MARKDOWN_EDITOR,
+            self::LINK,
+        ]);
+    }
+
+    /**
+     * @return Collection
+     */
     public static function filterable(): Collection
     {
         return collect([

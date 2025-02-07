@@ -137,7 +137,7 @@ final class CustomField extends Model
      */
     public function isSystemDefined(): bool
     {
-        return $this->settings->system_defined === true;
+        return $this->system_defined === true;
     }
 
     /**

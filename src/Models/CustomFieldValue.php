@@ -44,9 +44,41 @@ final class CustomFieldValue extends Model
         parent::__construct($attributes);
     }
 
-    public static function getValueColumn(): string
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return 'text_value';
+        return [
+            'string_value' => 'string',
+            'text_value' => 'string',
+            'integer_value' => 'integer',
+            'float_value' => 'float',
+            'json_value' => 'collection',
+            'boolean_value' => 'boolean',
+            'date_value' => 'date',
+            'datetime_value' => 'datetime',
+        ];
+    }
+
+    /**
+     * @param CustomFieldType $type
+     * @return string
+     */
+    public static function getValueColumn(CustomFieldType $type): string
+    {
+        return match ($type) {
+            CustomFieldType::TEXT, CustomFieldType::TEXTAREA, CustomFieldType::RICH_EDITOR, CustomFieldType::MARKDOWN_EDITOR => 'text_value',
+            CustomFieldType::LINK, CustomFieldType::COLOR_PICKER => 'string_value',
+            CustomFieldType::NUMBER, CustomFieldType::RADIO, CustomFieldType::SELECT => 'integer_value',
+            CustomFieldType::CHECKBOX, CustomFieldType::TOGGLE => 'boolean_value',
+            CustomFieldType::CHECKBOX_LIST, CustomFieldType::TOGGLE_BUTTONS, CustomFieldType::TAGS_INPUT, CustomFieldType::MULTI_SELECT => 'json_value',
+            CustomFieldType::CURRENCY => 'float_value',
+            CustomFieldType::DATE => 'date_value',
+            CustomFieldType::DATE_TIME => 'datetime_value',
+        };
     }
 
     /**
@@ -70,20 +102,8 @@ final class CustomFieldValue extends Model
      */
     public function getValue(): mixed
     {
-        $column = $this->getValueColumn();
-
-        $value = $this->$column;
-
-        return match ($this->customField->type) {
-            CustomFieldType::DATE => $value instanceof Carbon ? $value->toDateString() : $value,
-            CustomFieldType::DATE_TIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
-            CustomFieldType::TOGGLE, CustomFieldType::CHECKBOX => (bool)$value,
-            CustomFieldType::CHECKBOX_LIST,
-            CustomFieldType::MULTI_SELECT,
-            CustomFieldType::TAGS_INPUT,
-            CustomFieldType::TOGGLE_BUTTONS, => $value ? json_decode($value) : [],
-            default => $value,
-        };
+        $column = $this->getValueColumn($this->customField->type);
+        return $this->$column;
     }
 
     /**
@@ -92,10 +112,7 @@ final class CustomFieldValue extends Model
      */
     public function setValue(mixed $value): void
     {
-        $column = $this->getValueColumn();
-
-        $value = gettype($value) === 'array' ? json_encode($value) : $value;
-
+        $column = $this->getValueColumn($this->customField->type);
         $this->$column = $value;
     }
 }

@@ -122,8 +122,9 @@ class FieldForm implements FormInterface
                                 }),
                             Forms\Components\Toggle::make('settings.encrypted')
                                 ->inline(false)
-//                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
+                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
                                 ->label(__('custom-fields::custom-fields.field.form.encrypted'))
+                                ->visible(fn(Forms\Get $get): bool => in_array($get('type'), CustomFieldType::encryptables()->pluck('value')->toArray()))
                                 ->default(false),
                             Forms\Components\Select::make('options_lookup_type')
                                 ->label(__('custom-fields::custom-fields.field.form.options_lookup_type.label'))
