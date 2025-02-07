@@ -79,6 +79,7 @@ enum CustomFieldType: string implements HasLabel
         ];
     }
 
+
     /**
      * @return Collection
      */
@@ -118,6 +119,31 @@ enum CustomFieldType: string implements HasLabel
     public function getLabel(): ?string
     {
         return self::options()[$this->value];
+    }
+
+    /**
+     * @param $column
+     * @param $precision
+     * @return string
+     */
+    public function getCast($column, $precision = null): string
+    {
+        return match($this) {
+            CustomFieldType::NUMBER,
+            CustomFieldType::CURRENCY => $precision
+                ? "CAST($column AS DECIMAL($precision))"
+                : "CAST($column AS DECIMAL)",
+
+            CustomFieldType::DATE => "CAST($column AS DATE)",
+
+            CustomFieldType::DATE_TIME => "CAST($column AS DATETIME)",
+
+            CustomFieldType::CHECKBOX,
+            CustomFieldType::TOGGLE => "CAST($column AS UNSIGNED)",
+
+            // For text-based fields, ensure proper string casting
+            default => "CAST($column AS VARCHAR)"
+        };
     }
 
     /**
