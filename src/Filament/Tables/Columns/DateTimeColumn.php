@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
+use Closure;
+use Filament\Support\Components\Component;
 use Filament\Tables\Columns\Column as BaseColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Relaticle\CustomFields\Enums\CustomFieldType;
@@ -11,17 +13,21 @@ use Relaticle\CustomFields\Models\CustomField;
 use Filament\Tables\Columns\TextColumn as BaseTextColumn;
 use Relaticle\CustomFields\Support\FieldTypeUtils;
 
-final readonly class DateTimeColumn implements ColumnInterface
+class DateTimeColumn extends Component implements ColumnInterface
 {
+    protected null|Closure $locale = null;
+
+    /**
+     * @param CustomField $customField
+     * @return BaseColumn
+     */
     public function make(CustomField $customField): BaseColumn
     {
-        return BaseTextColumn::make("custom_fields.$customField->code")
-            ->when($customField->type === CustomFieldType::DATE_TIME, function($column){
-                $column->dateTime(FieldTypeUtils::getDateTimeFormat());
-            })
-            ->when($customField->type === CustomFieldType::DATE, function($column){
-                $column->date(FieldTypeUtils::getDateFormat());
-            })
+        $static = BaseTextColumn::make("custom_fields.$customField->code");
+
+        self::configure();
+
+        $static
             ->sortable(
                 condition: !$customField->settings->encrypted,
                 query: function (Builder $query, string $direction) use ($customField): Builder {
@@ -38,6 +44,35 @@ final readonly class DateTimeColumn implements ColumnInterface
                 }
             )
             ->label($customField->name)
-            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));
+            ->getStateUsing(function ($record) use ($customField) {
+                $value = $record->getCustomFieldValue($customField->code);
+
+                if ($this->locale) {
+                    $value = $this->locale->call($this, $value);
+                }
+
+                if ($value && $customField->type === CustomFieldType::DATE_TIME) {
+                    return $value->format(FieldTypeUtils::getDateTimeFormat());
+                }
+
+                if ($value && $customField->type === CustomFieldType::DATE) {
+                    return $value->format(FieldTypeUtils::getDateFormat());
+                }
+
+                return $value;
+            });
+
+        return $static;
+    }
+
+    /**
+     * @param Closure $locale
+     * @return $this
+     */
+    public function localize(Closure $locale): static
+    {
+        $this->locale = $locale;
+
+        return $this;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Models\Concerns\Activable;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
+use Relaticle\CustomFields\Observers\CustomFieldSectionObserver;
 use Relaticle\CustomFields\Services\EntityTypeService;
 
 /**
@@ -27,6 +29,7 @@ use Relaticle\CustomFields\Services\EntityTypeService;
  * @property bool $system_defined
  */
 #[ScopedBy([TenantScope::class, SortOrderScope::class])]
+#[ObservedBy(CustomFieldSectionObserver::class)]
 class CustomFieldSection extends Model
 {
     use Activable;

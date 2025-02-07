@@ -32,19 +32,11 @@ class ActivableScope implements Scope
      * @param  \Illuminate\Database\Eloquent\Builder<*>  $builder
      * @return void
      */
-    public function extend(Builder $builder)
+    public function extend(Builder $builder): void
     {
         foreach ($this->extensions as $extension) {
             $this->{"add{$extension}"}($builder);
         }
-
-        $builder->onDelete(function (Builder $builder) {
-            $column = $this->getDeletedAtColumn($builder);
-
-            return $builder->update([
-                $column => $builder->getModel()->freshTimestampString(),
-            ]);
-        });
     }
 
     /**
