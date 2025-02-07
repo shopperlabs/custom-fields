@@ -13,10 +13,18 @@ use Throwable;
 
 final readonly class SelectComponent implements FieldComponentInterface
 {
+    /**
+     * @param FieldConfigurator $configurator
+     */
     public function __construct(private FieldConfigurator $configurator)
     {
     }
 
+    /**
+     * @param CustomField $customField
+     * @return Select
+     * @throws Throwable
+     */
     public function make(CustomField $customField): Select
     {
         $field = Select::make("custom_fields.{$customField->code}")->searchable();

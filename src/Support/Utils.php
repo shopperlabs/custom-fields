@@ -33,12 +33,22 @@ class Utils
 
     public static function isTableColumnsEnabled(): bool
     {
-        return config('custom-fields.features.table.columns.enabled', true);
+        return config('custom-fields.resource.table.columns.enabled', true);
+    }
+
+    public static function isTableColumnsToggleableEnabled(): bool
+    {
+        return config('custom-fields.resource.table.columns_toggleable.enabled', true);
+    }
+
+    public static function isTableColumnsToggleableHiddenByDefault(): bool
+    {
+        return config('custom-fields.resource.table.columns_toggleable.hidden_by_default', true);
     }
 
     public static function isTableFiltersEnabled(): bool
     {
-        return config('custom-fields.features.table.filters.enabled', true);
+        return config('custom-fields.resource.table.filters.enabled', true);
     }
 
     public static function isTenantEnabled(): bool

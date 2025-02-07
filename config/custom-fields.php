@@ -14,7 +14,18 @@ return [
         'encryption' => [
             'enabled' => true,
         ],
+    ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Entity Resources Customization
+    |--------------------------------------------------------------------------
+    |
+    | This section allows you to customize the behavior of entity resources,
+    | such as enabling table column toggling and setting default visibility.
+    |
+    */
+    'resource' => [
         'table' => [
             'columns' => [
                 'enabled' => true,
