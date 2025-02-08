@@ -151,6 +151,7 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::ALPHA_NUM,
                 CustomFieldValidationRule::ALPHA_DASH,
                 CustomFieldValidationRule::STRING,
+                CustomFieldValidationRule::EMAIL,
             ],
             self::TEXTAREA => [
                 CustomFieldValidationRule::REQUIRED,
