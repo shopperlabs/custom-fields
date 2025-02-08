@@ -152,6 +152,7 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::ALPHA_DASH,
                 CustomFieldValidationRule::STRING,
                 CustomFieldValidationRule::EMAIL,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::TEXTAREA => [
                 CustomFieldValidationRule::REQUIRED,
@@ -159,6 +160,7 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
                 CustomFieldValidationRule::STRING,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::CURRENCY => [
                 CustomFieldValidationRule::REQUIRED,
@@ -167,6 +169,7 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
                 CustomFieldValidationRule::DECIMAL,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::DATE, self::DATE_TIME => [
                 CustomFieldValidationRule::REQUIRED,
@@ -200,10 +203,12 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
                 CustomFieldValidationRule::INTEGER,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::LINK => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::URL,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::CHECKBOX_LIST, self::TAGS_INPUT => [
                 CustomFieldValidationRule::REQUIRED,
@@ -218,10 +223,12 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MIN,
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::COLOR_PICKER => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::STRING,
+                CustomFieldValidationRule::STARTS_WITH
             ],
         };
     }
