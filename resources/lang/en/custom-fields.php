@@ -28,7 +28,10 @@ return [
             'name_helper_text' => "The field's label shown in the table's and form's.",
             'code' => 'Code',
             'code_helper_text' => 'Unique code to identify this field throughout the resource.',
+            'settings' => 'Settings',
             'encrypted' => 'Encrypted',
+            'visible_in_list' => 'Visible in List',
+            'visible_in_view' => 'Visible in View',
             'options_lookup_type' => [
                 'label' => 'Options Lookup Type',
                 'options' => 'Options',

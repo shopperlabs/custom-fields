@@ -20,6 +20,7 @@ use Relaticle\CustomFields\Models\Concerns\Activable;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
 use Relaticle\CustomFields\Observers\CustomFieldObserver;
+use Relaticle\CustomFields\QueryBuilders\CustomFieldQueryBuilder;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Spatie\LaravelData\DataCollection;
 
@@ -61,6 +62,11 @@ final class CustomField extends Model
         parent::__construct($attributes);
     }
 
+    public function newEloquentBuilder($query): CustomFieldQueryBuilder
+    {
+        return new CustomFieldQueryBuilder($query);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -100,56 +106,6 @@ final class CustomField extends Model
     public function options(): HasMany
     {
         return $this->hasMany(CustomFieldOption::class);
-    }
-
-    /**
-     * @param Builder<CustomField> $builder
-     * @return Builder<CustomField>
-     *
-     * @noinspection PhpUnused
-     */
-    public function scopeForType(Builder $builder, CustomFieldType $type): Builder
-    {
-        return $builder->where('type', $type);
-    }
-
-    /**
-     * @param Builder<CustomField> $builder
-     * @return Builder<CustomField>
-     *
-     * @noinspection PhpUnused
-     */
-    public function scopeForEntity(Builder $builder, string $model): Builder
-    {
-        return $builder->where(
-            'entity_type',
-            EntityTypeService::getEntityFromModel($model)
-        );
-    }
-
-    /**
-     * @param Builder<CustomField> $builder
-     * @return Builder<CustomField>
-     *
-     * @noinspection PhpUnused
-     */
-    public function scopeForMorphEntity(Builder $builder, string $entity): Builder
-    {
-        return $builder->where('entity_type', $entity);
-    }
-
-
-    /**
-     * Scope to filter non-encrypted fields including NULL settings
-     *
-     * @param Builder<CustomField> $query
-     * @return Builder<CustomField>
-     */
-    public function scopeNonEncrypted(Builder $query): Builder
-    {
-        return $query->where(function($query) {
-            $query->whereNull('settings')->orWhereJsonDoesntContain('settings->encrypted', [true]);
-        });
     }
 
     /**

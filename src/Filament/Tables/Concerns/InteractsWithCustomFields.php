@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Filament\Tables\Concerns;
 
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
 use Relaticle\CustomFields\Filament\Tables\Columns\CustomFieldsColumn;
 use Relaticle\CustomFields\Filament\Tables\Filter\CustomFieldsFilter;
@@ -18,7 +19,9 @@ trait InteractsWithCustomFields
      */
     public function getTable(): Table
     {
-        $instance = app(self::getModel());
+        $model = $this instanceof RelationManager ? $this->getRelationship()->getModel()::class : $this->getModel();
+
+        $instance = app($model);
 
         $this->table
             ->columns([

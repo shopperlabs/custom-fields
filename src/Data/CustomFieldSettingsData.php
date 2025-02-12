@@ -10,6 +10,8 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class CustomFieldSettingsData extends Data
 {
     public function __construct(
+        public bool $visible_in_list = true,
+        public bool $visible_in_view = true,
         public bool $encrypted = false,
     )
     {
