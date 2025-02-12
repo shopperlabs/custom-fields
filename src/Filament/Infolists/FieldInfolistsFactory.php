@@ -8,7 +8,10 @@ use Filament\Infolists\Components\Entry;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Filament\Infolists\Fields\ColorEntry;
 use Relaticle\CustomFields\Filament\Infolists\Fields\DateTimeEntry;
+use Relaticle\CustomFields\Filament\Infolists\Fields\MultiValueEntry;
+use Relaticle\CustomFields\Filament\Infolists\Fields\SingleValueEntry;
 use Relaticle\CustomFields\Filament\Infolists\Fields\TextEntry;
 use Relaticle\CustomFields\Models\CustomField;
 use RuntimeException;
@@ -22,20 +25,20 @@ final class FieldInfolistsFactory
         CustomFieldType::TEXT->value => TextEntry::class,
         CustomFieldType::TOGGLE->value => TextEntry::class,
         CustomFieldType::LINK->value => TextEntry::class,
-        CustomFieldType::SELECT->value => TextEntry::class,
+        CustomFieldType::SELECT->value => SingleValueEntry::class,
         CustomFieldType::NUMBER->value => TextEntry::class,
         CustomFieldType::CHECKBOX->value => TextEntry::class,
-        CustomFieldType::CHECKBOX_LIST->value => TextEntry::class,
-        CustomFieldType::RADIO->value => TextEntry::class,
+        CustomFieldType::CHECKBOX_LIST->value => MultiValueEntry::class,
+        CustomFieldType::RADIO->value => SingleValueEntry::class,
         CustomFieldType::RICH_EDITOR->value => TextEntry::class,
         CustomFieldType::MARKDOWN_EDITOR->value => TextEntry::class,
-        CustomFieldType::TAGS_INPUT->value => TextEntry::class,
-        CustomFieldType::COLOR_PICKER->value => TextEntry::class,
-        CustomFieldType::TOGGLE_BUTTONS->value => TextEntry::class,
+        CustomFieldType::TAGS_INPUT->value => MultiValueEntry::class,
+        CustomFieldType::COLOR_PICKER->value => ColorEntry::class,
+        CustomFieldType::TOGGLE_BUTTONS->value => MultiValueEntry::class,
         CustomFieldType::TEXTAREA->value => TextEntry::class,
         CustomFieldType::CURRENCY->value => TextEntry::class,
         CustomFieldType::DATE->value => TextEntry::class,
-        CustomFieldType::MULTI_SELECT->value => TextEntry::class,
+        CustomFieldType::MULTI_SELECT->value => MultiValueEntry::class,
         CustomFieldType::DATE_TIME->value => DateTimeEntry::class,
     ];
 
