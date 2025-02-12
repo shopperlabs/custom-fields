@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\Field;
-use Illuminate\Support\Carbon;
 use Relaticle\CustomFields\Data\ValidationRuleData;
-use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
 use Relaticle\CustomFields\Models\CustomField;
 use Spatie\LaravelData\DataCollection;
@@ -27,6 +25,7 @@ final readonly class FieldConfigurator
             ->reactive()
             ->afterStateHydrated(function ($component, $state, $record) use ($customField): void {
                 $value = $record?->getCustomFieldValue($customField->code);
+                $value = $value ?? ($customField->type->hasMultipleValues() ? [] : null);
                 $component->state($value);
             })
             ->dehydrated(fn($state): bool => $state !== null && $state !== '')

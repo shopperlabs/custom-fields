@@ -10,6 +10,8 @@ use Filament\Infolists\Components\Section;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
+use Relaticle\CustomFields\Filament\Infolists\Sections\FieldsetInfolistsComponent;
+use Relaticle\CustomFields\Filament\Infolists\Sections\HeadlessInfolistsComponent;
 use Relaticle\CustomFields\Filament\Infolists\Sections\SectionInfolistsComponent;
 use Relaticle\CustomFields\Models\CustomFieldSection;
 use RuntimeException;
@@ -21,7 +23,8 @@ final class SectionInfolistsFactory
      */
     private array $componentMap = [
         CustomFieldSectionType::SECTION->value => SectionInfolistsComponent::class,
-        CustomFieldSectionType::HEADLESS->value => SectionInfolistsComponent::class, // TODO: Implement headless section infolists component
+        CustomFieldSectionType::FIELDSET->value => FieldsetInfolistsComponent::class,
+        CustomFieldSectionType::HEADLESS->value => HeadlessInfolistsComponent::class,
     ];
 
     /**

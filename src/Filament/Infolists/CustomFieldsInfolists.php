@@ -33,7 +33,7 @@ final class CustomFieldsInfolists extends Component
     protected function generateSchema(): array
     {
         return CustomFieldSection::query()
-            ->with('fields')
+            ->with(['fields' => fn($query) => $query->visibleInView()])
             ->forEntityType($this->getRecord()::class)
             ->orderBy('sort_order')
             ->get()

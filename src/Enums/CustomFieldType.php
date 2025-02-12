@@ -95,6 +95,15 @@ enum CustomFieldType: string implements HasLabel
         ]);
     }
 
+    public function hasMultipleValues(): bool
+    {
+        return in_array($this, [
+            self::CHECKBOX_LIST,
+            self::TAGS_INPUT,
+            self::MULTI_SELECT,
+        ]);
+    }
+
     /**
      * @return Collection
      */

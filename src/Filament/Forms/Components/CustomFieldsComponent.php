@@ -10,6 +10,7 @@ use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\Field
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\SectionComponentFactory;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
+use Relaticle\CustomFields\QueryBuilders\CustomFieldQueryBuilder;
 
 final class CustomFieldsComponent extends Component
 {
@@ -42,9 +43,11 @@ final class CustomFieldsComponent extends Component
             ->map(function (CustomFieldSection $section) {
                 return $this->sectionComponentFactory->create($section)->schema(
                     function () use ($section) {
-                        return $section->fields->map(function (CustomField $customField) {
-                            return $this->fieldComponentFactory->create($customField);
-                        })->toArray();
+                        return $section->fields
+                            ->map(function (CustomField $customField) {
+                                return $this->fieldComponentFactory->create($customField);
+                            })
+                            ->toArray();
                     }
                 );
             })
