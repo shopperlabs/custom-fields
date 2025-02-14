@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Relaticle\CustomFields\Services;
+namespace Relaticle\CustomFields\Services\ValueResolver;
 
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
+use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Exceptions\MissingRecordTitleAttributeException;
 use Relaticle\CustomFields\Models\CustomField;
 use Throwable;
@@ -20,11 +21,16 @@ final readonly class LookupResolver
      */
     public function resolveLookupValues(array $values, CustomField $customField): Collection
     {
+        if ($customField->type === CustomFieldType::TAGS_INPUT) {
+            return collect($values);
+        }
+
         if (!isset($customField->lookup_type)) {
             return $customField->options->whereIn('id', $values)->pluck('name');
         }
 
         [$lookupInstance, $recordTitleAttribute] = $this->getLookupAttributes($customField->lookup_type);
+
         return $lookupInstance->whereIn('id', $values)->pluck($recordTitleAttribute);
     }
 

@@ -9,13 +9,13 @@ use Filament\Infolists\Components\TextEntry as BaseTextEntry;
 use Relaticle\CustomFields\Filament\Infolists\FieldInfolistsComponentInterface;
 use Relaticle\CustomFields\Filament\Infolists\FieldInfolistsConfigurator;
 use Relaticle\CustomFields\Models\CustomField;
-use Relaticle\CustomFields\Services\MultiValueResolver;
+use Relaticle\CustomFields\Services\ValueResolver\LookupMultiValueResolver;
 
 final readonly class MultiValueEntry implements FieldInfolistsComponentInterface
 {
     public function __construct(
         private FieldInfolistsConfigurator $configurator,
-        private MultiValueResolver         $valueResolver
+        private LookupMultiValueResolver $valueResolver
     )
     {
     }

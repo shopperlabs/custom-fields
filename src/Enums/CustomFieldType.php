@@ -95,6 +95,22 @@ enum CustomFieldType: string implements HasLabel
         ]);
     }
 
+    public function isOptionable(): bool
+    {
+        return self::optionables()->contains($this);
+    }
+
+    public function lookupable(): bool
+    {
+        return in_array($this, [
+            self::SELECT,
+            self::MULTI_SELECT,
+            self::RADIO,
+            self::CHECKBOX_LIST,
+            self::TAGS_INPUT,
+        ]);
+    }
+
     public function hasMultipleValues(): bool
     {
         return in_array($this, [

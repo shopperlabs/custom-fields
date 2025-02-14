@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
 use Filament\Tables\Columns\Column as BaseColumn;
+use Filament\Tables\Columns\TextColumn as BaseTextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Relaticle\CustomFields\Models\CustomField;
-use Filament\Tables\Columns\TextColumn as BaseTextColumn;
-use Relaticle\CustomFields\Services\SingleValueResolver;
+use Relaticle\CustomFields\Services\ValueResolver\LookupSingleValueResolver;
 
 final readonly class SingleValueColumn implements ColumnInterface
 {
-    public function __construct(public SingleValueResolver $valueResolver)
+    public function __construct(public LookupSingleValueResolver $valueResolver)
     {
     }
 
