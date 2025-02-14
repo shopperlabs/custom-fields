@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Services\ValueResolver;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Relaticle\CustomFields\Contracts\ValueResolvers;
 use Relaticle\CustomFields\Models\CustomField;
 
@@ -15,7 +16,7 @@ readonly class ValueResolver implements ValueResolvers
      * @param LookupSingleValueResolver $singleValueResolver
      */
     public function __construct(
-        private LookupMultiValueResolver $multiValueResolver,
+        private LookupMultiValueResolver  $multiValueResolver,
         private LookupSingleValueResolver $singleValueResolver
     )
     {
@@ -28,8 +29,15 @@ readonly class ValueResolver implements ValueResolvers
      */
     public function resolve(Model $record, CustomField $customField): string
     {
+        Log::info('resolve', [
+            'record' => $record,
+            'customField' => $customField,
+            'isOptionable' => $customField->type->isOptionable(),
+            'hasMultipleValues' => $customField->type->hasMultipleValues(),
+        ]);
+
         if (!$customField->type->isOptionable()) {
-            return (string)$record->getCustomFieldValue($customField->code);
+            return (string)$record->getCustomFieldValue($customField);
         }
 
         if ($customField->type->hasMultipleValues()) {

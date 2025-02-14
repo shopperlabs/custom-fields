@@ -30,6 +30,6 @@ class IconColumn implements ColumnInterface
                 }
             )
             ->label($customField->name)
-            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code) ?? false);
+            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField) ?? false);
     }
 }

@@ -86,19 +86,12 @@ trait UsesCustomFields
     }
 
     /**
-     * @param string $code
+     * @param CustomField $customField
      * @return mixed
      */
-    public function getCustomFieldValue(string $code): mixed
+    public function getCustomFieldValue(CustomField $customField): mixed
     {
-        $customField = $this->customFields()->where('code', $code)->first();
-
-        if (!$customField) {
-            return null;
-        }
-
-        $customFieldValue = $this->customFieldValues()
-            ->where('custom_field_id', $customField->id);
+        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id);
 
         if ($customField->settings->encrypted) {
             $customFieldValue = $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
@@ -111,14 +104,12 @@ trait UsesCustomFields
     }
 
     /**
-     * @param string $code
+     * @param CustomField $customField
      * @param mixed $value
      * @return void
      */
-    public function saveCustomFieldValue(string $code, mixed $value): void
+    public function saveCustomFieldValue(CustomField $customField, mixed $value): void
     {
-        $customField = $this->customFields()->where('code', $code)->firstOrFail();
-
         $data = ['custom_field_id' => $customField->id];
 
         if (Utils::isTenantEnabled()) {
@@ -144,7 +135,7 @@ trait UsesCustomFields
     {
         $this->customFields()->each(function (CustomField $customField) use ($customFields): void {
             $value = $customFields[$customField->code] ?? null;
-            $this->saveCustomFieldValue($customField->code, $value);
+            $this->saveCustomFieldValue($customField, $value);
         });
     }
 }

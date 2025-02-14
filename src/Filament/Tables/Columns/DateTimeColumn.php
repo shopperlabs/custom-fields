@@ -45,7 +45,7 @@ class DateTimeColumn extends Component implements ColumnInterface
             )
             ->label($customField->name)
             ->getStateUsing(function ($record) use ($customField) {
-                $value = $record->getCustomFieldValue($customField->code);
+                $value = $record->getCustomFieldValue($customField);
 
                 if ($this->locale) {
                     $value = $this->locale->call($this, $value);

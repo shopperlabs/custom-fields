@@ -14,6 +14,6 @@ final readonly class ColorColumn implements ColumnInterface
     {
         return BaseColorColumn::make("custom_fields.$customField->code")
             ->label($customField->name)
-            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));
+            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField));
     }
 }

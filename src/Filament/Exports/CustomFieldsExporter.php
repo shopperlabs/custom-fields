@@ -37,6 +37,9 @@ readonly class CustomFieldsExporter
     {
         return ExportColumn::make($customField->name)
             ->label($customField->name)
-            ->getStateUsing(fn ($record) => $valueResolver->resolve($record, $customField));
+            ->state(function ($record) use ($customField, $valueResolver) {
+//                info('getStateUsing', [$record, $customField, $valueResolver->resolve($record->load('customFields', 'customFieldValues'), $customField)]);
+                return $valueResolver->resolve($record, $customField);
+            });
     }
 }

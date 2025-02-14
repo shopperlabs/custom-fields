@@ -21,7 +21,7 @@ interface HasCustomFields
      */
     public function customFieldValues(): MorphMany;
 
-    public function getCustomFieldValue(string $code): mixed;
+    public function getCustomFieldValue(CustomField $customField): mixed;
 
     public function saveCustomFieldValue(string $code, mixed $value): void;
 

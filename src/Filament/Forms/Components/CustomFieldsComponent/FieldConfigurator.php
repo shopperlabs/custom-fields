@@ -24,7 +24,7 @@ final readonly class FieldConfigurator
             ->label($customField->name)
             ->reactive()
             ->afterStateHydrated(function ($component, $state, $record) use ($customField): void {
-                $value = $record?->getCustomFieldValue($customField->code);
+                $value = $record?->getCustomFieldValue($customField);
                 $value = $value ?? ($customField->type->hasMultipleValues() ? [] : null);
                 $component->state($value);
             })

@@ -20,7 +20,7 @@ final readonly class FieldInfolistsConfigurator
         return $field
             ->label($customField->name)
             ->state(function ($record) use ($customField) {
-                return $record->getCustomFieldValue($customField->code);
+                return $record->getCustomFieldValue($customField);
             });
     }
 }

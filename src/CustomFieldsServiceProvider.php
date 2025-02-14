@@ -36,7 +36,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
 
     public static string $viewNamespace = 'custom-fields';
 
-    public function bootingPackage()
+    public function bootingPackage(): void
     {
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
         $this->app->singleton(ValueResolvers::class, ValueResolver::class);
