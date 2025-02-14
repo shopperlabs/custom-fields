@@ -23,7 +23,7 @@ interface HasCustomFields
 
     public function getCustomFieldValue(CustomField $customField): mixed;
 
-    public function saveCustomFieldValue(string $code, mixed $value): void;
+    public function saveCustomFieldValue(CustomField $customField, mixed $value): void;
 
     /**
      * @param  array<string, mixed>  $customFields

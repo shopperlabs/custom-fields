@@ -23,7 +23,6 @@ final readonly class CustomFieldsColumn
 
         return $instance->customFields()
             ->visibleInList()
-            ->whereHas('section', fn($query) => $query->active())
             ->with('options')
             ->get()
             ->map(fn(CustomField $customField) => $fieldColumnFactory->create($customField)

@@ -94,6 +94,7 @@ class CustomFields extends Page
     {
         foreach ($sections as $index => $section) {
             CustomFieldSection::query()
+                ->withDeactivated()
                 ->where('id', $section)
                 ->update([
                     'sort_order' => $index,

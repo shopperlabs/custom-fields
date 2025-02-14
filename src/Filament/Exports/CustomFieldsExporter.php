@@ -21,8 +21,7 @@ readonly class CustomFieldsExporter
 
         return $model->customFields()
             ->with('options')
-            ->whereHas('section', fn($query) => $query->active())
-            ->nonEncrypted()
+            ->visibleInList()
             ->get()
             ->map(fn (CustomField $customField) => self::create($customField, $valueResolver))
             ->toArray();
@@ -38,7 +37,6 @@ readonly class CustomFieldsExporter
         return ExportColumn::make($customField->name)
             ->label($customField->name)
             ->state(function ($record) use ($customField, $valueResolver) {
-//                info('getStateUsing', [$record, $customField, $valueResolver->resolve($record->load('customFields', 'customFieldValues'), $customField)]);
                 return $valueResolver->resolve($record, $customField);
             });
     }
