@@ -6,7 +6,6 @@ namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
 use Filament\Tables\Filters\BaseFilter;
 use Relaticle\CustomFields\Models\CustomField;
-use Relaticle\CustomFields\QueryBuilders\CustomFieldQueryBuilder;
 use Relaticle\CustomFields\Support\Utils;
 
 final readonly class CustomFieldsColumn
@@ -16,7 +15,7 @@ final readonly class CustomFieldsColumn
      */
     public static function all($instance): array
     {
-        if(Utils::isTableColumnsEnabled() === false) {
+        if (Utils::isTableColumnsEnabled() === false) {
             return [];
         }
 
@@ -24,6 +23,7 @@ final readonly class CustomFieldsColumn
 
         return $instance->customFields()
             ->visibleInList()
+            ->whereHas('section', fn($query) => $query->active())
             ->with('options')
             ->get()
             ->map(fn(CustomField $customField) => $fieldColumnFactory->create($customField)

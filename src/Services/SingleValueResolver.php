@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Relaticle\CustomFields\Services;
+
+use Relaticle\CustomFields\Models\CustomField;
+
+final readonly class SingleValueResolver implements ValueResolverInterface
+{
+    public function __construct(private LookupResolver $lookupResolver)
+    {
+    }
+
+    public function resolve($record, CustomField $customField): string
+    {
+        $value = $record->getCustomFieldValue($customField->code);
+        $lookupValue = $this->lookupResolver->resolveLookupValues([$value], $customField)->first();
+
+        return (string)$lookupValue;
+    }
+}

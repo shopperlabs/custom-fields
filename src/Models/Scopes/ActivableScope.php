@@ -15,7 +15,7 @@ class ActivableScope implements Scope
      *
      * @var string[]
      */
-    protected $extensions = ['WithDeactivated', 'WithoutDeactivated'];
+    protected $extensions = ['active', 'WithDeactivated', 'WithoutDeactivated'];
 
 
     /**
@@ -37,6 +37,13 @@ class ActivableScope implements Scope
         foreach ($this->extensions as $extension) {
             $this->{"add{$extension}"}($builder);
         }
+    }
+
+    protected function addActive(Builder $builder): void
+    {
+        $builder->macro('active', function (Builder $builder) {
+            return $builder->where($builder->getModel()->getQualifiedActiveColumn(), true);
+        });
     }
 
     /**
@@ -68,7 +75,7 @@ class ActivableScope implements Scope
             $model = $builder->getModel();
 
             $builder->withoutGlobalScope($this)->whereNull(
-                $model->getQualifiedDeletedAtColumn()
+                $model->getQualifiedActiveColumn()
             );
 
             return $builder;
