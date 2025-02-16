@@ -86,13 +86,26 @@ enum CustomFieldType: string implements HasLabel
     public static function optionables(): Collection
     {
         return collect([
-            self::MULTI_SELECT,
             self::SELECT,
+            self::MULTI_SELECT,
             self::CHECKBOX_LIST,
             self::TAGS_INPUT,
             self::TOGGLE_BUTTONS,
             self::RADIO,
         ]);
+    }
+
+    public function isBoolean(): bool
+    {
+        return in_array($this, [
+            self::TOGGLE,
+            self::CHECKBOX,
+        ]);
+    }
+
+    public function isOptionable(): bool
+    {
+        return self::optionables()->contains($this);
     }
 
     public function hasMultipleValues(): bool
@@ -101,6 +114,7 @@ enum CustomFieldType: string implements HasLabel
             self::CHECKBOX_LIST,
             self::TAGS_INPUT,
             self::MULTI_SELECT,
+            self::TOGGLE_BUTTONS,
         ]);
     }
 

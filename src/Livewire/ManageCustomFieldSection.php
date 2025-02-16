@@ -56,6 +56,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
     {
         foreach ($fields as $index => $field) {
             CustomField::query()
+                ->withDeactivated()
                 ->where('id', $field)
                 ->update([
                     'custom_field_section_id' => $sectionId,

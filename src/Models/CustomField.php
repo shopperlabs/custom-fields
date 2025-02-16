@@ -6,7 +6,6 @@ namespace Relaticle\CustomFields\Models;
 
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,11 +16,11 @@ use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Enums\CustomFieldWidth;
 use Relaticle\CustomFields\Models\Concerns\Activable;
+use Relaticle\CustomFields\Models\Scopes\CustomFieldsActivableScope;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
 use Relaticle\CustomFields\Observers\CustomFieldObserver;
 use Relaticle\CustomFields\QueryBuilders\CustomFieldQueryBuilder;
-use Relaticle\CustomFields\Services\EntityTypeService;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -62,6 +61,20 @@ final class CustomField extends Model
         parent::__construct($attributes);
     }
 
+    /**
+     * Boot the soft deleting trait for a model.
+     *
+     * @return void
+     */
+    public static function bootActivable(): void
+    {
+        CustomField::addGlobalScope(new CustomFieldsActivableScope());
+    }
+
+    /**
+     * @param $query
+     * @return CustomFieldQueryBuilder
+     */
     public function newEloquentBuilder($query): CustomFieldQueryBuilder
     {
         return new CustomFieldQueryBuilder($query);

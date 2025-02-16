@@ -16,7 +16,7 @@ final readonly class CustomFieldsFilter
      */
     public static function all($instance): array
     {
-        if(Utils::isTableFiltersEnabled() === false) {
+        if (Utils::isTableFiltersEnabled() === false) {
             return [];
         }
 
@@ -27,7 +27,7 @@ final readonly class CustomFieldsFilter
             ->whereIn('type', CustomFieldType::filterable()->pluck('value'))
             ->nonEncrypted()
             ->get()
-            ->map(fn (CustomField $customField) => $fieldFilterFactory->create($customField))
+            ->map(fn(CustomField $customField) => $fieldFilterFactory->create($customField))
             ->toArray();
     }
 }

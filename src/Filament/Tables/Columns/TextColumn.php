@@ -30,6 +30,6 @@ final readonly class TextColumn implements ColumnInterface
                     );
                 }
             )
-            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField->code));
+            ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField));
     }
 }

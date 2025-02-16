@@ -1,4 +1,4 @@
-<x-filament::section x-sortable-item="{{ $section->id }}" compact>
+<x-filament::section x-sortable-item="{{ $section->id }}" id="{{ $section->id }}" compact collapsible persist-collapsed>
     <x-slot name="heading">
         <div class="flex justify-between">
             <div class="flex items-center gap-x-1">
