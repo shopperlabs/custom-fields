@@ -24,12 +24,19 @@ readonly class ValueResolver implements ValueResolvers
     /**
      * @param Model $record
      * @param CustomField $customField
+     * @param bool $exportable
      * @return mixed
      */
-    public function resolve(Model $record, CustomField $customField): string
+    public function resolve(Model $record, CustomField $customField, bool $exportable = false): mixed
     {
         if (!$customField->type->isOptionable()) {
-            return (string)$record->getCustomFieldValue($customField);
+            $value = $record->getCustomFieldValue($customField);
+
+            if ($exportable && $customField->type->isBoolean()) {
+                return $value ? 'Yes' : 'No';
+            }
+
+            return $value;
         }
 
         if ($customField->type->hasMultipleValues()) {

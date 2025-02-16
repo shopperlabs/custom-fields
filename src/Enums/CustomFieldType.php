@@ -95,6 +95,14 @@ enum CustomFieldType: string implements HasLabel
         ]);
     }
 
+    public function isBoolean(): bool
+    {
+        return in_array($this, [
+            self::TOGGLE,
+            self::CHECKBOX,
+        ]);
+    }
+
     public function isOptionable(): bool
     {
         return self::optionables()->contains($this);
@@ -106,6 +114,7 @@ enum CustomFieldType: string implements HasLabel
             self::CHECKBOX_LIST,
             self::TAGS_INPUT,
             self::MULTI_SELECT,
+            self::TOGGLE_BUTTONS,
         ]);
     }
 

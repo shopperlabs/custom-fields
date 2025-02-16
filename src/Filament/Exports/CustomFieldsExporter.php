@@ -23,7 +23,7 @@ readonly class CustomFieldsExporter
             ->with('options')
             ->visibleInList()
             ->get()
-            ->map(fn (CustomField $customField) => self::create($customField, $valueResolver))
+            ->map(fn(CustomField $customField) => self::create($customField, $valueResolver))
             ->toArray();
     }
 
@@ -37,7 +37,11 @@ readonly class CustomFieldsExporter
         return ExportColumn::make($customField->name)
             ->label($customField->name)
             ->state(function ($record) use ($customField, $valueResolver) {
-                return $valueResolver->resolve($record, $customField);
+                return $valueResolver->resolve(
+                    record: $record,
+                    customField: $customField,
+                    exportable: true
+                );
             });
     }
 }
