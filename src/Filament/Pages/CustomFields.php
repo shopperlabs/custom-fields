@@ -36,8 +36,6 @@ class CustomFields extends Page
     {
         if (!$this->currentEntityType) {
             $this->setCurrentEntityType(EntityTypeService::getDefaultOption());
-        } else {
-            $this->storeDefaultSection();
         }
     }
 
@@ -66,7 +64,6 @@ class CustomFields extends Page
     public function setCurrentEntityType($entityType): void
     {
         $this->currentEntityType = $entityType;
-        $this->storeDefaultSection();
     }
 
     public function createSectionAction(): Action
@@ -99,30 +96,6 @@ class CustomFields extends Page
                 ->update([
                     'sort_order' => $index,
                 ]);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    private function storeDefaultSection(): void
-    {
-        if ($this->sections->isEmpty()) {
-            $newSection = $this->storeSection([
-                'entity_type' => $this->currentEntityType,
-                'name' => __('custom-fields::custom-fields.section.default.new_section'),
-                'code' => 'new_section',
-            ]);
-
-            CustomField::query()
-                ->forMorphEntity($this->currentEntityType)
-                ->whereNull('custom_field_section_id')
-                ->orderBy('sort_order')
-                ->update([
-                    'custom_field_section_id' => $newSection->id,
-                ]);
-
-            $this->sections = $this->sections->push($newSection->load('fields'));
         }
     }
 
