@@ -16,8 +16,18 @@
             x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('custom-fields', 'relaticle/custom-fields'))]"
         >
             @foreach ($this->sections as $section)
-                @livewire('manage-custom-field-section', ['entityType' => $this->currentEntityType, 'section' => $section, 'isDeletable' => $this->sections()->count() > 1], key($section->id . str()->random(16)))
+                @livewire('manage-custom-field-section', ['entityType' => $this->currentEntityType, 'section' => $section], key($section->id . str()->random(16)))
             @endforeach
+
+            @if(!count($this->sections))
+                <x-filament::grid.column default="12">
+                    <x-filament-tables::empty-state
+                        icon="heroicon-o-rectangle-group"
+                        heading="No sections yet"
+                        description="Start by creating a new section to organize your custom fields."
+                    />
+                </x-filament::grid.column>
+            @endempty
 
             {{ $this->createSectionAction }}
         </div>
