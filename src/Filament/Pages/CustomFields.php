@@ -6,6 +6,7 @@ namespace Relaticle\CustomFields\Filament\Pages;
 
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
+use Relaticle\CustomFields\CustomFieldsPlugin;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Filament\FormSchemas\SectionForm;
 use Relaticle\CustomFields\Models\CustomFieldSection;
@@ -156,5 +157,10 @@ class CustomFields extends Page
     public static function getSlug(): string
     {
         return Utils::getResourceSlug();
+    }
+
+    public static function canAccess(): bool
+    {
+        return CustomFieldsPlugin::get()->isAuthorized();
     }
 }
