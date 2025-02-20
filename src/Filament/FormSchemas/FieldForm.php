@@ -68,6 +68,7 @@ class FieldForm implements FormInterface
                                 ->live(onBlur: true)
                                 ->required()
                                 ->maxLength(50)
+                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->system_defined)
                                 ->unique(
                                     table: CustomField::class,
                                     column: 'name',
@@ -101,6 +102,7 @@ class FieldForm implements FormInterface
                                 ->required()
                                 ->alphaDash()
                                 ->maxLength(50)
+                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->system_defined)
                                 ->unique(
                                     table: CustomField::class,
                                     column: 'code',
