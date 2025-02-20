@@ -121,8 +121,17 @@ class FieldForm implements FormInterface
                                     $set('code', Str::of($state)->slug('_')->toString());
                                 }),
                             Forms\Components\Fieldset::make(__('custom-fields::custom-fields.field.form.settings'))
-                                ->columns(3)
+                                ->columns(4)
                                 ->schema([
+                                    Forms\Components\Toggle::make('settings.searchable')
+                                        ->inline(false)
+                                        ->visible(fn(Forms\Get $get): bool => CustomFieldType::searchables()->contains('value', $get('type')))
+                                        ->label(__('custom-fields::custom-fields.field.form.searchable'))
+                                        ->afterStateHydrated(function (Forms\Components\Toggle $component, $state) {
+                                            if (is_null($state)) {
+                                                $component->state(false);
+                                            }
+                                        }),
                                     Forms\Components\Toggle::make('settings.visible_in_list')
                                         ->inline(false)
                                         ->label(__('custom-fields::custom-fields.field.form.visible_in_list'))

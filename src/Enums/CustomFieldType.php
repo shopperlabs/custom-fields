@@ -132,6 +132,18 @@ enum CustomFieldType: string implements HasLabel
         ]);
     }
 
+    public static function searchables(): Collection
+    {
+        return collect([
+            self::TEXT,
+            self::TEXTAREA,
+            self::LINK,
+            self::TAGS_INPUT,
+            self::DATE,
+            self::DATE_TIME,
+        ]);
+    }
+
     /**
      * @return Collection
      */

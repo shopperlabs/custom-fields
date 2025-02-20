@@ -1,6 +1,6 @@
 {
     "name": "relaticle/custom-fields",
-    "description": "This is my package custom-fields",
+    "description": "User Defined Custom Fields for Laravel Filament",
     "keywords": [
         "manukminasyan",
         "relaticle",

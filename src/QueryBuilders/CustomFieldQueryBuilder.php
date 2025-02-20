@@ -74,4 +74,12 @@ class CustomFieldQueryBuilder extends Builder
             $query->whereNull('settings')->orWhereJsonDoesntContain('settings->visible_in_view', false);
         });
     }
+
+    /**
+     * @return CustomFieldQueryBuilder
+     */
+    public function searchable(): self
+    {
+        return $this->whereJsonContains('settings->searchable', true);
+    }
 }

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\CustomField;
 use Filament\Tables\Columns\TextColumn as BaseTextColumn;
+use Relaticle\CustomFields\Queries\ColumnSearchableQuery;
 use Relaticle\CustomFields\Support\FieldTypeUtils;
 
 class DateTimeColumn extends Component implements ColumnInterface
@@ -42,6 +43,10 @@ class DateTimeColumn extends Component implements ColumnInterface
                         $direction
                     );
                 }
+            )
+            ->searchable(
+                condition: $customField->settings->searchable,
+                query: fn(Builder $query, string $search) => (new ColumnSearchableQuery())->builder($query, $customField, $search),
             )
             ->label($customField->name)
             ->getStateUsing(function ($record) use ($customField) {

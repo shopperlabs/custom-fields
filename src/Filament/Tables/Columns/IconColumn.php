@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
@@ -29,6 +31,7 @@ class IconColumn implements ColumnInterface
                     );
                 }
             )
+            ->searchable(false)
             ->label($customField->name)
             ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField) ?? false);
     }

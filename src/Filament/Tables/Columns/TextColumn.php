@@ -8,6 +8,7 @@ use Filament\Tables\Columns\Column as BaseColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Relaticle\CustomFields\Models\CustomField;
 use Filament\Tables\Columns\TextColumn as BaseTextColumn;
+use Relaticle\CustomFields\Queries\ColumnSearchableQuery;
 
 final readonly class TextColumn implements ColumnInterface
 {
@@ -29,6 +30,10 @@ final readonly class TextColumn implements ColumnInterface
                         $direction
                     );
                 }
+            )
+            ->searchable(
+                condition: $customField->settings->searchable,
+                query: fn(Builder $query, string $search) => (new ColumnSearchableQuery())->builder($query, $customField, $search),
             )
             ->getStateUsing(fn($record) => $record->getCustomFieldValue($customField));
     }

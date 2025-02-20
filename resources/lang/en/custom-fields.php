@@ -30,6 +30,7 @@ return [
             'code_helper_text' => 'Unique code to identify this field throughout the resource.',
             'settings' => 'Settings',
             'encrypted' => 'Encrypted',
+            'searchable' => 'Searchable',
             'visible_in_list' => 'Visible in List',
             'visible_in_view' => 'Visible in View',
             'options_lookup_type' => [
