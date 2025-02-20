@@ -123,9 +123,17 @@ class FieldForm implements FormInterface
                             Forms\Components\Fieldset::make(__('custom-fields::custom-fields.field.form.settings'))
                                 ->columns(4)
                                 ->schema([
+                                    Forms\Components\Toggle::make('settings.encrypted')
+                                        ->inline(false)
+                                        ->reactive()
+                                        ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
+                                        ->label(__('custom-fields::custom-fields.field.form.encrypted'))
+                                        ->visible(fn(Forms\Get $get): bool => Utils::isValuesEncryptionFeatureEnabled() && CustomFieldType::encryptables()->contains('value', $get('type')))
+                                        ->default(false),
                                     Forms\Components\Toggle::make('settings.searchable')
                                         ->inline(false)
                                         ->visible(fn(Forms\Get $get): bool => CustomFieldType::searchables()->contains('value', $get('type')))
+                                        ->disabled(fn(Forms\Get $get): bool => $get('settings.encrypted') === true)
                                         ->label(__('custom-fields::custom-fields.field.form.searchable'))
                                         ->afterStateHydrated(function (Forms\Components\Toggle $component, $state) {
                                             if (is_null($state)) {
@@ -148,12 +156,6 @@ class FieldForm implements FormInterface
                                                 $component->state(true);
                                             }
                                         }),
-                                    Forms\Components\Toggle::make('settings.encrypted')
-                                        ->inline(false)
-                                        ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
-                                        ->label(__('custom-fields::custom-fields.field.form.encrypted'))
-                                        ->visible(fn(Forms\Get $get): bool => Utils::isValuesEncryptionFeatureEnabled() && CustomFieldType::encryptables()->contains('value', $get('type')))
-                                        ->default(false),
                                 ]),
 
                             Forms\Components\Select::make('options_lookup_type')
