@@ -31,8 +31,6 @@ class FieldForm implements FormInterface
             ->hiddenLabel()
             ->defaultItems(1)
             ->addActionLabel(__('custom-fields::custom-fields.field.form.options.add'))
-            ->reorderable()
-            ->orderColumn('sort_order')
             ->columnSpanFull()
             ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
                 if (Utils::isTenantEnabled()) {
@@ -45,6 +43,8 @@ class FieldForm implements FormInterface
         if ($withOptionsRelationship) {
             $optionsRepeater = $optionsRepeater->relationship();
         }
+
+        $optionsRepeater->reorderable()->orderColumn('sort_order');
 
         return [
             Forms\Components\Tabs::make()
