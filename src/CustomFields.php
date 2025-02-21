@@ -6,13 +6,33 @@ namespace Relaticle\CustomFields;
 
 class CustomFields
 {
-
     /**
      * The custom field model that should be used by Custom Fields.
      *
      * @var string
      */
     public static string $customFieldModel = 'Relaticle\\CustomFields\\Models\\CustomField';
+
+    /**
+     * The custom field value model that should be used by Custom Fields.
+     *
+     * @var string
+     */
+    public static string $valueModel = 'Relaticle\\CustomFields\\Models\\CustomFieldValue';
+
+    /**
+     * The custom field option model that should be used by Custom Fields.
+     *
+     * @var string
+     */
+    public static string $optionModel = 'Relaticle\\CustomFields\\Models\\CustomFieldOption';
+
+    /**
+     * The custom field section model that should be used by Custom Fields.
+     *
+     * @var string
+     */
+    public static string $sectionModel = 'Relaticle\\CustomFields\\Models\\CustomFieldSection';
 
 
     /**
@@ -50,4 +70,110 @@ class CustomFields
         return new static;
     }
 
+    /**
+     * Get the name of the custom field value model used by the application.
+     *
+     * @return string
+     */
+    public static function valueModel(): string
+    {
+        return static::$valueModel;
+    }
+
+    /**
+     * Get a new instance of the custom field value model.
+     *
+     * @return mixed
+     */
+    public static function newValueModel(): mixed
+    {
+        $model = static::valueModel();
+
+        return new $model;
+    }
+
+    /**
+     * Specify the custom field value model that should be used by Custom Fields.
+     *
+     * @param string $model
+     * @return static
+     */
+    public static function useValueModel(string $model): static
+    {
+        static::$valueModel = $model;
+
+        return new static;
+    }
+
+
+    /**
+     * Get the name of the custom field option model used by the application.
+     *
+     * @return string
+     */
+    public static function optionModel(): string
+    {
+        return static::$optionModel;
+    }
+
+    /**
+     * Get a new instance of the custom field option model.
+     *
+     * @return mixed
+     */
+
+    public static function newOptionModel(): mixed
+    {
+        $model = static::optionModel();
+
+        return new $model;
+    }
+
+    /**
+     * Specify the custom field option model that should be used by Custom Fields.
+     *
+     * @param string $model
+     * @return static
+     */
+    public static function useOptionModel(string $model): static
+    {
+        static::$optionModel = $model;
+
+        return new static;
+    }
+
+    /**
+     * Get the name of the custom field section model used by the application.
+     *
+     * @return string
+     */
+    public static function sectionModel(): string
+    {
+        return static::$sectionModel;
+    }
+
+    /**
+     * Get a new instance of the custom field section model.
+     *
+     * @return mixed
+     */
+    public static function newSectionModel(): mixed
+    {
+        $model = static::sectionModel();
+
+        return new $model;
+    }
+
+    /**
+     * Specify the custom field section model that should be used by Custom Fields.
+     *
+     * @param string $model
+     * @return static
+     */
+    public static function useSectionModel(string $model): static
+    {
+        static::$sectionModel = $model;
+
+        return new static;
+    }
 }

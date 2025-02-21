@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Database\Factories\CustomFieldOptionFactory;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
 
 #[ScopedBy([TenantScope::class, SortOrderScope::class])]
-final class CustomFieldOption extends Model
+class CustomFieldOption extends Model
 {
     /** @use HasFactory<CustomFieldOptionFactory> */
     use HasFactory;
@@ -35,6 +35,6 @@ final class CustomFieldOption extends Model
      */
     public function customField(): BelongsTo
     {
-        return $this->belongsTo(CustomField::class);
+        return $this->belongsTo(CustomFields::customFieldModel());
     }
 }
