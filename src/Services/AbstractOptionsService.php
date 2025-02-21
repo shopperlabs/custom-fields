@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields\Services;
 
 use Filament\Facades\Filament;
@@ -23,17 +25,27 @@ abstract class AbstractOptionsService
             ->mapWithKeys(fn(string $resource) => static::mapResourceToOption($resource));
     }
 
+    /**
+     * @return string
+     */
     public static function getDefaultOption(): string
     {
         return static::getOptions()->keys()->first() ?: '';
     }
 
+    /**
+     * @return Collection
+     */
     protected static function getFilteredResources(): Collection
     {
         return collect(Filament::getResources())
             ->reject(fn(string $resource) => static::shouldRejectResource($resource));
     }
 
+    /**
+     * @param string $resource
+     * @return bool
+     */
     protected static function shouldRejectResource(string $resource): bool
     {
         $allowedResources = config(static::$allowedConfigKey, []);

@@ -79,16 +79,82 @@ enum CustomFieldType: string implements HasLabel
         ];
     }
 
+
     /**
-     * @return array
+     * @return Collection
      */
     public static function optionables(): Collection
     {
         return collect([
-            self::MULTI_SELECT,
             self::SELECT,
+            self::MULTI_SELECT,
             self::CHECKBOX_LIST,
             self::TAGS_INPUT,
+            self::TOGGLE_BUTTONS,
+            self::RADIO,
+        ]);
+    }
+
+    public function isBoolean(): bool
+    {
+        return in_array($this, [
+            self::TOGGLE,
+            self::CHECKBOX,
+        ]);
+    }
+
+    public function isOptionable(): bool
+    {
+        return self::optionables()->contains($this);
+    }
+
+    public function hasMultipleValues(): bool
+    {
+        return in_array($this, [
+            self::CHECKBOX_LIST,
+            self::TAGS_INPUT,
+            self::MULTI_SELECT,
+            self::TOGGLE_BUTTONS,
+        ]);
+    }
+
+    /**
+     * @return Collection
+     */
+    public static function encryptables(): Collection
+    {
+        return collect([
+            self::TEXT,
+            self::TEXTAREA,
+            self::RICH_EDITOR,
+            self::MARKDOWN_EDITOR,
+            self::LINK,
+        ]);
+    }
+
+    public static function searchables(): Collection
+    {
+        return collect([
+            self::TEXT,
+            self::TEXTAREA,
+            self::LINK,
+            self::TAGS_INPUT,
+            self::DATE,
+            self::DATE_TIME,
+        ]);
+    }
+
+    /**
+     * @return Collection
+     */
+    public static function filterable(): Collection
+    {
+        return collect([
+            self::CHECKBOX,
+            self::CHECKBOX_LIST,
+            self::SELECT,
+            self::MULTI_SELECT,
+            self::TOGGLE,
             self::TOGGLE_BUTTONS,
             self::RADIO,
         ]);
@@ -120,6 +186,8 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::ALPHA_NUM,
                 CustomFieldValidationRule::ALPHA_DASH,
                 CustomFieldValidationRule::STRING,
+                CustomFieldValidationRule::EMAIL,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::TEXTAREA => [
                 CustomFieldValidationRule::REQUIRED,
@@ -127,6 +195,7 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
                 CustomFieldValidationRule::STRING,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::CURRENCY => [
                 CustomFieldValidationRule::REQUIRED,
@@ -135,6 +204,7 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
                 CustomFieldValidationRule::DECIMAL,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::DATE, self::DATE_TIME => [
                 CustomFieldValidationRule::REQUIRED,
@@ -168,10 +238,12 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
                 CustomFieldValidationRule::INTEGER,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::LINK => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::URL,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::CHECKBOX_LIST, self::TAGS_INPUT => [
                 CustomFieldValidationRule::REQUIRED,
@@ -186,10 +258,12 @@ enum CustomFieldType: string implements HasLabel
                 CustomFieldValidationRule::MIN,
                 CustomFieldValidationRule::MAX,
                 CustomFieldValidationRule::BETWEEN,
+                CustomFieldValidationRule::STARTS_WITH
             ],
             self::COLOR_PICKER => [
                 CustomFieldValidationRule::REQUIRED,
                 CustomFieldValidationRule::STRING,
+                CustomFieldValidationRule::STARTS_WITH
             ],
         };
     }

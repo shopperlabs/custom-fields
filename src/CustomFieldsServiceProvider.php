@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields;
 
 use Filament\Facades\Filament;
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
@@ -16,12 +16,14 @@ use Livewire\Livewire;
 use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
 use Relaticle\CustomFields\Commands\UpgradeCommand;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
+use Relaticle\CustomFields\Contracts\ValueResolvers;
 use Relaticle\CustomFields\Livewire\ManageCustomField;
 use Relaticle\CustomFields\Livewire\ManageCustomFieldSection;
 use Relaticle\CustomFields\Livewire\ManageCustomFieldWidth;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
+use Relaticle\CustomFields\Services\ValueResolver\ValueResolver;
 use Relaticle\CustomFields\Support\Utils;
 use Relaticle\CustomFields\Testing\TestsFilamentCustomField;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -34,9 +36,10 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
 
     public static string $viewNamespace = 'custom-fields';
 
-    public function bootingPackage()
+    public function bootingPackage(): void
     {
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
+        $this->app->singleton(ValueResolvers::class, ValueResolver::class);
 
         if (Utils::isTenantEnabled()) {
             foreach (Filament::getPanels() as $panel) {

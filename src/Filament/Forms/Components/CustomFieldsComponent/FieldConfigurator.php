@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 
 use Filament\Forms\Components\Field;
-use Illuminate\Support\Carbon;
 use Relaticle\CustomFields\Data\ValidationRuleData;
-use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
 use Relaticle\CustomFields\Models\CustomField;
 use Spatie\LaravelData\DataCollection;
@@ -26,20 +24,12 @@ final readonly class FieldConfigurator
             ->label($customField->name)
             ->reactive()
             ->afterStateHydrated(function ($component, $state, $record) use ($customField): void {
-                $value = $record?->getCustomFieldValue($customField->code);
-
-                $component->state(match ($customField->type) {
-                    CustomFieldType::DATE => $value instanceof Carbon ? $value->toDateString() : $value,
-                    CustomFieldType::DATE_TIME => $value instanceof Carbon ? $value->toDateTimeString() : $value,
-                    CustomFieldType::CHECKBOX_LIST,
-                    CustomFieldType::MULTI_SELECT,
-                    CustomFieldType::TAGS_INPUT,
-                    CustomFieldType::TOGGLE_BUTTONS, => is_array($value) ? $value : [],
-                    default => $value,
-                });
+                $value = $record?->getCustomFieldValue($customField);
+                $value = $value ?? ($customField->type->hasMultipleValues() ? [] : null);
+                $component->state($value);
             })
             ->dehydrated(fn($state): bool => $state !== null && $state !== '')
-            ->required($customField->validation_rules->toCollection()->contains('name', CustomFieldValidationRule::REQUIRED->value))
+            ->required($this->isRequired($customField))
             ->rules($this->convertRulesToFilamentFormat($customField->validation_rules));
     }
 
@@ -64,8 +54,12 @@ final readonly class FieldConfigurator
         })->toArray();
     }
 
-    public function isRequired()
+    /**
+     * @param CustomField $customField
+     * @return bool
+     */
+    public function isRequired(CustomField $customField): bool
     {
-        return collect($this->rules()[$this->handle])->contains('required');
+        return $customField->validation_rules->toCollection()->contains('name', CustomFieldValidationRule::REQUIRED->value);
     }
 }

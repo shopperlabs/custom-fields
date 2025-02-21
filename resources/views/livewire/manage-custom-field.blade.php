@@ -15,7 +15,8 @@
                     :aria-label="$field->name"
                 />
 
-                <span>{{ $field->name }}</span>
+                {{ $this->editAction()->icon(false)->label($field->name)->link() }}
+
                 @if(!$field->isActive())
                     <x-filament::badge color="warning" size="sm">
                         {{ __('custom-fields::custom-fields.common.inactive') }}

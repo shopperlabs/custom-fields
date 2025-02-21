@@ -1,4 +1,6 @@
-<x-filament::section x-sortable-item="{{ $section->id }}" compact>
+<x-filament::section
+    :headerActions="$this->actions()"
+    x-sortable-item="{{ $section->id }}" id="{{ $section->id }}" compact collapsible persist-collapsed>
     <x-slot name="heading">
         <div class="flex justify-between">
             <div class="flex items-center gap-x-1">
@@ -9,15 +11,12 @@
                 />
 
                 {{$section->name }}
+
                 @if(!$section->isActive())
                     <x-filament::badge color="warning" size="sm">
                         {{ __('custom-fields::custom-fields.common.inactive') }}
                     </x-filament::badge>
                 @endif
-            </div>
-
-            <div class="flex items-center gap-x-1">
-                {{ $this->actions() }}
             </div>
         </div>
     </x-slot>

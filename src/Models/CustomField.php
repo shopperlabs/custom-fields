@@ -4,20 +4,23 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Relaticle\CustomFields\Data\CustomFieldSettingsData;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Enums\CustomFieldWidth;
 use Relaticle\CustomFields\Models\Concerns\Activable;
+use Relaticle\CustomFields\Models\Scopes\CustomFieldsActivableScope;
 use Relaticle\CustomFields\Models\Scopes\SortOrderScope;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
-use Relaticle\CustomFields\Services\EntityTypeService;
+use Relaticle\CustomFields\Observers\CustomFieldObserver;
+use Relaticle\CustomFields\QueryBuilders\CustomFieldQueryBuilder;
 use Spatie\LaravelData\DataCollection;
 
 /**
@@ -27,11 +30,13 @@ use Spatie\LaravelData\DataCollection;
  * @property string $entity_type
  * @property string $lookup_type
  * @property DataCollection<int, ValidationRuleData> $validation_rules
+ * @property CustomFieldSettingsData $settings
  * @property int $sort_order
  * @property bool $active
  * @property bool $system_defined
  */
 #[ScopedBy([TenantScope::class, SortOrderScope::class])]
+#[ObservedBy(CustomFieldObserver::class)]
 final class CustomField extends Model
 {
     /** @use HasFactory<CustomFieldFactory> */
@@ -44,7 +49,7 @@ final class CustomField extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'width' => CustomFieldWidth::_100
+        'width' => CustomFieldWidth::_100,
     ];
 
     public function __construct(array $attributes = [])
@@ -54,6 +59,25 @@ final class CustomField extends Model
         }
 
         parent::__construct($attributes);
+    }
+
+    /**
+     * Boot the soft deleting trait for a model.
+     *
+     * @return void
+     */
+    public static function bootActivable(): void
+    {
+        CustomField::addGlobalScope(new CustomFieldsActivableScope());
+    }
+
+    /**
+     * @param $query
+     * @return CustomFieldQueryBuilder
+     */
+    public function newEloquentBuilder($query): CustomFieldQueryBuilder
+    {
+        return new CustomFieldQueryBuilder($query);
     }
 
     /**
@@ -69,45 +93,13 @@ final class CustomField extends Model
             'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
             'active' => 'boolean',
             'system_defined' => 'boolean',
+            'settings' => CustomFieldSettingsData::class . ':default',
         ];
     }
 
     /**
-     * @param Builder<CustomField> $builder
-     * @return Builder<CustomField>
-     *
-     * @noinspection PhpUnused
+     * @return BelongsTo
      */
-    public function scopeForType(Builder $builder, CustomFieldType $type): Builder
-    {
-        return $builder->where('type', $type);
-    }
-
-    /**
-     * @param Builder<CustomField> $builder
-     * @return Builder<CustomField>
-     *
-     * @noinspection PhpUnused
-     */
-    public function scopeForEntity(Builder $builder, string $model): Builder
-    {
-        return $builder->where(
-            'entity_type',
-            EntityTypeService::getEntityFromModel($model)
-        );
-    }
-
-    /**
-     * @param Builder<CustomField> $builder
-     * @return Builder<CustomField>
-     *
-     * @noinspection PhpUnused
-     */
-    public function scopeForMorphEntity(Builder $builder, string $entity): Builder
-    {
-        return $builder->where('entity_type', $entity);
-    }
-
     public function section(): BelongsTo
     {
         return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
@@ -135,5 +127,13 @@ final class CustomField extends Model
     public function isSystemDefined(): bool
     {
         return $this->system_defined === true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValueColumn(): string
+    {
+        return CustomFieldValue::getValueColumn($this->type);
     }
 }

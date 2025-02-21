@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
@@ -35,31 +34,6 @@ final class CustomFieldValue extends Model
     public $timestamps = false;
 
     protected $guarded = [];
-
-    /**
-     * @var array<string, string>
-     */
-    public static array $valueColumns = [
-        CustomFieldType::TEXT->value => 'text_value',
-        CustomFieldType::NUMBER->value => 'integer_value',
-        CustomFieldType::CHECKBOX->value => 'boolean_value',
-        CustomFieldType::CHECKBOX_LIST->value => 'json_value',
-        CustomFieldType::TEXTAREA->value => 'text_value',
-        CustomFieldType::TOGGLE_BUTTONS->value => 'json_value',
-        CustomFieldType::TAGS_INPUT->value => 'json_value',
-        CustomFieldType::LINK->value => 'string_value',
-        CustomFieldType::RICH_EDITOR->value => 'text_value',
-        CustomFieldType::MARKDOWN_EDITOR->value => 'text_value',
-        CustomFieldType::RADIO->value => 'integer_value',
-        CustomFieldType::SELECT->value => 'integer_value',
-        CustomFieldType::COLOR_PICKER->value => 'string_value',
-        CustomFieldType::CURRENCY->value => 'float_value',
-        CustomFieldType::MULTI_SELECT->value => 'json_value',
-        CustomFieldType::TOGGLE->value => 'boolean_value',
-        CustomFieldType::DATE->value => 'date_value',
-        CustomFieldType::DATE_TIME->value => 'datetime_value',
-    ];
-
 
     public function __construct(array $attributes = [])
     {
@@ -87,7 +61,24 @@ final class CustomFieldValue extends Model
             'date_value' => 'date',
             'datetime_value' => 'datetime',
         ];
+    }
 
+    /**
+     * @param CustomFieldType $type
+     * @return string
+     */
+    public static function getValueColumn(CustomFieldType $type): string
+    {
+        return match ($type) {
+            CustomFieldType::TEXT, CustomFieldType::TEXTAREA, CustomFieldType::RICH_EDITOR, CustomFieldType::MARKDOWN_EDITOR => 'text_value',
+            CustomFieldType::LINK, CustomFieldType::COLOR_PICKER => 'string_value',
+            CustomFieldType::NUMBER, CustomFieldType::RADIO, CustomFieldType::SELECT => 'integer_value',
+            CustomFieldType::CHECKBOX, CustomFieldType::TOGGLE => 'boolean_value',
+            CustomFieldType::CHECKBOX_LIST, CustomFieldType::TOGGLE_BUTTONS, CustomFieldType::TAGS_INPUT, CustomFieldType::MULTI_SELECT => 'json_value',
+            CustomFieldType::CURRENCY => 'float_value',
+            CustomFieldType::DATE => 'date_value',
+            CustomFieldType::DATE_TIME => 'datetime_value',
+        };
     }
 
     /**
@@ -106,24 +97,22 @@ final class CustomFieldValue extends Model
         return $this->morphTo();
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue(): mixed
     {
-        $column = $this->getValueColumn();
-
+        $column = $this->getValueColumn($this->customField->type);
         return $this->$column;
     }
 
+    /**
+     * @param mixed $value
+     * @return void
+     */
     public function setValue(mixed $value): void
     {
-        $column = $this->getValueColumn();
+        $column = $this->getValueColumn($this->customField->type);
         $this->$column = $value;
-    }
-
-    public function getValueColumn(): string
-    {
-        $type = $this->customField->type->value;
-
-        return self::$valueColumns[$type]
-            ?? throw new \InvalidArgumentException("Unsupported custom field type: {$type}");
     }
 }

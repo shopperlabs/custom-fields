@@ -28,6 +28,7 @@ final class CustomFieldData extends Data
         public bool $active = true,
         public bool $systemDefined = false,
         public ?array $options = null,
-        public ?string $lookupType = null
+        public ?string $lookupType = null,
+        public ?CustomFieldSettingsData $settings = null,
     ) {}
 }

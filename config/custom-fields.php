@@ -3,6 +3,67 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | Features
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the features of the Custom Fields package.
+    | You can enable or disable features as needed.
+    |
+    */
+    'features' => [
+        'encryption' => [
+            'enabled' => true,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Entity Resources Customization
+    |--------------------------------------------------------------------------
+    |
+    | This section allows you to customize the behavior of entity resources,
+    | such as enabling table column toggling and setting default visibility.
+    |
+    */
+    'resource' => [
+        'table' => [
+            'columns' => [
+                'enabled' => true,
+            ],
+            'columns_toggleable' => [
+                'enabled' => true,
+                'hidden_by_default' => true,
+            ],
+            'filters' => [
+                'enabled' => true,
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Field Types Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the Custom Field Types.
+    | This allows you to customize the behavior of the field types.
+    |
+    */
+    'field_types_configuration' => [
+        'date' => [
+            'native' => false,
+            'format' => 'Y-m-d',
+            'display_format' => null
+        ],
+        'date_time' => [
+            'native' => false,
+            'format' => 'Y-m-d H:i:s',
+            'display_format' => null
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Custom Fields Resource Configuration
     |--------------------------------------------------------------------------
     |
@@ -14,10 +75,7 @@ return [
         'should_register_navigation' => true,
         'slug' => 'custom-fields',
         'navigation_sort' => -1,
-        'navigation_badge' => false,
         'navigation_group' => true,
-        'is_globally_searchable' => false,
-        'is_scoped_to_tenant' => true,
         'cluster' => null,
     ],
 
@@ -37,24 +95,6 @@ return [
 
     'disallowed_entity_resources' => [
         //
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Entity Resources Customization
-    |--------------------------------------------------------------------------
-    |
-    | This section allows you to customize the behavior of entity resources,
-    | such as enabling table column toggling and setting default visibility.
-    |
-    */
-    'resource' => [
-        'table' => [
-            'columns_toggleable' => [
-                'enabled' => true,
-                'hidden_by_default' => true,
-            ],
-        ],
     ],
 
     /*

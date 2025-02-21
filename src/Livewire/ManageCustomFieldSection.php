@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields\Livewire;
 
 use Filament\Actions\Action;
@@ -26,7 +28,6 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
 
     public string $entityType;
     public CustomFieldSection $section;
-    public bool $isDeletable = true;
 
     #[Computed]
     public function fields()
@@ -54,6 +55,7 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
     {
         foreach ($fields as $index => $field) {
             CustomField::query()
+                ->withDeactivated()
                 ->where('id', $field)
                 ->update([
                     'custom_field_section_id' => $sectionId,
@@ -112,7 +114,6 @@ class ManageCustomFieldSection extends Component implements HasForms, HasActions
             ->model(CustomFieldSection::class)
             ->record($this->section)
             ->visible(fn(CustomFieldSection $record): bool => !$record->isActive() && !$record->isSystemDefined())
-            ->disabled(fn(CustomFieldSection $record): bool => !$this->isDeletable)
             ->action(fn() => $this->section->delete() && $this->dispatch('section-deleted'));
     }
 

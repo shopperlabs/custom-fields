@@ -19,6 +19,9 @@ use Relaticle\CustomFields\Support\Utils;
  */
 trait UsesCustomFields
 {
+    /**
+     * @param $attributes
+     */
     public function __construct($attributes = [])
     {
         // Ensure custom fields are included in a fillable array
@@ -82,45 +85,57 @@ trait UsesCustomFields
         return $this->morphMany(CustomFieldValue::class, 'entity');
     }
 
-    public function getCustomFieldValue(string $code): mixed
+    /**
+     * @param CustomField $customField
+     * @return mixed
+     */
+    public function getCustomFieldValue(CustomField $customField): mixed
     {
-        $customField = $this->customFields()->where('code', $code)->first();
+        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id);
 
-        if (!$customField) {
-            return null;
+        if ($customField->settings->encrypted) {
+            $customFieldValue = $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
         }
 
-        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id)->first();
-
+        $customFieldValue = $customFieldValue->first();
         $customFieldValue = $customFieldValue ? $customFieldValue->getValue() : null;
 
         return $customFieldValue instanceof Collection ? $customFieldValue->toArray() : $customFieldValue;
     }
 
-    public function saveCustomFieldValue(string $code, mixed $value): void
+    /**
+     * @param CustomField $customField
+     * @param mixed $value
+     * @return void
+     */
+    public function saveCustomFieldValue(CustomField $customField, mixed $value): void
     {
-        $customField = $this->customFields()->where('code', $code)->firstOrFail();
-
         $data = ['custom_field_id' => $customField->id];
 
         if (Utils::isTenantEnabled()) {
             $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
         }
 
-        $customFieldValue = $this->customFieldValues()->firstOrNew($data);
+        $customFieldValue = $this->customFieldValues();
 
+        if ($customField->settings->encrypted) {
+            $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
+        }
+
+        $customFieldValue = $customFieldValue->firstOrNew($data);
         $customFieldValue->setValue($value);
         $customFieldValue->save();
     }
 
     /**
      * @param array<string, mixed> $customFields
+     * @return void
      */
     public function saveCustomFields(array $customFields): void
     {
         $this->customFields()->each(function (CustomField $customField) use ($customFields): void {
             $value = $customFields[$customField->code] ?? null;
-            $this->saveCustomFieldValue($customField->code, $value);
+            $this->saveCustomFieldValue($customField, $value);
         });
     }
 }

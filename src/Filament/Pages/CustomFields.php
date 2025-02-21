@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields\Filament\Pages;
 
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
+use Relaticle\CustomFields\CustomFieldsPlugin;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Filament\FormSchemas\SectionForm;
 use Relaticle\CustomFields\Models\CustomFieldSection;
@@ -34,8 +37,6 @@ class CustomFields extends Page
     {
         if (!$this->currentEntityType) {
             $this->setCurrentEntityType(EntityTypeService::getDefaultOption());
-        } else {
-            $this->storeDefaultSection();
         }
     }
 
@@ -64,7 +65,6 @@ class CustomFields extends Page
     public function setCurrentEntityType($entityType): void
     {
         $this->currentEntityType = $entityType;
-        $this->storeDefaultSection();
     }
 
     public function createSectionAction(): Action
@@ -92,34 +92,11 @@ class CustomFields extends Page
     {
         foreach ($sections as $index => $section) {
             CustomFieldSection::query()
+                ->withDeactivated()
                 ->where('id', $section)
                 ->update([
                     'sort_order' => $index,
                 ]);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    private function storeDefaultSection(): void
-    {
-        if ($this->sections->isEmpty()) {
-            $newSection = $this->storeSection([
-                'entity_type' => $this->currentEntityType,
-                'name' => __('custom-fields::custom-fields.section.default.new_section'),
-                'code' => 'new_section',
-            ]);
-
-            CustomField::query()
-                ->forMorphEntity($this->currentEntityType)
-                ->whereNull('custom_field_section_id')
-                ->orderBy('sort_order')
-                ->update([
-                    'custom_field_section_id' => $newSection->id,
-                ]);
-
-            $this->sections = $this->sections->push($newSection->load('fields'));
         }
     }
 
@@ -180,5 +157,10 @@ class CustomFields extends Page
     public static function getSlug(): string
     {
         return Utils::getResourceSlug();
+    }
+
+    public static function canAccess(): bool
+    {
+        return CustomFieldsPlugin::get()->isAuthorized();
     }
 }
