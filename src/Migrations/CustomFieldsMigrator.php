@@ -239,8 +239,11 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
     {
         $customField->options()->createMany(
             collect($options)
-                ->map(function ($value) {
-                    $data = ['name' => $value];
+                ->map(function ($value, int $key) {
+                    $data = [
+                        'name' => $value,
+                        'sort_order' => $key
+                    ];
 
                     if (Utils::isTenantEnabled()) {
                         $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
