@@ -46,6 +46,11 @@ class Utils
         return config('custom-fields.resource.table.columns_toggleable.hidden_by_default', true);
     }
 
+    public static function isTableColumnsToggleableUserControlEnabled(): bool
+    {
+        return config('custom-fields.resource.table.columns_toggleable.user_control', false);
+    }
+
     public static function isTableFiltersEnabled(): bool
     {
         return config('custom-fields.resource.table.filters.enabled', true);

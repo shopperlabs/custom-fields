@@ -123,7 +123,7 @@ class FieldForm implements FormInterface
                                     $set('code', Str::of($state)->slug('_')->toString());
                                 }),
                             Forms\Components\Fieldset::make(__('custom-fields::custom-fields.field.form.settings'))
-                                ->columns(4)
+                                ->columns(3)
                                 ->schema([
                                     Forms\Components\Toggle::make('settings.encrypted')
                                         ->inline(false)
@@ -144,10 +144,21 @@ class FieldForm implements FormInterface
                                         }),
                                     Forms\Components\Toggle::make('settings.visible_in_list')
                                         ->inline(false)
+                                        ->reactive()
                                         ->label(__('custom-fields::custom-fields.field.form.visible_in_list'))
                                         ->afterStateHydrated(function (Forms\Components\Toggle $component, $state) {
                                             if (is_null($state)) {
                                                 $component->state(true);
+                                            }
+                                        }),
+                                    Forms\Components\Toggle::make('settings.list_toggleable_hidden')
+                                        ->inline(false)
+                                        ->label(__('custom-fields::custom-fields.field.form.list_toggleable_hidden'))
+                                        ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('custom-fields::custom-fields.field.form.list_toggleable_hidden_hint'))
+                                        ->visible(fn(Forms\Get $get): bool => $get('settings.visible_in_list') && Utils::isTableColumnsToggleableEnabled() && Utils::isTableColumnsToggleableUserControlEnabled())
+                                        ->afterStateHydrated(function (Forms\Components\Toggle $component, $state) {
+                                            if (is_null($state)) {
+                                                $component->state(Utils::isTableColumnsToggleableHiddenByDefault());
                                             }
                                         }),
                                     Forms\Components\Toggle::make('settings.visible_in_view')

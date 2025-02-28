@@ -32,6 +32,8 @@ return [
             'encrypted' => 'Encrypted',
             'searchable' => 'Searchable',
             'visible_in_list' => 'Visible in List',
+            'list_toggleable_hidden' => 'Toggleable Hidden',
+            'list_toggleable_hidden_hint' => 'When enabled, this field will be hidden by default in the list view but can be toggled visible by the user.',
             'visible_in_view' => 'Visible in View',
             'options_lookup_type' => [
                 'label' => 'Options Lookup Type',

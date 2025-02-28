@@ -32,6 +32,7 @@ return [
             ],
             'columns_toggleable' => [
                 'enabled' => true,
+                'user_control' => true,
                 'hidden_by_default' => true,
             ],
             'filters' => [
