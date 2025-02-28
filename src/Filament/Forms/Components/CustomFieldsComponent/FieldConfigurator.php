@@ -24,8 +24,15 @@ final readonly class FieldConfigurator
             ->label($customField->name)
             ->reactive()
             ->afterStateHydrated(function ($component, $state, $record) use ($customField): void {
+                // Get existing value from record or use default
                 $value = $record?->getCustomFieldValue($customField);
-                $value = $value ?? ($customField->type->hasMultipleValues() ? [] : null);
+
+                // If no value exists, use custom field default state or empty value based on field type
+                if ($value === null) {
+                    $value = $state ?? ($customField->type->hasMultipleValues() ? [] : null);
+                }
+
+                // Set the component state
                 $component->state($value);
             })
             ->dehydrated(fn($state): bool => $state !== null && $state !== '')
