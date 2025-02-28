@@ -59,8 +59,10 @@ final class CustomFieldsComponent extends Component
      */
     protected function generateSchema(): array
     {
+        $this->getRecord()->load('customFieldValues.customField');
+
         return CustomFieldSection::query()
-            ->with('fields')
+            ->with(['fields' => fn($query) => $query->with('options', 'values')])
             ->forEntityType($this->getModel())
             ->orderBy('sort_order')
             ->get()
