@@ -91,7 +91,7 @@ trait UsesCustomFields
      */
     public function getCustomFieldValue(CustomField $customField): mixed
     {
-        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id);
+        $customFieldValue = $this->customFieldValues->where('custom_field_id', $customField->id);
 
         if ($customField->settings->encrypted) {
             $customFieldValue = $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Filament\Tables\Filter;
 
 use Filament\Tables\Filters\BaseFilter;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\CustomField;
 use RuntimeException;
+use Filament\Tables\Filters\Filter;
 
 final class FieldFilterFactory
 {
@@ -32,22 +34,27 @@ final class FieldFilterFactory
      */
     private array $instanceCache = [];
 
-    public function __construct(private readonly Container $container) {}
+    public function __construct(private readonly Container $container)
+    {
+    }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function create(CustomField $customField): BaseFilter
     {
         $customFieldType = $customField->type->value;
 
-        if (! isset($this->componentMap[$customFieldType])) {
+        if (!isset($this->componentMap[$customFieldType])) {
             throw new InvalidArgumentException("No filter registered for custom field type: {$customFieldType}");
         }
 
         $filterClass = $this->componentMap[$customFieldType];
 
-        if (! isset($this->instanceCache[$filterClass])) {
+        if (!isset($this->instanceCache[$filterClass])) {
             $component = $this->container->make($filterClass);
 
-            if (! $component instanceof FilterInterface) {
+            if (!$component instanceof FilterInterface) {
                 throw new RuntimeException("Component class {$filterClass} must implement FieldFilterInterface");
             }
 
@@ -56,7 +63,7 @@ final class FieldFilterFactory
             $component = $this->instanceCache[$filterClass];
         }
 
-        return $component->make($customField)
-            ->columnSpan($customField->width->getSpanValue());
+
+        return $component->make($customField);
     }
 }
