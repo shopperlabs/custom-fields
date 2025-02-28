@@ -12,6 +12,7 @@ use Relaticle\CustomFields\Data\CustomFieldData;
 use Relaticle\CustomFields\Data\CustomFieldSectionData;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Enums\CustomFieldWidth;
 use Relaticle\CustomFields\Exceptions\CustomFieldAlreadyExistsException;
 use Relaticle\CustomFields\Exceptions\CustomFieldDoesNotExistException;
 use Relaticle\CustomFields\Exceptions\FieldTypeNotOptionableException;
@@ -49,26 +50,13 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
     /**
      * @param class-string $model
      */
-    public function new(string $model, CustomFieldType $type, string $name, string $code, string $section, bool $active = true, bool $systemDefined = false): CustomFieldsMigrator
+    public function new(string $model, CustomFieldData $fieldData): CustomFieldsMigrator
     {
         $entityType = EntityTypeService::getEntityFromModel($model);
 
-        $this->customFieldData = CustomFieldData::from([
-            'entity_type' => $entityType,
-            'type' => $type,
-            'name' => $name,
-            'code' => $code,
-            'section' => CustomFieldSectionData::from([
-                'name' => $section,
-                'code' => Str::of($section)->slug('_')->toString(),
-                'entity_type' => $entityType,
-                'type' => CustomFieldSectionType::HEADLESS,
-                'active' => $active,
-                'system_defined' => $systemDefined,
-            ]),
-            'active' => $active,
-            'system_defined' => $systemDefined,
-        ]);
+        $fieldData->entityType = $fieldData->section->entityType = $entityType;
+
+        $this->customFieldData = $fieldData;
 
         return $this;
     }
