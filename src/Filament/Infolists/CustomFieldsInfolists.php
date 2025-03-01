@@ -32,7 +32,7 @@ final class CustomFieldsInfolists extends Component
      */
     protected function generateSchema(): array
     {
-        $this->getRecord()->load('customFieldValues.customField');
+        $this->getRecord()?->load('customFieldValues.customField');
 
         return CustomFieldSection::query()
             ->with(['fields' => fn($query) => $query->visibleInView()])
