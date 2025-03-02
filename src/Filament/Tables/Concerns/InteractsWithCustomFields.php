@@ -6,6 +6,7 @@ namespace Relaticle\CustomFields\Filament\Tables\Concerns;
 
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 use Relaticle\CustomFields\Filament\Tables\Columns\CustomFieldsColumn;
 use Relaticle\CustomFields\Filament\Tables\Filter\CustomFieldsFilter;
@@ -15,6 +16,7 @@ trait InteractsWithCustomFields
     /**
      * @param Table $table
      * @return Table
+     * @throws BindingResolutionException
      */
     public function table(Table $table): Table
     {
