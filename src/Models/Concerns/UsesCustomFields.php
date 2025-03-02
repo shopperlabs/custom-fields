@@ -86,6 +86,15 @@ trait UsesCustomFields
     }
 
     /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWithCustomFieldValues(Builder $query): Builder
+    {
+        return $query->with('customFieldValues.customField');
+    }
+
+    /**
      * @param CustomField $customField
      * @return mixed
      */
