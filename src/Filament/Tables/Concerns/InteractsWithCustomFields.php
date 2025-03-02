@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Filament\Tables\Concerns;
 
+use Exception;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -23,8 +24,13 @@ trait InteractsWithCustomFields
         $model = $this instanceof RelationManager ? $this->getRelationship()->getModel()::class : $this->getModel();
         $instance = app($model);
 
-        return static::getResource()::table($table)
-            ->modifyQueryUsing(function (Builder $query) {
+        try {
+            $table = static::getResource()::table($table);
+        } catch (Exception $exception) {
+            $table = parent::table($table);
+        }
+
+        return $table->modifyQueryUsing(function (Builder $query) {
                 $query->with('customFieldValues.customField');
             })
             ->pushColumns(CustomFieldsColumn::all($instance))
