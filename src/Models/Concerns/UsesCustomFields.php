@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
 use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldValue;
@@ -100,16 +101,15 @@ trait UsesCustomFields
      */
     public function getCustomFieldValue(CustomField $customField): mixed
     {
-        $customFieldValue = $this->customFieldValues->where('custom_field_id', $customField->id);
+        $fieldValue = $this->customFieldValues
+            ->firstWhere('custom_field_id', $customField->id)
+            ?->getValue();
 
-        if ($customField->settings->encrypted) {
-            $customFieldValue = $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
+        if ($fieldValue && $customField->settings?->encrypted) {
+            $fieldValue = Crypt::decryptString($fieldValue);
         }
 
-        $customFieldValue = $customFieldValue->first();
-        $customFieldValue = $customFieldValue ? $customFieldValue->getValue() : null;
-
-        return $customFieldValue instanceof Collection ? $customFieldValue->toArray() : $customFieldValue;
+        return $fieldValue instanceof Collection ? $fieldValue->toArray() : $fieldValue;
     }
 
     /**

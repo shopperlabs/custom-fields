@@ -42,6 +42,13 @@ class CustomFieldQueryBuilder extends Builder
         return $this->where('entity_type', $entity);
     }
 
+    /**
+     * @return CustomFieldQueryBuilder
+     */
+    public function encrypted(): self
+    {
+        return $this->whereJsonContains('settings->encrypted', true);
+    }
 
     /**
      * Scope to filter non-encrypted fields including NULL settings
