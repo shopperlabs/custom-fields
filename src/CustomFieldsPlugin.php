@@ -13,7 +13,7 @@ class CustomFieldsPlugin implements Plugin
 {
     use EvaluatesClosures;
 
-    protected bool | \Closure $authorizeUsing = true;
+    protected bool|\Closure $authorizeUsing = true;
 
     public function getId(): string
     {
@@ -24,14 +24,12 @@ class CustomFieldsPlugin implements Plugin
     {
         $panel
             ->pages([
-                CustomFields::class
+                CustomFields::class,
             ])
             ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
     }
 
-    public function boot(Panel $panel): void
-    {
-    }
+    public function boot(Panel $panel): void {}
 
     public static function make(): static
     {
@@ -46,8 +44,7 @@ class CustomFieldsPlugin implements Plugin
         return $plugin;
     }
 
-
-    public function authorize(bool | \Closure $callback = true): static
+    public function authorize(bool|\Closure $callback = true): static
     {
         $this->authorizeUsing = $callback;
 

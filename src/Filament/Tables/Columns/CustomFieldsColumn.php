@@ -13,8 +13,6 @@ use Relaticle\CustomFields\Support\Utils;
 final readonly class CustomFieldsColumn
 {
     /**
-     * @param Model $instance
-     * @return array
      * @throws BindingResolutionException
      */
     public static function all(Model $instance): array
@@ -29,7 +27,7 @@ final readonly class CustomFieldsColumn
             ->visibleInList()
             ->with('options')
             ->get()
-            ->map(fn(CustomField $customField) => $fieldColumnFactory->create($customField)
+            ->map(fn (CustomField $customField) => $fieldColumnFactory->create($customField)
                 ->toggleable(
                     condition: Utils::isTableColumnsToggleableEnabled(),
                     isToggledHiddenByDefault: $customField->settings->list_toggleable_hidden

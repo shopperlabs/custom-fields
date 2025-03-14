@@ -43,7 +43,7 @@ class CustomFieldSection extends Model
     {
         return [
             'type' => CustomFieldSectionType::class,
-            'settings' => CustomFieldSectionSettingsData::class . ':default',
+            'settings' => CustomFieldSectionSettingsData::class.':default',
         ];
     }
 

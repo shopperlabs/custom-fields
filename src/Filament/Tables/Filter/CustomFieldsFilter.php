@@ -14,8 +14,6 @@ use Relaticle\CustomFields\Support\Utils;
 final readonly class CustomFieldsFilter
 {
     /**
-     * @param Model $instance
-     * @return array
      * @throws BindingResolutionException
      */
     public static function all(Model $instance): array
@@ -31,7 +29,7 @@ final readonly class CustomFieldsFilter
             ->whereIn('type', CustomFieldType::filterable()->pluck('value'))
             ->nonEncrypted()
             ->get()
-            ->map(fn(CustomField $customField) => $fieldFilterFactory->create($customField))
+            ->map(fn (CustomField $customField) => $fieldFilterFactory->create($customField))
             ->toArray();
     }
 

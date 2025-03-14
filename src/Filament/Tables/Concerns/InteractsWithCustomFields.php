@@ -15,8 +15,6 @@ use Relaticle\CustomFields\Filament\Tables\Filter\CustomFieldsFilter;
 trait InteractsWithCustomFields
 {
     /**
-     * @param Table $table
-     * @return Table
      * @throws BindingResolutionException
      */
     public function table(Table $table): Table
@@ -31,8 +29,8 @@ trait InteractsWithCustomFields
         }
 
         return $table->modifyQueryUsing(function (Builder $query) {
-                $query->with('customFieldValues.customField');
-            })
+            $query->with('customFieldValues.customField');
+        })
             ->pushColumns(CustomFieldsColumn::all($instance))
             ->pushFilters(CustomFieldsFilter::all($instance));
     }

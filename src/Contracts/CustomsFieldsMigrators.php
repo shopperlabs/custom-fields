@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Contracts;
 
 use Relaticle\CustomFields\Data\CustomFieldData;
-use Relaticle\CustomFields\Enums\CustomFieldType;
 
 interface CustomsFieldsMigrators
 {
