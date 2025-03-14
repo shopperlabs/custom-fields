@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Filament\Tables\Filter;
 
 use Filament\Tables\Filters\BaseFilter;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 use InvalidArgumentException;
 use Relaticle\CustomFields\Enums\CustomFieldType;
@@ -34,6 +35,9 @@ final class FieldFilterFactory
 
     public function __construct(private readonly Container $container) {}
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function create(CustomField $customField): BaseFilter
     {
         $customFieldType = $customField->type->value;
@@ -56,7 +60,6 @@ final class FieldFilterFactory
             $component = $this->instanceCache[$filterClass];
         }
 
-        return $component->make($customField)
-            ->columnSpan($customField->width->getSpanValue());
+        return $component->make($customField);
     }
 }

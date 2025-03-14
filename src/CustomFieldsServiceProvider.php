@@ -23,6 +23,7 @@ use Relaticle\CustomFields\Livewire\ManageCustomFieldWidth;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
+use Relaticle\CustomFields\Providers\ImportsServiceProvider;
 use Relaticle\CustomFields\Services\ValueResolver\ValueResolver;
 use Relaticle\CustomFields\Support\Utils;
 use Relaticle\CustomFields\Testing\TestsFilamentCustomField;
@@ -38,6 +39,8 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
+        $this->app->register(ImportsServiceProvider::class);
+
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
         $this->app->singleton(ValueResolvers::class, ValueResolver::class);
 
@@ -101,9 +104,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void
-    {
-    }
+    public function packageRegistered(): void {}
 
     public function packageBooted(): void
     {
@@ -123,7 +124,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/custom-fields/{$file->getFilename()}"),
                 ], 'custom-fields-stubs');
@@ -146,7 +147,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('custom-fields', __DIR__ . '/../resources/dist/components/custom-fields.js'),
-             Css::make('custom-fields', __DIR__ . '/../resources/dist/custom-fields.css')->loadedOnRequest()
+            Css::make('custom-fields', __DIR__.'/../resources/dist/custom-fields.css')->loadedOnRequest(),
             // Js::make('custom-fields-scripts', __DIR__ . '/../resources/dist/custom-fields.js'),
         ];
     }

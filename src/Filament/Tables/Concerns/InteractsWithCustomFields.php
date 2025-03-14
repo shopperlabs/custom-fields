@@ -4,35 +4,34 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Filament\Tables\Concerns;
 
+use Exception;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Builder;
 use Relaticle\CustomFields\Filament\Tables\Columns\CustomFieldsColumn;
 use Relaticle\CustomFields\Filament\Tables\Filter\CustomFieldsFilter;
-use Throwable;
 
 trait InteractsWithCustomFields
 {
     /**
-     * Returns the table with custom fields added as columns.
-     *
-     * @throws Throwable
+     * @throws BindingResolutionException
      */
-    public function getTable(): Table
+    public function table(Table $table): Table
     {
         $model = $this instanceof RelationManager ? $this->getRelationship()->getModel()::class : $this->getModel();
-
         $instance = app($model);
 
-        $this->table
-            ->columns([
-                ...$this->table->getColumns(),
-                ...CustomFieldsColumn::all($instance),
-            ])
-            ->filters([
-                ...$this->table->getFilters(),
-                ...CustomFieldsFilter::all($instance)
-            ]);
+        try {
+            $table = static::getResource()::table($table);
+        } catch (Exception $exception) {
+            $table = parent::table($table);
+        }
 
-        return $this->table;
+        return $table->modifyQueryUsing(function (Builder $query) {
+            $query->with('customFieldValues.customField');
+        })
+            ->pushColumns(CustomFieldsColumn::all($instance))
+            ->pushFilters(CustomFieldsFilter::all($instance));
     }
 }

@@ -25,12 +25,13 @@ class UpdateExistingData
 
         if ($customFields->isEmpty()) {
             $command->info('No custom fields found that require updating.');
+
             return $next($command);
         }
 
         // Group custom fields by entity_type and tenant_id to minimize queries
         $customFieldsByGroup = $customFields->groupBy(function ($customField) {
-            return $customField->entity_type . '|' . $customField->tenant_id;
+            return $customField->entity_type.'|'.$customField->tenant_id;
         });
 
         // Begin database transaction
@@ -42,9 +43,9 @@ class UpdateExistingData
                 // Use cache to store and retrieve sections to avoid duplicate queries
                 static $sectionsCache = [];
 
-                $sectionCacheKey = $entityType . '|' . $tenantId;
+                $sectionCacheKey = $entityType.'|'.$tenantId;
 
-                if (!isset($sectionsCache[$sectionCacheKey])) {
+                if (! isset($sectionsCache[$sectionCacheKey])) {
                     // Get or create the section once per group
                     $sectionsCache[$sectionCacheKey] = CustomFieldSection::firstOrCreate(
                         [
@@ -65,6 +66,7 @@ class UpdateExistingData
                     foreach ($groupedCustomFields as $customField) {
                         $command->line("Custom field `{$customField->name}` will be moved to a new section.");
                     }
+
                     continue;
                 }
 
@@ -78,7 +80,7 @@ class UpdateExistingData
                 ]);
             }
 
-            $command->info($customFields->count() . ' custom fields have been updated.');
+            $command->info($customFields->count().' custom fields have been updated.');
 
             $command->newLine();
 

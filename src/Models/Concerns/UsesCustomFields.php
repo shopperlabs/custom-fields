@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Crypt;
 use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldValue;
@@ -19,9 +20,6 @@ use Relaticle\CustomFields\Support\Utils;
  */
 trait UsesCustomFields
 {
-    /**
-     * @param $attributes
-     */
     public function __construct($attributes = [])
     {
         // Ensure custom fields are included in a fillable array
@@ -85,35 +83,30 @@ trait UsesCustomFields
         return $this->morphMany(CustomFieldValue::class, 'entity');
     }
 
-    /**
-     * @param CustomField $customField
-     * @return mixed
-     */
-    public function getCustomFieldValue(CustomField $customField): mixed
+    public function scopeWithCustomFieldValues(Builder $query): Builder
     {
-        $customFieldValue = $this->customFieldValues()->where('custom_field_id', $customField->id);
-
-        if ($customField->settings->encrypted) {
-            $customFieldValue = $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
-        }
-
-        $customFieldValue = $customFieldValue->first();
-        $customFieldValue = $customFieldValue ? $customFieldValue->getValue() : null;
-
-        return $customFieldValue instanceof Collection ? $customFieldValue->toArray() : $customFieldValue;
+        return $query->with('customFieldValues.customField');
     }
 
-    /**
-     * @param CustomField $customField
-     * @param mixed $value
-     * @return void
-     */
-    public function saveCustomFieldValue(CustomField $customField, mixed $value): void
+    public function getCustomFieldValue(CustomField $customField): mixed
+    {
+        $fieldValue = $this->customFieldValues
+            ->firstWhere('custom_field_id', $customField->id)
+            ?->getValue();
+
+        if ($fieldValue && $customField->settings?->encrypted) {
+            $fieldValue = Crypt::decryptString($fieldValue);
+        }
+
+        return $fieldValue instanceof Collection ? $fieldValue->toArray() : $fieldValue;
+    }
+
+    public function saveCustomFieldValue(CustomField $customField, mixed $value, ?Model $tenant = null): void
     {
         $data = ['custom_field_id' => $customField->id];
 
         if (Utils::isTenantEnabled()) {
-            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id ?? $tenant?->id;
         }
 
         $customFieldValue = $this->customFieldValues();
@@ -128,14 +121,13 @@ trait UsesCustomFields
     }
 
     /**
-     * @param array<string, mixed> $customFields
-     * @return void
+     * @param  array<string, mixed>  $customFields
      */
-    public function saveCustomFields(array $customFields): void
+    public function saveCustomFields(array $customFields, ?Model $tenant = null): void
     {
-        $this->customFields()->each(function (CustomField $customField) use ($customFields): void {
+        $this->customFields()->each(function (CustomField $customField) use ($customFields, $tenant): void {
             $value = $customFields[$customField->code] ?? null;
-            $this->saveCustomFieldValue($customField, $value);
+            $this->saveCustomFieldValue($customField, $value, $tenant);
         });
     }
 }

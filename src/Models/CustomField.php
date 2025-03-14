@@ -40,9 +40,10 @@ use Spatie\LaravelData\DataCollection;
 #[ObservedBy(CustomFieldObserver::class)]
 class CustomField extends Model
 {
+    use Activable;
+
     /** @use HasFactory<CustomFieldFactory> */
     use HasFactory;
-    use Activable;
 
     /**
      * @var array<int, string>
@@ -55,7 +56,7 @@ class CustomField extends Model
 
     public function __construct(array $attributes = [])
     {
-        if (!isset($this->table)) {
+        if (! isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.custom_fields'));
         }
 
@@ -64,18 +65,12 @@ class CustomField extends Model
 
     /**
      * Boot the soft deleting trait for a model.
-     *
-     * @return void
      */
     public static function bootActivable(): void
     {
-        CustomField::addGlobalScope(new CustomFieldsActivableScope());
+        CustomField::addGlobalScope(new CustomFieldsActivableScope);
     }
 
-    /**
-     * @param $query
-     * @return CustomFieldQueryBuilder
-     */
     public function newEloquentBuilder($query): CustomFieldQueryBuilder
     {
         return new CustomFieldQueryBuilder($query);
@@ -91,16 +86,13 @@ class CustomField extends Model
         return [
             'type' => CustomFieldType::class,
             'width' => CustomFieldWidth::class,
-            'validation_rules' => DataCollection::class . ':' . ValidationRuleData::class . ',default',
+            'validation_rules' => DataCollection::class.':'.ValidationRuleData::class.',default',
             'active' => 'boolean',
             'system_defined' => 'boolean',
-            'settings' => CustomFieldSettingsData::class . ':default',
+            'settings' => CustomFieldSettingsData::class.':default',
         ];
     }
 
-    /**
-     * @return BelongsTo
-     */
     public function section(): BelongsTo
     {
         return $this->belongsTo(CustomFields::sectionModel(), 'custom_field_section_id');
@@ -130,9 +122,6 @@ class CustomField extends Model
         return $this->system_defined === true;
     }
 
-    /**
-     * @return string
-     */
     public function getValueColumn(): string
     {
         return CustomFields::newValueModel()::getValueColumn($this->type);

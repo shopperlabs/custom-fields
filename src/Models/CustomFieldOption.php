@@ -23,7 +23,7 @@ class CustomFieldOption extends Model
 
     public function __construct(array $attributes = [])
     {
-        if (!isset($this->table)) {
+        if (! isset($this->table)) {
             $this->setTable(config('custom-fields.table_names.custom_field_options'));
         }
 

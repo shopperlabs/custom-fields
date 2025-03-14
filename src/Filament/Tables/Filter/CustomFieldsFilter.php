@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Filament\Tables\Filter;
 
-use Filament\Tables\Filters\BaseFilter;
+use Filament\Resources\RelationManagers\RelationManager;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Model;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Support\Utils;
@@ -12,9 +14,9 @@ use Relaticle\CustomFields\Support\Utils;
 final readonly class CustomFieldsFilter
 {
     /**
-     * @return array<int, BaseFilter>
+     * @throws BindingResolutionException
      */
-    public static function all($instance): array
+    public static function all(Model $instance): array
     {
         if (Utils::isTableFiltersEnabled() === false) {
             return [];
@@ -27,7 +29,12 @@ final readonly class CustomFieldsFilter
             ->whereIn('type', CustomFieldType::filterable()->pluck('value'))
             ->nonEncrypted()
             ->get()
-            ->map(fn(CustomField $customField) => $fieldFilterFactory->create($customField))
+            ->map(fn (CustomField $customField) => $fieldFilterFactory->create($customField))
             ->toArray();
+    }
+
+    public static function forRelationManager(RelationManager $relationManager): array
+    {
+        return CustomFieldsFilter::all($relationManager->getRelationship()->getModel());
     }
 }

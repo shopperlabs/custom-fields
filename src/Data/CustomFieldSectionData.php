@@ -22,10 +22,10 @@ final class CustomFieldSectionData extends Data
     public function __construct(
         public string $name,
         public string $code,
-        public string $entityType,
         public CustomFieldSectionType $type = CustomFieldSectionType::SECTION,
         public bool $active = true,
         public bool $systemDefined = false,
+        public ?string $entityType = null,
         public ?CustomFieldSectionSettingsData $settings = null
     ) {}
 }

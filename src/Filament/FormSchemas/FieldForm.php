@@ -12,6 +12,7 @@ use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldValidationComponent;
 use Relaticle\CustomFields\Filament\Forms\Components\TypeField;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldOption;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
@@ -24,7 +25,26 @@ class FieldForm implements FormInterface
             ->simple(
                 Forms\Components\TextInput::make('name')
                     ->columnSpanFull()
-                    ->required(),
+                    ->required()
+                    ->unique(
+                        table: CustomFieldOption::class,
+                        column: 'name',
+                        ignoreRecord: true,
+                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                            $recordId = $get('../../id');
+                            
+                            return $rule->where('custom_field_id', $recordId)
+                                ->when(
+                                    Utils::isTenantEnabled(),
+                                    function (Unique $rule) {
+                                        return $rule->where(
+                                            config('custom-fields.column_names.tenant_foreign_key'),
+                                            Filament::getTenant()?->id
+                                        );
+                                    }
+                                );
+                        },
+                    )
             )
             ->columns(2)
             ->requiredUnless('type', CustomFieldType::TAGS_INPUT->value)
@@ -55,11 +75,11 @@ class FieldForm implements FormInterface
                                 ->label(__('custom-fields::custom-fields.field.form.entity_type'))
                                 ->options(EntityTypeService::getOptions())
                                 ->disabled()
-                                ->default(fn() => request('entityType', EntityTypeService::getDefaultOption()))
+                                ->default(fn () => request('entityType', EntityTypeService::getDefaultOption()))
                                 ->required(),
                             TypeField::make('type')
                                 ->label(__('custom-fields::custom-fields.field.form.type'))
-                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
+                                ->disabled(fn (?CustomField $record): bool => (bool) $record?->exists)
                                 ->reactive()
                                 ->required(),
                             Forms\Components\TextInput::make('name')
@@ -68,7 +88,7 @@ class FieldForm implements FormInterface
                                 ->live(onBlur: true)
                                 ->required()
                                 ->maxLength(50)
-                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->system_defined)
+                                ->disabled(fn (?CustomField $record): bool => (bool) $record?->system_defined)
                                 ->unique(
                                     table: CustomField::class,
                                     column: 'name',
@@ -102,7 +122,7 @@ class FieldForm implements FormInterface
                                 ->required()
                                 ->alphaDash()
                                 ->maxLength(50)
-                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->system_defined)
+                                ->disabled(fn (?CustomField $record): bool => (bool) $record?->system_defined)
                                 ->unique(
                                     table: CustomField::class,
                                     column: 'code',
@@ -123,19 +143,19 @@ class FieldForm implements FormInterface
                                     $set('code', Str::of($state)->slug('_')->toString());
                                 }),
                             Forms\Components\Fieldset::make(__('custom-fields::custom-fields.field.form.settings'))
-                                ->columns(4)
+                                ->columns(3)
                                 ->schema([
                                     Forms\Components\Toggle::make('settings.encrypted')
                                         ->inline(false)
                                         ->reactive()
-                                        ->disabled(fn(?CustomField $record): bool => (bool)$record?->exists)
+                                        ->disabled(fn (?CustomField $record): bool => (bool) $record?->exists)
                                         ->label(__('custom-fields::custom-fields.field.form.encrypted'))
-                                        ->visible(fn(Forms\Get $get): bool => Utils::isValuesEncryptionFeatureEnabled() && CustomFieldType::encryptables()->contains('value', $get('type')))
+                                        ->visible(fn (Forms\Get $get): bool => Utils::isValuesEncryptionFeatureEnabled() && CustomFieldType::encryptables()->contains('value', $get('type')))
                                         ->default(false),
                                     Forms\Components\Toggle::make('settings.searchable')
                                         ->inline(false)
-                                        ->visible(fn(Forms\Get $get): bool => CustomFieldType::searchables()->contains('value', $get('type')))
-                                        ->disabled(fn(Forms\Get $get): bool => $get('settings.encrypted') === true)
+                                        ->visible(fn (Forms\Get $get): bool => CustomFieldType::searchables()->contains('value', $get('type')))
+                                        ->disabled(fn (Forms\Get $get): bool => $get('settings.encrypted') === true)
                                         ->label(__('custom-fields::custom-fields.field.form.searchable'))
                                         ->afterStateHydrated(function (Forms\Components\Toggle $component, $state) {
                                             if (is_null($state)) {
@@ -144,10 +164,21 @@ class FieldForm implements FormInterface
                                         }),
                                     Forms\Components\Toggle::make('settings.visible_in_list')
                                         ->inline(false)
+                                        ->reactive()
                                         ->label(__('custom-fields::custom-fields.field.form.visible_in_list'))
                                         ->afterStateHydrated(function (Forms\Components\Toggle $component, $state) {
                                             if (is_null($state)) {
                                                 $component->state(true);
+                                            }
+                                        }),
+                                    Forms\Components\Toggle::make('settings.list_toggleable_hidden')
+                                        ->inline(false)
+                                        ->label(__('custom-fields::custom-fields.field.form.list_toggleable_hidden'))
+                                        ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('custom-fields::custom-fields.field.form.list_toggleable_hidden_hint'))
+                                        ->visible(fn (Forms\Get $get): bool => $get('settings.visible_in_list') && Utils::isTableColumnsToggleableEnabled() && Utils::isTableColumnsToggleableUserControlEnabled())
+                                        ->afterStateHydrated(function (Forms\Components\Toggle $component, $state) {
+                                            if (is_null($state)) {
+                                                $component->state(Utils::isTableColumnsToggleableHiddenByDefault());
                                             }
                                         }),
                                     Forms\Components\Toggle::make('settings.visible_in_view')
@@ -162,7 +193,7 @@ class FieldForm implements FormInterface
 
                             Forms\Components\Select::make('options_lookup_type')
                                 ->label(__('custom-fields::custom-fields.field.form.options_lookup_type.label'))
-                                ->visible(fn(Forms\Get $get): bool => in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
+                                ->visible(fn (Forms\Get $get): bool => in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                 ->reactive()
                                 ->options([
                                     'options' => __('custom-fields::custom-fields.field.form.options_lookup_type.options'),
@@ -178,17 +209,17 @@ class FieldForm implements FormInterface
                                 ->required(),
                             Forms\Components\Select::make('lookup_type')
                                 ->label(__('custom-fields::custom-fields.field.form.lookup_type.label'))
-                                ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'lookup')
+                                ->visible(fn (Forms\Get $get): bool => $get('options_lookup_type') === 'lookup')
                                 ->reactive()
                                 ->options(LookupTypeService::getOptions())
                                 ->default(LookupTypeService::getDefaultOption())
                                 ->required(),
                             Forms\Components\Fieldset::make('options')
                                 ->label(__('custom-fields::custom-fields.field.form.options.label'))
-                                ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
+                                ->visible(fn (Forms\Get $get): bool => $get('options_lookup_type') === 'options' && in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
                                 ->schema([
-                                    $optionsRepeater
-                                ])
+                                    $optionsRepeater,
+                                ]),
                         ]),
                     Forms\Components\Tabs\Tab::make(__('custom-fields::custom-fields.field.form.validation.label'))
                         ->schema([

@@ -106,8 +106,6 @@ enum CustomFieldValidationRule: string implements HasLabel
 
     /**
      * Get the count of allowed parameters for a given validation rule.
-     *
-     * @return int
      */
     public function allowedParameterCount(): int
     {
@@ -145,12 +143,12 @@ enum CustomFieldValidationRule: string implements HasLabel
 
     public function getLabel(): string
     {
-        return __('custom-fields::custom-fields.validation.labels.' . $this->name);
+        return __('custom-fields::custom-fields.validation.labels.'.$this->name);
     }
 
     public function getDescription(): string
     {
-        return __('custom-fields::custom-fields.validation.descriptions.' . $this->name);
+        return __('custom-fields::custom-fields.validation.descriptions.'.$this->name);
     }
 
     public static function hasParameterForRule(?string $rule): bool
@@ -202,7 +200,7 @@ enum CustomFieldValidationRule: string implements HasLabel
         $label = $enum->getLabel();
         if ($parameters !== []) {
             $values = implode(', ', array_column($parameters, 'value'));
-            $label .= ' (' . $values . ')';
+            $label .= ' ('.$values.')';
         }
 
         return $label;

@@ -32,6 +32,7 @@ return [
             ],
             'columns_toggleable' => [
                 'enabled' => true,
+                'user_control' => true,
                 'hidden_by_default' => true,
             ],
             'filters' => [
@@ -53,12 +54,12 @@ return [
         'date' => [
             'native' => false,
             'format' => 'Y-m-d',
-            'display_format' => null
+            'display_format' => null,
         ],
         'date_time' => [
             'native' => false,
             'format' => 'Y-m-d H:i:s',
-            'display_format' => null
+            'display_format' => null,
         ],
     ],
 
@@ -126,7 +127,6 @@ return [
     |
     */
     'tenant_aware' => false,
-
 
     /*
     |--------------------------------------------------------------------------

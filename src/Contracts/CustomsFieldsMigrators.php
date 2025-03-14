@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Contracts;
 
-use Relaticle\CustomFields\Enums\CustomFieldType;
+use Relaticle\CustomFields\Data\CustomFieldData;
 
 interface CustomsFieldsMigrators
 {
@@ -12,7 +12,7 @@ interface CustomsFieldsMigrators
 
     public function find(string $model, string $code): ?CustomsFieldsMigrators;
 
-    public function new(string $model, CustomFieldType $type, string $name, string $code, string $section, bool $active = true, bool $systemDefined = false): CustomsFieldsMigrators;
+    public function new(string $model, CustomFieldData $fieldData): CustomsFieldsMigrators;
 
     public function options(array $options): CustomsFieldsMigrators;
 

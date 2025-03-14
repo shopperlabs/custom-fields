@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Filament\Tables\Columns;
 
-use Filament\Tables\Filters\BaseFilter;
+use Filament\Resources\RelationManagers\RelationManager;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\Model;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Support\Utils;
 
 final readonly class CustomFieldsColumn
 {
     /**
-     * @return array<int, BaseFilter>
+     * @throws BindingResolutionException
      */
-    public static function all($instance): array
+    public static function all(Model $instance): array
     {
         if (Utils::isTableColumnsEnabled() === false) {
             return [];
@@ -25,12 +27,17 @@ final readonly class CustomFieldsColumn
             ->visibleInList()
             ->with('options')
             ->get()
-            ->map(fn(CustomField $customField) => $fieldColumnFactory->create($customField)
+            ->map(fn (CustomField $customField) => $fieldColumnFactory->create($customField)
                 ->toggleable(
                     condition: Utils::isTableColumnsToggleableEnabled(),
-                    isToggledHiddenByDefault: Utils::isTableColumnsToggleableHiddenByDefault()
+                    isToggledHiddenByDefault: $customField->settings->list_toggleable_hidden
                 )
             )
             ->toArray();
+    }
+
+    public static function forRelationManager(RelationManager $relationManager): array
+    {
+        return CustomFieldsColumn::all($relationManager->getRelationship()->getModel());
     }
 }
