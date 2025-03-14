@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldValue;
@@ -72,7 +73,7 @@ trait UsesCustomFields
      */
     public function customFields(): Builder
     {
-        return CustomField::query()->forEntity($this::class);
+        return CustomFields::newCustomFieldModel()->query()->forEntity($this::class);
     }
 
     /**

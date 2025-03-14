@@ -7,6 +7,7 @@ namespace Relaticle\CustomFields\Migrations;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Data\CustomFieldData;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Exceptions\CustomFieldAlreadyExistsException;
@@ -33,7 +34,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
 
     public function find(string $model, string $code): CustomFieldsMigrator
     {
-        $this->customField = CustomField::query()
+        $this->customField = CustomFields::newCustomFieldModel()->query()
             ->forMorphEntity(EntityTypeService::getEntityFromModel($model))
             ->where('code', $code)
             ->firstOrFail();
@@ -119,7 +120,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
 
             $data['custom_field_section_id'] = $section->id;
 
-            $customField = CustomField::query()->create($data);
+            $customField = CustomFields::newCustomFieldModel()->query()->create($data);
 
             if ($this->isCustomFieldTypeOptionable() && ! empty($this->customFieldData->options)) {
                 $this->createOptions($customField, $this->customFieldData->options);
@@ -232,7 +233,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
 
     protected function isCustomFieldExists(string $model, string $code, int|string|null $tenantId = null): bool
     {
-        return CustomField::query()
+        return CustomFields::newCustomFieldModel()->query()
             ->forMorphEntity($model)
             ->where('code', $code)
             ->when(Utils::isTenantEnabled() && $tenantId, fn ($query) => $query->where(config('custom-fields.column_names.tenant_foreign_key'), $tenantId))

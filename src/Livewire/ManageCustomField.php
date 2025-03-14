@@ -13,6 +13,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\View\View;
 use Livewire\Component;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Filament\FormSchemas\FieldForm;
 use Relaticle\CustomFields\Models\CustomField;
 
@@ -38,7 +39,7 @@ class ManageCustomField extends Component implements HasActions, HasForms
     {
         return Action::make('edit')
             ->icon('heroicon-o-pencil')
-            ->model(CustomField::class)
+            ->model(CustomFields::customFieldModel())
             ->record($this->field)
             ->form(FieldForm::schema())
             ->fillForm($this->field->toArray())
@@ -50,7 +51,7 @@ class ManageCustomField extends Component implements HasActions, HasForms
     {
         return Action::make('activate')
             ->icon('heroicon-o-archive-box')
-            ->model(CustomField::class)
+            ->model(CustomFields::customFieldModel())
             ->record($this->field)
             ->visible(fn (CustomField $record): bool => ! $record->isActive())
             ->action(fn () => $this->field->activate());
@@ -60,7 +61,7 @@ class ManageCustomField extends Component implements HasActions, HasForms
     {
         return Action::make('deactivate')
             ->icon('heroicon-o-archive-box-x-mark')
-            ->model(CustomField::class)
+            ->model(CustomFields::customFieldModel())
             ->record($this->field)
             ->visible(fn (CustomField $record): bool => $record->isActive())
             ->action(fn () => $this->field->deactivate());
@@ -71,7 +72,7 @@ class ManageCustomField extends Component implements HasActions, HasForms
         return Action::make('delete')
             ->requiresConfirmation()
             ->icon('heroicon-o-trash')
-            ->model(CustomField::class)
+            ->model(CustomFields::customFieldModel())
             ->record($this->field)
             ->visible(fn (CustomField $record): bool => ! $record->isActive() && ! $record->isSystemDefined())
             ->action(fn () => $this->field->delete() && $this->dispatch('field-deleted'));

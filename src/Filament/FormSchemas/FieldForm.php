@@ -8,6 +8,7 @@ use Filament\Facades\Filament;
 use Filament\Forms;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldValidationComponent;
 use Relaticle\CustomFields\Filament\Forms\Components\TypeField;
@@ -90,7 +91,7 @@ class FieldForm implements FormInterface
                                 ->maxLength(50)
                                 ->disabled(fn (?CustomField $record): bool => (bool) $record?->system_defined)
                                 ->unique(
-                                    table: CustomField::class,
+                                    table: CustomFields::customFieldModel(),
                                     column: 'name',
                                     ignoreRecord: true,
                                     modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
@@ -124,7 +125,7 @@ class FieldForm implements FormInterface
                                 ->maxLength(50)
                                 ->disabled(fn (?CustomField $record): bool => (bool) $record?->system_defined)
                                 ->unique(
-                                    table: CustomField::class,
+                                    table: CustomFields::customFieldModel(),
                                     column: 'code',
                                     ignoreRecord: true,
                                     modifyRuleUsing: function (Unique $rule, Forms\Get $get) {

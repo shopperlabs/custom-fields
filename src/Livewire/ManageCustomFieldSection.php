@@ -15,9 +15,9 @@ use Filament\Support\Enums\ActionSize;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Filament\FormSchemas\FieldForm;
 use Relaticle\CustomFields\Filament\FormSchemas\SectionForm;
-use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Support\Utils;
 
@@ -40,7 +40,7 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
     public function fieldWidthUpdated(int $fieldId, int $width): void
     {
         // Update the width
-        CustomField::where('id', $fieldId)->update(['width' => $width]);
+        CustomFields::newCustomFieldModel()->where('id', $fieldId)->update(['width' => $width]);
 
         // Re-fetch the fields
         $this->section->refresh();
@@ -55,7 +55,7 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
     public function updateFieldsOrder($sectionId, $fields): void
     {
         foreach ($fields as $index => $field) {
-            CustomField::query()
+            CustomFields::newCustomFieldModel()->query()
                 ->withDeactivated()
                 ->where('id', $field)
                 ->update([
@@ -123,7 +123,7 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
         return Action::make('createField')
             ->size(ActionSize::ExtraSmall)
             ->label(__('custom-fields::custom-fields.field.form.add_field'))
-            ->model(CustomField::class)
+            ->model(CustomFields::customFieldModel())
             ->form(FieldForm::schema(withOptionsRelationship: false))
             ->fillForm([
                 'entity_type' => $this->entityType,
@@ -156,7 +156,7 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
 
                 unset($data['options']);
 
-                $customField = CustomField::create($data);
+                $customField = CustomFields::newCustomFieldModel()->create($data);
 
                 $customField->options()->createMany($options);
             })
