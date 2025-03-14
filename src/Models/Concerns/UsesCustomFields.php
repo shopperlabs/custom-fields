@@ -115,14 +115,15 @@ trait UsesCustomFields
     /**
      * @param CustomField $customField
      * @param mixed $value
+     * @param Model|null $tenant
      * @return void
      */
-    public function saveCustomFieldValue(CustomField $customField, mixed $value): void
+    public function saveCustomFieldValue(CustomField $customField, mixed $value, ?Model $tenant = null): void
     {
         $data = ['custom_field_id' => $customField->id];
 
         if (Utils::isTenantEnabled()) {
-            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id ?? $tenant?->id;
         }
 
         $customFieldValue = $this->customFieldValues();
@@ -140,11 +141,11 @@ trait UsesCustomFields
      * @param array<string, mixed> $customFields
      * @return void
      */
-    public function saveCustomFields(array $customFields): void
+    public function saveCustomFields(array $customFields, ?Model $tenant = null): void
     {
-        $this->customFields()->each(function (CustomField $customField) use ($customFields): void {
+        $this->customFields()->each(function (CustomField $customField) use ($customFields, $tenant): void {
             $value = $customFields[$customField->code] ?? null;
-            $this->saveCustomFieldValue($customField, $value);
+            $this->saveCustomFieldValue($customField, $value, $tenant);
         });
     }
 }
