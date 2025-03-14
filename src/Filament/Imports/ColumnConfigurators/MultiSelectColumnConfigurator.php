@@ -59,7 +59,6 @@ final class MultiSelectColumnConfigurator implements ColumnConfiguratorInterface
 
             try {
                 $entityInstance = FilamentResourceService::getModelInstance($customField->lookup_type);
-                $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($customField->lookup_type);
 
                 $foundIds = [];
                 $missingValues = [];
@@ -67,7 +66,6 @@ final class MultiSelectColumnConfigurator implements ColumnConfiguratorInterface
                 foreach ($state as $value) {
                     $record = $this->lookupMatcher->find(
                         entityInstance: $entityInstance,
-                        titleAttribute: $recordTitleAttribute,
                         value: (string) $value
                     );
 

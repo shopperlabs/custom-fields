@@ -55,16 +55,19 @@ final class SelectColumnConfigurator implements ColumnConfiguratorInterface
             try {
                 $entityInstance = FilamentResourceService::getModelInstance($customField->lookup_type);
                 
-                $record = $entityInstance->find($state);
+                $record = $this->lookupMatcher
+                    ->find(
+                        entityInstance: $entityInstance,
+                        value: (string)$state
+                    );
+
                 if ($record) {
                     return (int) $record->getKey();
                 }
 
-                if (! $record) {
-                    throw new RowImportFailedException(
-                        "No {$customField->lookup_type} record found matching '{$state}'"
-                    );
-                }
+                throw new RowImportFailedException(
+                    "No {$customField->lookup_type} record found matching '{$state}'"
+                );
             } catch (Throwable $e) {
                 if ($e instanceof RowImportFailedException) {
                     throw $e;
