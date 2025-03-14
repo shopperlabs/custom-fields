@@ -7,7 +7,6 @@ namespace Relaticle\CustomFields\Filament\Imports;
 use Filament\Actions\Imports\ImportColumn;
 use Illuminate\Database\Eloquent\Model;
 use Psr\Log\LoggerInterface;
-use Relaticle\CustomFields\Filament\Imports\Exceptions\CustomFieldImportException;
 use Relaticle\CustomFields\Filament\Imports\Matchers\LookupMatcherInterface;
 use Relaticle\CustomFields\Filament\Imports\ValueConverters\ValueConverterInterface;
 use Relaticle\CustomFields\Models\CustomField;
@@ -32,7 +31,6 @@ final class CustomFieldsImporter
      * @param  Model|null  $tenant  Optional tenant for multi-tenancy support
      * @return array<int, ImportColumn> Array of import columns for custom fields
      *
-     * @throws CustomFieldImportException If columns cannot be created
      */
     public function getColumns(string $modelClass, ?Model $tenant = null): array
     {
@@ -53,7 +51,6 @@ final class CustomFieldsImporter
      * @param  array<string>  $fieldCodes  List of custom field codes to include
      * @return array<int, ImportColumn> Array of import columns for the specified custom fields
      *
-     * @throws CustomFieldImportException If columns cannot be created for the specified fields
      */
     public function getColumnsByFieldCodes(string $modelClass, array $fieldCodes): array
     {
@@ -79,7 +76,6 @@ final class CustomFieldsImporter
      * @param  array<string, mixed>  $data  The import data containing custom fields values
      * @param  Model|null  $tenant  Optional tenant for multi-tenancy support
      *
-     * @throws CustomFieldImportException If saving custom field values fails
      */
     public function saveCustomFieldValues(Model $record, array $data, ?Model $tenant = null): void
     {

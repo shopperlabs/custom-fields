@@ -12,6 +12,7 @@ use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldValidationComponent;
 use Relaticle\CustomFields\Filament\Forms\Components\TypeField;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Models\CustomFieldOption;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
@@ -24,7 +25,26 @@ class FieldForm implements FormInterface
             ->simple(
                 Forms\Components\TextInput::make('name')
                     ->columnSpanFull()
-                    ->required(),
+                    ->required()
+                    ->unique(
+                        table: CustomFieldOption::class,
+                        column: 'name',
+                        ignoreRecord: true,
+                        modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
+                            $recordId = $get('../../id');
+                            
+                            return $rule->where('custom_field_id', $recordId)
+                                ->when(
+                                    Utils::isTenantEnabled(),
+                                    function (Unique $rule) {
+                                        return $rule->where(
+                                            config('custom-fields.column_names.tenant_foreign_key'),
+                                            Filament::getTenant()?->id
+                                        );
+                                    }
+                                );
+                        },
+                    )
             )
             ->columns(2)
             ->requiredUnless('type', CustomFieldType::TAGS_INPUT->value)

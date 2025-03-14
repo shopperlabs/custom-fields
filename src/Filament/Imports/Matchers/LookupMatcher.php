@@ -38,39 +38,10 @@ final class LookupMatcher implements LookupMatcherInterface
     public function find(mixed $entityInstance, string $titleAttribute, string $value): ?Model
     {
         try {
-            // 1. Exact match (most precise)
-            $record = $entityInstance::query()
-                ->where($titleAttribute, $value)
-                ->first();
-
-            if ($record) {
-                return $record;
-            }
-
-            // 2. Case-insensitive exact match
-            $record = $entityInstance::query()
+            // Case-insensitive exact match
+            return $entityInstance::query()
                 ->whereRaw(DB::raw("LOWER({$titleAttribute}) = ?"), [strtolower($value)])
                 ->first();
-
-            if ($record) {
-                return $record;
-            }
-
-            // 3. Case-insensitive starts with match
-            $record = $entityInstance::query()
-                ->whereRaw(DB::raw("LOWER({$titleAttribute}) LIKE ?"), [strtolower($value).'%'])
-                ->first();
-
-            if ($record) {
-                return $record;
-            }
-
-            // 4. Case-insensitive contains match (least precise)
-            $record = $entityInstance::query()
-                ->whereRaw(DB::raw("LOWER({$titleAttribute}) LIKE ?"), ['%'.strtolower($value).'%'])
-                ->first();
-
-            return $record;
         } catch (Throwable $e) {
             // Log the error but don't throw - we'll handle this gracefully by returning null
             $this->logger->warning('Error matching lookup value', [
