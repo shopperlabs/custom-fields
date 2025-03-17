@@ -68,7 +68,7 @@ class CustomField extends Model
      */
     public static function bootActivable(): void
     {
-        CustomField::addGlobalScope(new CustomFieldsActivableScope);
+        static::addGlobalScope(new CustomFieldsActivableScope);
     }
 
     public function newEloquentBuilder($query): CustomFieldQueryBuilder
