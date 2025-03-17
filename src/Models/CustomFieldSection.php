@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Data\CustomFieldSectionSettingsData;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Models\Concerns\Activable;
@@ -49,7 +50,7 @@ class CustomFieldSection extends Model
 
     public function fields(): HasMany
     {
-        return $this->hasMany(CustomField::class);
+        return $this->hasMany(CustomFields::customFieldModel());
     }
 
     public function scopeForEntityType(Builder $query, string $model)

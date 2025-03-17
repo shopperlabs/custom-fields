@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
@@ -26,7 +27,7 @@ use Relaticle\CustomFields\Models\Scopes\TenantScope;
  * @property ?Carbon $datetime_value
  */
 #[ScopedBy([TenantScope::class])]
-final class CustomFieldValue extends Model
+class CustomFieldValue extends Model
 {
     /** @use HasFactory<CustomFieldValueFactory> */
     use HasFactory;
@@ -82,7 +83,7 @@ final class CustomFieldValue extends Model
      */
     public function customField(): BelongsTo
     {
-        return $this->belongsTo(CustomField::class);
+        return $this->belongsTo(CustomFields::customFieldModel());
     }
 
     /**

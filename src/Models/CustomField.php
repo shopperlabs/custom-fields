@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Data\CustomFieldSettingsData;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Database\Factories\CustomFieldFactory;
@@ -37,7 +38,7 @@ use Spatie\LaravelData\DataCollection;
  */
 #[ScopedBy([TenantScope::class, SortOrderScope::class])]
 #[ObservedBy(CustomFieldObserver::class)]
-final class CustomField extends Model
+class CustomField extends Model
 {
     use Activable;
 
@@ -94,7 +95,7 @@ final class CustomField extends Model
 
     public function section(): BelongsTo
     {
-        return $this->belongsTo(CustomFieldSection::class, 'custom_field_section_id');
+        return $this->belongsTo(CustomFields::sectionModel(), 'custom_field_section_id');
     }
 
     /**
@@ -102,7 +103,7 @@ final class CustomField extends Model
      */
     public function values(): HasMany
     {
-        return $this->hasMany(CustomFieldValue::class);
+        return $this->hasMany(CustomFields::valueModel());
     }
 
     /**
@@ -110,7 +111,7 @@ final class CustomField extends Model
      */
     public function options(): HasMany
     {
-        return $this->hasMany(CustomFieldOption::class);
+        return $this->hasMany(CustomFields::optionModel());
     }
 
     /**
@@ -123,6 +124,6 @@ final class CustomField extends Model
 
     public function getValueColumn(): string
     {
-        return CustomFieldValue::getValueColumn($this->type);
+        return CustomFields::newValueModel()::getValueColumn($this->type);
     }
 }

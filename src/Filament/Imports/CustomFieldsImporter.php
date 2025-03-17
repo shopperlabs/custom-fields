@@ -7,6 +7,7 @@ namespace Relaticle\CustomFields\Filament\Imports;
 use Filament\Actions\Imports\ImportColumn;
 use Illuminate\Database\Eloquent\Model;
 use Psr\Log\LoggerInterface;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Filament\Imports\Matchers\LookupMatcherInterface;
 use Relaticle\CustomFields\Filament\Imports\ValueConverters\ValueConverterInterface;
 use Relaticle\CustomFields\Models\CustomField;
@@ -56,7 +57,7 @@ final class CustomFieldsImporter
     {
         $entityType = EntityTypeService::getEntityFromModel($modelClass);
 
-        return CustomField::query()
+        return CustomFields::newCustomFieldModel()->query()
             ->forMorphEntity($entityType)
             ->with('options')
             ->whereIn('code', $fieldCodes)

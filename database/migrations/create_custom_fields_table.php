@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Support\Utils;
 
@@ -90,7 +91,7 @@ return new class extends Migration
                 $uniqueColumns[] = config('custom-fields.column_names.tenant_foreign_key');
             }
 
-            $table->foreignIdFor(CustomField::class)
+            $table->foreignIdFor(CustomFields::customFieldModel())
                 ->constrained()
                 ->cascadeOnDelete();
 

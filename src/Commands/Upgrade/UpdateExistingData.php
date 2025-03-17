@@ -5,6 +5,7 @@ namespace Relaticle\CustomFields\Commands\Upgrade;
 use Closure;
 use Illuminate\Support\Facades\DB;
 use Relaticle\CustomFields\Commands\UpgradeCommand;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Enums\CustomFieldWidth;
 use Relaticle\CustomFields\Models\CustomField;
@@ -19,7 +20,7 @@ class UpdateExistingData
         $command->info('--- Updating existing data...');
 
         // Fetch custom fields that require updating
-        $customFields = CustomField::whereNull('custom_field_section_id')
+        $customFields = CustomFields::newCustomFieldModel()->whereNull('custom_field_section_id')
             ->select('id', 'name', 'entity_type', 'tenant_id')
             ->get();
 
@@ -74,7 +75,7 @@ class UpdateExistingData
                 $customFieldIds = $groupedCustomFields->pluck('id')->toArray();
 
                 // Perform bulk update on all custom fields in the group
-                CustomField::whereIn('id', $customFieldIds)->update([
+                CustomFields::newCustomFieldModel()->whereIn('id', $customFieldIds)->update([
                     'custom_field_section_id' => $section->id,
                     'width' => CustomFieldWidth::_100,
                 ]);
