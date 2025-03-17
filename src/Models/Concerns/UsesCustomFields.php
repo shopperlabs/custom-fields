@@ -81,7 +81,7 @@ trait UsesCustomFields
      */
     public function customFieldValues(): MorphMany
     {
-        return $this->morphMany(CustomFieldValue::class, 'entity');
+        return $this->morphMany(CustomFields::valueModel(), 'entity');
     }
 
     public function scopeWithCustomFieldValues(Builder $query): Builder

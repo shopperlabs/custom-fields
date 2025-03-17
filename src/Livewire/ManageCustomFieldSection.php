@@ -33,7 +33,7 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
     #[Computed]
     public function fields()
     {
-        return $this->section->fields()->orderBy('sort_order')->withDeactivated()->get();
+        return $this->section->fields()->orderBy('sort_order')->get();
     }
 
     #[On('field-width-updated')]
@@ -56,7 +56,6 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
     {
         foreach ($fields as $index => $field) {
             CustomFields::newCustomFieldModel()->query()
-                ->withDeactivated()
                 ->where('id', $field)
                 ->update([
                     'custom_field_section_id' => $sectionId,

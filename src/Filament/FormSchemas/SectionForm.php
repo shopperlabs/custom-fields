@@ -8,8 +8,8 @@ use Filament\Facades\Filament;
 use Filament\Forms;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
-use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Support\Utils;
 
 class SectionForm implements FormInterface, SectionFormInterface
@@ -33,7 +33,7 @@ class SectionForm implements FormInterface, SectionFormInterface
                     ->live(onBlur: true)
                     ->maxLength(50)
                     ->unique(
-                        table: CustomFieldSection::class,
+                        table: CustomFields::sectionModel(),
                         column: 'name',
                         ignoreRecord: true,
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
@@ -65,7 +65,7 @@ class SectionForm implements FormInterface, SectionFormInterface
                     ->alphaDash()
                     ->maxLength(50)
                     ->unique(
-                        table: CustomFieldSection::class,
+                        table: CustomFields::sectionModel(),
                         column: 'code',
                         ignoreRecord: true,
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {

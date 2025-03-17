@@ -18,6 +18,7 @@ use Relaticle\CustomFields\Filament\FormSchemas\SectionForm;
 use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Support\Utils;
+use Relaticle\CustomFields\CustomFields as CustomFieldsModel;
 
 class CustomFields extends Page
 {
@@ -42,7 +43,7 @@ class CustomFields extends Page
     #[Computed]
     public function sections(): Collection
     {
-        return CustomFieldSection::query()
+        return CustomFieldsModel::newSectionModel()->query()
             ->withDeactivated()
             ->forEntityType($this->currentEntityType)
             ->with([
@@ -79,14 +80,14 @@ class CustomFields extends Page
                 'class' => 'h-36 flex justify-center items-center rounded-lg border-gray-300 hover:border-gray-400 border-dashed',
             ])
             ->form(SectionForm::entityType($this->currentEntityType)->schema())
-            ->action(fn (array $data) => $this->storeSection($data))
+            ->action(fn(array $data) => $this->storeSection($data))
             ->modalWidth('max-w-2xl');
     }
 
     public function updateSectionsOrder($sections): void
     {
         foreach ($sections as $index => $section) {
-            CustomFieldSection::query()
+            CustomFieldsModel::newSectionModel()->query()
                 ->withDeactivated()
                 ->where('id', $section)
                 ->update([
@@ -110,7 +111,7 @@ class CustomFields extends Page
     #[On('section-deleted')]
     public function sectionDeleted(): void
     {
-        $this->sections = $this->sections->filter(fn ($section) => $section->exists);
+        $this->sections = $this->sections->filter(fn($section) => $section->exists);
     }
 
     public static function getCluster(): ?string

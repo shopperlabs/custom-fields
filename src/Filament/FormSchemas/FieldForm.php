@@ -13,7 +13,6 @@ use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldValidationComponent;
 use Relaticle\CustomFields\Filament\Forms\Components\TypeField;
 use Relaticle\CustomFields\Models\CustomField;
-use Relaticle\CustomFields\Models\CustomFieldOption;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
@@ -28,7 +27,7 @@ class FieldForm implements FormInterface
                     ->columnSpanFull()
                     ->required()
                     ->unique(
-                        table: CustomFieldOption::class,
+                        table: CustomFields::optionModel(),
                         column: 'name',
                         ignoreRecord: true,
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
