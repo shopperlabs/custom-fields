@@ -6,6 +6,7 @@ namespace Relaticle\CustomFields\Filament\Infolists;
 
 use Filament\Forms\Components\Field;
 use Filament\Infolists\Components\Component;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
 
@@ -33,7 +34,7 @@ final class CustomFieldsInfolists extends Component
     {
         $this->getRecord()?->load('customFieldValues.customField');
 
-        return CustomFieldSection::query()
+        return CustomFields::newSectionModel()->query()
             ->with(['fields' => fn ($query) => $query->visibleInView()])
             ->forEntityType($this->getRecord()::class)
             ->orderBy('sort_order')

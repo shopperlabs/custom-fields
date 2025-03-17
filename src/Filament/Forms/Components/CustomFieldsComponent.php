@@ -6,6 +6,7 @@ namespace Relaticle\CustomFields\Filament\Forms\Components;
 
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
+use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\FieldComponentFactory;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent\SectionComponentFactory;
 use Relaticle\CustomFields\Models\CustomField;
@@ -52,7 +53,7 @@ final class CustomFieldsComponent extends Component
     {
         $this->getRecord()?->load('customFieldValues.customField');
 
-        return CustomFieldSection::query()
+        return CustomFields::newSectionModel()->query()
             ->with(['fields' => fn ($query) => $query->with('options', 'values')])
             ->forEntityType($this->getModel())
             ->orderBy('sort_order')
