@@ -45,6 +45,7 @@ class CustomFieldSection extends Model
         return [
             'type' => CustomFieldSectionType::class,
             'settings' => CustomFieldSectionSettingsData::class.':default',
+            'system_defined' => 'boolean',
         ];
     }
 
