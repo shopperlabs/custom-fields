@@ -105,7 +105,7 @@ class CustomFields extends Page
         $data['type'] ??= CustomFieldSectionType::SECTION->value;
         $data['entity_type'] = $this->currentEntityType;
 
-        return CustomFieldSection::create($data);
+        return CustomFieldsModel::newSectionModel()->create($data);
     }
 
     #[On('section-deleted')]
