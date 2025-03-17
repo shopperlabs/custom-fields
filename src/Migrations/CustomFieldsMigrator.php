@@ -14,7 +14,6 @@ use Relaticle\CustomFields\Exceptions\CustomFieldAlreadyExistsException;
 use Relaticle\CustomFields\Exceptions\CustomFieldDoesNotExistException;
 use Relaticle\CustomFields\Exceptions\FieldTypeNotOptionableException;
 use Relaticle\CustomFields\Models\CustomField;
-use Relaticle\CustomFields\Models\CustomFieldSection;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
@@ -113,11 +112,12 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
                 $sectionAttributes[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
             }
 
-            $section = CustomFields::newSectionModel()->firstOrCreate(
+          
+            $section = CustomFields::newSectionModel()->updateOrCreate(
                 $sectionAttributes,
                 $sectionData
             );
-
+            
             $data['custom_field_section_id'] = $section->id;
 
             $customField = CustomFields::newCustomFieldModel()->query()->create($data);

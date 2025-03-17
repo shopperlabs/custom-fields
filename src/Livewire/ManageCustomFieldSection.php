@@ -33,7 +33,7 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
     #[Computed]
     public function fields()
     {
-        return $this->section->fields()->orderBy('sort_order')->get();
+        return $this->section->fields()->withDeactivated()->orderBy('sort_order')->get();
     }
 
     #[On('field-width-updated')]
