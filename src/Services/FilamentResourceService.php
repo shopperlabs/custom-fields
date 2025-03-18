@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
 use Throwable;
+use ReflectionClass;
 
 final class FilamentResourceService
 {
@@ -69,5 +70,27 @@ final class FilamentResourceService
     public static function getGlobalSearchableAttributes(string $model): array
     {
         return self::getResourceInstance($model)->getGloballySearchableAttributes();
+    }
+
+    /**
+     * Invoke a method on a Resource class using reflection
+     *
+     * @param Resource $resource The resource instance or class name
+     * @param string $methodName The name of the method to call
+     * @param array $args The arguments to pass to the method
+     * @return mixed The return value from the method
+     */
+    public static function invokeMethodByReflection(Resource $resource, string $methodName, array $args = []): mixed
+    {
+        $reflectionClass = new ReflectionClass($resource);
+
+        if ($reflectionClass->hasMethod($methodName)) {
+            $method = $reflectionClass->getMethod($methodName);
+            $method->setAccessible(true);
+
+            return $method->invoke(is_object($resource) ? $resource : null, ...$args);
+        }
+
+        return null;
     }
 }

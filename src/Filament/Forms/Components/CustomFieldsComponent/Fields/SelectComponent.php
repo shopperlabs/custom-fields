@@ -32,11 +32,9 @@ final readonly class SelectComponent implements FieldComponentInterface
         return $this->configurator->configure($field, $customField);
     }
 
-    /**
-     * @throws Throwable
-     */
     protected function configureLookup(Select $select, $lookupType): Select
     {
+        $resource = FilamentResourceService::getResourceInstance($lookupType);
         $entityInstance = FilamentResourceService::getModelInstance($lookupType);
         $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($lookupType);
         $globalSearchableAttributes = FilamentResourceService::getGlobalSearchableAttributes($lookupType);
@@ -51,11 +49,17 @@ final readonly class SelectComponent implements FieldComponentInterface
                     ->pluck($recordTitleAttribute, 'id')
                     ->toArray();
             })
-            ->getSearchResultsUsing(fn (string $search): array => $entityInstance->query()
-                ->whereAny($globalSearchableAttributes, 'like', "%{$search}%")
-                ->limit(50)
-                ->pluck($recordTitleAttribute, 'id')
-                ->toArray())
+            ->getSearchResultsUsing(function (string $search) use ($entityInstance, $recordTitleAttribute, $globalSearchableAttributes, $resource): array {
+                $query = $entityInstance->query();
+
+                FilamentResourceService::invokeMethodByReflection($resource, 'applyGlobalSearchAttributeConstraints', [
+                    $query, $search, $globalSearchableAttributes
+                ]);
+
+                return $query->limit(50)
+                    ->pluck($recordTitleAttribute, 'id')
+                    ->toArray();
+            })
             ->getOptionLabelUsing(fn ($value) => $entityInstance::query()->find($value)?->{$recordTitleAttribute})
             ->getOptionLabelsUsing(fn (array $values): array => $entityInstance::query()
                 ->whereIn('id', $values)
