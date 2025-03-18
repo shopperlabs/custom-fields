@@ -30,12 +30,12 @@ final readonly class SelectFilter implements FilterInterface
         }
 
         $filter->query(
-            fn (array $data, Builder $query): Builder => $query->when(
+            fn(array $data, Builder $query): Builder => $query->when(
                 ! empty($data['values']),
-                fn (Builder $query): Builder => $query->whereHas('customFieldValues', function (Builder $query) use ($customField, $data) {
+                fn(Builder $query): Builder => $query->whereHas('customFieldValues', function (Builder $query) use ($customField, $data) {
                     $query->where('custom_field_id', $customField->id)
-                        ->when($customField->getValueColumn() === 'json_value', fn (Builder $query) => $query->whereJsonContains($customField->getValueColumn(), $data['values']))
-                        ->when($customField->getValueColumn() !== 'json_value', fn (Builder $query) => $query->whereIn($customField->getValueColumn(), $data['values']));
+                        ->when($customField->getValueColumn() === 'json_value', fn(Builder $query) => $query->whereJsonContains($customField->getValueColumn(), $data['values']))
+                        ->when($customField->getValueColumn() !== 'json_value', fn(Builder $query) => $query->whereIn($customField->getValueColumn(), $data['values']));
                 }),
             )
         );
@@ -48,19 +48,27 @@ final readonly class SelectFilter implements FilterInterface
      */
     protected function configureLookup(FilamentSelectFilter $select, $lookupType): FilamentSelectFilter
     {
+        $resource = FilamentResourceService::getResourceInstance($lookupType);
         $entityInstance = FilamentResourceService::getModelInstance($lookupType);
         $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($lookupType);
         $globalSearchableAttributes = FilamentResourceService::getGlobalSearchableAttributes($lookupType);
 
-        // TODO: Check tenant support for below queries and other lookups
         return $select
-            ->getSearchResultsUsing(fn (string $search): array => $entityInstance->query()
-                ->whereAny($globalSearchableAttributes, 'like', "%{$search}%")
-                ->limit(50)
-                ->pluck($recordTitleAttribute, 'id')
-                ->toArray())
-            ->getOptionLabelUsing(fn ($value) => $entityInstance::query()->find($value)?->{$recordTitleAttribute})
-            ->getOptionLabelsUsing(fn (array $values): array => $entityInstance::query()
+            ->getSearchResultsUsing(function (string $search) use ($entityInstance, $recordTitleAttribute, $globalSearchableAttributes, $resource): array {
+                $query = $entityInstance->query();
+
+                FilamentResourceService::invokeMethodByReflection($resource, 'applyGlobalSearchAttributeConstraints', [
+                    $query,
+                    $search,
+                    $globalSearchableAttributes
+                ]);
+
+                return $query->limit(50)
+                    ->pluck($recordTitleAttribute, 'id')
+                    ->toArray();
+            })
+            ->getOptionLabelUsing(fn($value) => $entityInstance::query()->find($value)?->{$recordTitleAttribute})
+            ->getOptionLabelsUsing(fn(array $values): array => $entityInstance::query()
                 ->whereIn('id', $values)
                 ->pluck($recordTitleAttribute, 'id')
                 ->toArray());
