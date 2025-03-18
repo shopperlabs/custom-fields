@@ -107,7 +107,7 @@ trait UsesCustomFields
         $data = ['custom_field_id' => $customField->id];
 
         if (Utils::isTenantEnabled()) {
-            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id ?? $tenant?->id;
+            $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->resolveTenantId($tenant, $customField);
         }
 
         $customFieldValue = $this->customFieldValues();
@@ -119,6 +119,31 @@ trait UsesCustomFields
         $customFieldValue = $customFieldValue->firstOrNew($data);
         $customFieldValue->setValue($value);
         $customFieldValue->save();
+    }
+
+    /**
+     * Resolve the tenant ID from available sources
+     * 
+     * @param Model|null $tenant
+     * @param CustomField $customField
+     * @return mixed
+     */
+    protected function resolveTenantId(?Model $tenant, CustomField $customField): mixed
+    {
+        // First priority: Explicitly provided tenant
+        if ($tenant !== null) {
+            return $tenant->id;
+        }
+
+        // Second priority: Current Filament tenant
+        $filamentTenant = Filament::getTenant();
+        if ($filamentTenant !== null) {
+            return $filamentTenant->id;
+        }
+
+        // Fallback: Use the tenant from the custom field
+        $tenantColumn = config('custom-fields.column_names.tenant_foreign_key');
+        return $customField->{$tenantColumn};
     }
 
     /**
