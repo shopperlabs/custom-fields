@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Contracts;
 
 use Relaticle\CustomFields\Data\CustomFieldData;
+use Relaticle\CustomFields\Models\CustomField;
 
 interface CustomsFieldsMigrators
 {
@@ -18,7 +19,7 @@ interface CustomsFieldsMigrators
 
     public function lookupType(string $model): CustomsFieldsMigrators;
 
-    public function create(): void;
+    public function create(): CustomField;
 
     public function update(array $data): void;
 

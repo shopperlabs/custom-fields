@@ -17,6 +17,7 @@ use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Services\EntityTypeService;
 use Relaticle\CustomFields\Services\LookupTypeService;
 use Relaticle\CustomFields\Support\Utils;
+use Throwable;
 
 class CustomFieldsMigrator implements CustomsFieldsMigrators
 {
@@ -87,9 +88,9 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
 
     /**
      * @throws CustomFieldAlreadyExistsException
-     * @throws Exception
+     * @throws Exception|Throwable
      */
-    public function create(): void
+    public function create(): CustomField
     {
         if ($this->isCustomFieldExists($this->customFieldData->entityType, $this->customFieldData->code, $this->tenantId)) {
             throw CustomFieldAlreadyExistsException::whenAdding($this->customFieldData->code);
@@ -118,7 +119,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
                 $sectionData
             );
             
-            $data['custom_field_section_id'] = $section->id;
+            $data['custom_field_section_id'] = $section->getKey();
 
             $customField = CustomFields::newCustomFieldModel()->query()->create($data);
 
@@ -127,6 +128,8 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
             }
 
             DB::commit();
+
+            return $customField;
         } catch (Exception $exception) {
             DB::rollBack();
             throw $exception;
@@ -134,7 +137,7 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
     }
 
     /**
-     * @throws CustomFieldDoesNotExistException
+     * @throws CustomFieldDoesNotExistException|Throwable
      */
     public function update(array $data): void
     {
