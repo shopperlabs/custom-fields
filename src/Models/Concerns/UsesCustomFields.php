@@ -8,15 +8,12 @@ use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Crypt;
 use Relaticle\CustomFields\CustomFields;
-use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldValue;
-use Relaticle\CustomFields\Support\FieldTypeUtils;
 use Relaticle\CustomFields\Support\Utils;
 
 /**
@@ -106,15 +103,9 @@ trait UsesCustomFields
             $fieldValue = Crypt::decryptString($fieldValue);
         }
 
-        return match ($fieldValue::class) {
-            Carbon::class => $fieldValue->format(
-                $customField->type === CustomFieldType::DATE
-                    ? FieldTypeUtils::getDateFormat()
-                    : FieldTypeUtils::getDateTimeFormat()
-            ),
-            Collection::class => $fieldValue->toArray(),
-            default => $fieldValue,
-        };
+        return $fieldValue instanceof Collection
+            ? $fieldValue->toArray()
+            : $fieldValue;
     }
 
     public function saveCustomFieldValue(CustomField $customField, mixed $value, ?Model $tenant = null): void
