@@ -31,7 +31,6 @@ final class CustomFieldsImporter
      * @param  string  $modelClass  The fully qualified class name of the model
      * @param  Model|null  $tenant  Optional tenant for multi-tenancy support
      * @return array<int, ImportColumn> Array of import columns for custom fields
-     *
      */
     public function getColumns(string $modelClass, ?Model $tenant = null): array
     {
@@ -51,7 +50,6 @@ final class CustomFieldsImporter
      * @param  string  $modelClass  The fully qualified class name of the model
      * @param  array<string>  $fieldCodes  List of custom field codes to include
      * @return array<int, ImportColumn> Array of import columns for the specified custom fields
-     *
      */
     public function getColumnsByFieldCodes(string $modelClass, array $fieldCodes): array
     {
@@ -76,7 +74,6 @@ final class CustomFieldsImporter
      * @param  Model  $record  The model record to save custom fields for
      * @param  array<string, mixed>  $data  The import data containing custom fields values
      * @param  Model|null  $tenant  Optional tenant for multi-tenancy support
-     *
      */
     public function saveCustomFieldValues(Model $record, array $data, ?Model $tenant = null): void
     {

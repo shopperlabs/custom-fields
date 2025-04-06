@@ -129,10 +129,6 @@ trait UsesCustomFields
 
     /**
      * Resolve the tenant ID from available sources
-     *
-     * @param Model|null $tenant
-     * @param CustomField $customField
-     * @return mixed
      */
     protected function resolveTenantId(?Model $tenant, CustomField $customField): mixed
     {
@@ -149,11 +145,12 @@ trait UsesCustomFields
 
         // Fallback: Use the tenant from the custom field
         $tenantColumn = config('custom-fields.column_names.tenant_foreign_key');
+
         return $customField->{$tenantColumn};
     }
 
     /**
-     * @param array<string, mixed> $customFields
+     * @param  array<string, mixed>  $customFields
      */
     public function saveCustomFields(array $customFields, ?Model $tenant = null): void
     {

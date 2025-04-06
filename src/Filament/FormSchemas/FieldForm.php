@@ -32,7 +32,7 @@ class FieldForm implements FormInterface
                         ignoreRecord: true,
                         modifyRuleUsing: function (Unique $rule, Forms\Get $get) {
                             $recordId = $get('../../id');
-                            
+
                             return $rule->where('custom_field_id', $recordId)
                                 ->when(
                                     Utils::isTenantEnabled(),

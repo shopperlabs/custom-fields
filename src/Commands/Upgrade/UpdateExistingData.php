@@ -8,7 +8,6 @@ use Relaticle\CustomFields\Commands\UpgradeCommand;
 use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Enums\CustomFieldSectionType;
 use Relaticle\CustomFields\Enums\CustomFieldWidth;
-use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Models\CustomFieldSection;
 
 class UpdateExistingData

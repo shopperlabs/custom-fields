@@ -54,11 +54,11 @@ final class SelectColumnConfigurator implements ColumnConfiguratorInterface
 
             try {
                 $entityInstance = FilamentResourceService::getModelInstance($customField->lookup_type);
-                
+
                 $record = $this->lookupMatcher
                     ->find(
                         entityInstance: $entityInstance,
-                        value: (string)$state
+                        value: (string) $state
                     );
 
                 if ($record) {

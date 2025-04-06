@@ -113,12 +113,11 @@ class CustomFieldsMigrator implements CustomsFieldsMigrators
                 $sectionAttributes[config('custom-fields.column_names.tenant_foreign_key')] = $this->tenantId;
             }
 
-          
             $section = CustomFields::newSectionModel()->updateOrCreate(
                 $sectionAttributes,
                 $sectionData
             );
-            
+
             $data['custom_field_section_id'] = $section->getKey();
 
             $customField = CustomFields::newCustomFieldModel()->query()->create($data);

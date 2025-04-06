@@ -30,12 +30,12 @@ final readonly class SelectFilter implements FilterInterface
         }
 
         $filter->query(
-            fn(array $data, Builder $query): Builder => $query->when(
+            fn (array $data, Builder $query): Builder => $query->when(
                 ! empty($data['values']),
-                fn(Builder $query): Builder => $query->whereHas('customFieldValues', function (Builder $query) use ($customField, $data) {
+                fn (Builder $query): Builder => $query->whereHas('customFieldValues', function (Builder $query) use ($customField, $data) {
                     $query->where('custom_field_id', $customField->id)
-                        ->when($customField->getValueColumn() === 'json_value', fn(Builder $query) => $query->whereJsonContains($customField->getValueColumn(), $data['values']))
-                        ->when($customField->getValueColumn() !== 'json_value', fn(Builder $query) => $query->whereIn($customField->getValueColumn(), $data['values']));
+                        ->when($customField->getValueColumn() === 'json_value', fn (Builder $query) => $query->whereJsonContains($customField->getValueColumn(), $data['values']))
+                        ->when($customField->getValueColumn() !== 'json_value', fn (Builder $query) => $query->whereIn($customField->getValueColumn(), $data['values']));
                 }),
             )
         );
@@ -60,15 +60,15 @@ final readonly class SelectFilter implements FilterInterface
                 FilamentResourceService::invokeMethodByReflection($resource, 'applyGlobalSearchAttributeConstraints', [
                     $query,
                     $search,
-                    $globalSearchableAttributes
+                    $globalSearchableAttributes,
                 ]);
 
                 return $query->limit(50)
                     ->pluck($recordTitleAttribute, 'id')
                     ->toArray();
             })
-            ->getOptionLabelUsing(fn($value) => $entityInstance::query()->find($value)?->{$recordTitleAttribute})
-            ->getOptionLabelsUsing(fn(array $values): array => $entityInstance::query()
+            ->getOptionLabelUsing(fn ($value) => $entityInstance::query()->find($value)?->{$recordTitleAttribute})
+            ->getOptionLabelsUsing(fn (array $values): array => $entityInstance::query()
                 ->whereIn('id', $values)
                 ->pluck($recordTitleAttribute, 'id')
                 ->toArray());

@@ -14,7 +14,6 @@ final class LookupMatcher implements LookupMatcherInterface
         private readonly LoggerInterface $logger
     ) {}
 
-
     public function find(mixed $entityInstance, string $value): ?Model
     {
         try {

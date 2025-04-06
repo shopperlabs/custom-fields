@@ -53,7 +53,7 @@ final readonly class SelectComponent implements FieldComponentInterface
                 $query = $entityInstance->query();
 
                 FilamentResourceService::invokeMethodByReflection($resource, 'applyGlobalSearchAttributeConstraints', [
-                    $query, $search, $globalSearchableAttributes
+                    $query, $search, $globalSearchableAttributes,
                 ]);
 
                 return $query->limit(50)

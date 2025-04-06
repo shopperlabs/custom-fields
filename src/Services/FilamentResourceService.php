@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
-use Throwable;
 use ReflectionClass;
+use Throwable;
 
 final class FilamentResourceService
 {
@@ -75,9 +75,9 @@ final class FilamentResourceService
     /**
      * Invoke a method on a Resource class using reflection
      *
-     * @param Resource $resource The resource instance or class name
-     * @param string $methodName The name of the method to call
-     * @param array $args The arguments to pass to the method
+     * @param  resource  $resource  The resource instance or class name
+     * @param  string  $methodName  The name of the method to call
+     * @param  array  $args  The arguments to pass to the method
      * @return mixed The return value from the method
      */
     public static function invokeMethodByReflection(Resource $resource, string $methodName, array $args = []): mixed
