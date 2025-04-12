@@ -13,7 +13,9 @@ use Throwable;
 
 final readonly class SelectComponent implements FieldComponentInterface
 {
-    public function __construct(private FieldConfigurator $configurator) {}
+    public function __construct(private FieldConfigurator $configurator)
+    {
+    }
 
     /**
      * @throws Throwable
@@ -32,38 +34,47 @@ final readonly class SelectComponent implements FieldComponentInterface
         return $this->configurator->configure($field, $customField);
     }
 
+    /**
+     * @param Select $select
+     * @param $lookupType
+     * @return Select
+     * @throws Throwable
+     * @throws \ReflectionException
+     */
     protected function configureLookup(Select $select, $lookupType): Select
     {
         $resource = FilamentResourceService::getResourceInstance($lookupType);
-        $entityInstance = FilamentResourceService::getModelInstance($lookupType);
+        $entityInstanceQuery = FilamentResourceService::getModelInstanceQuery($lookupType);
+        $entityInstanceKeyName = $entityInstanceQuery->getModel()->getKeyName();
         $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($lookupType);
         $globalSearchableAttributes = FilamentResourceService::getGlobalSearchableAttributes($lookupType);
 
         return $select
-            ->options(function () use ($select, $entityInstance, $recordTitleAttribute) {
-                if (! $select->isPreloaded()) {
+            ->options(function () use ($select, $entityInstanceQuery, $recordTitleAttribute, $entityInstanceKeyName) {
+                if (!$select->isPreloaded()) {
                     return [];
                 }
 
-                return $entityInstance::query()
-                    ->pluck($recordTitleAttribute, 'id')
+                return $entityInstanceQuery
+                    ->pluck($recordTitleAttribute, $entityInstanceKeyName)
                     ->toArray();
             })
-            ->getSearchResultsUsing(function (string $search) use ($entityInstance, $recordTitleAttribute, $globalSearchableAttributes, $resource): array {
-                $query = $entityInstance->query();
-
+            ->getSearchResultsUsing(function (string $search) use ($entityInstanceQuery, $entityInstanceKeyName, $recordTitleAttribute, $globalSearchableAttributes, $resource): array {
                 FilamentResourceService::invokeMethodByReflection($resource, 'applyGlobalSearchAttributeConstraints', [
-                    $query, $search, $globalSearchableAttributes,
+                    $entityInstanceQuery, $search, $globalSearchableAttributes,
                 ]);
 
-                return $query->limit(50)
-                    ->pluck($recordTitleAttribute, 'id')
+                return $entityInstanceQuery
+                    ->limit(50)
+                    ->pluck($recordTitleAttribute, $entityInstanceKeyName)
                     ->toArray();
             })
-            ->getOptionLabelUsing(fn ($value) => $entityInstance::query()->find($value)?->{$recordTitleAttribute})
-            ->getOptionLabelsUsing(fn (array $values): array => $entityInstance::query()
-                ->whereIn('id', $values)
-                ->pluck($recordTitleAttribute, 'id')
-                ->toArray());
+            ->getOptionLabelUsing(fn($value) => $entityInstanceQuery->find($value)?->{$recordTitleAttribute})
+            ->getOptionLabelsUsing(function (array $values) use ($resource, $entityInstanceQuery, $entityInstanceKeyName, $recordTitleAttribute): array {
+                return $entityInstanceQuery
+                    ->whereIn($entityInstanceKeyName, $values)
+                    ->pluck($recordTitleAttribute, $entityInstanceKeyName)
+                    ->toArray();
+            });
     }
 }

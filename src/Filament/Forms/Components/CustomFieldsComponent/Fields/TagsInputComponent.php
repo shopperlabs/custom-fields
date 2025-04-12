@@ -15,15 +15,20 @@ final readonly class TagsInputComponent implements FieldComponentInterface
 {
     public function __construct(private FieldConfigurator $configurator) {}
 
+    /**
+     * @throws \ReflectionException
+     * @throws \Throwable
+     */
     public function make(CustomField $customField): Field
     {
         $field = TagsInput::make("custom_fields.{$customField->code}");
 
         if ($customField->lookup_type) {
-            $entityInstance = FilamentResourceService::getModelInstance($customField->lookup_type);
+            $entityInstanceQuery = FilamentResourceService::getModelInstanceQuery($customField->lookup_type);
+            $entityInstanceKeyName = $entityInstanceQuery->getModel()->getKeyName();
             $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($customField->lookup_type);
 
-            $suggestions = $entityInstance::query()->pluck($recordTitleAttribute, 'id')->toArray();
+            $suggestions = $entityInstanceQuery::pluck($recordTitleAttribute, $entityInstanceKeyName)->toArray();
         } else {
             $suggestions = $customField->options->pluck('name', 'id')->all();
         }
