@@ -39,7 +39,7 @@ class FieldForm implements FormInterface
                                     function (Unique $rule) {
                                         return $rule->where(
                                             config('custom-fields.column_names.tenant_foreign_key'),
-                                            Filament::getTenant()?->id
+                                            Filament::getTenant()?->getKey()
                                         );
                                     }
                                 );
@@ -54,7 +54,7 @@ class FieldForm implements FormInterface
             ->columnSpanFull()
             ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
                 if (Utils::isTenantEnabled()) {
-                    $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+                    $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->getKey();
                 }
 
                 return $data;
@@ -100,7 +100,7 @@ class FieldForm implements FormInterface
                                                 function (Unique $rule) {
                                                     return $rule->where(
                                                         config('custom-fields.column_names.tenant_foreign_key'),
-                                                        Filament::getTenant()?->id
+                                                        Filament::getTenant()?->getKey()
                                                     );
                                                 });
                                     },
@@ -134,7 +134,7 @@ class FieldForm implements FormInterface
                                                 function (Unique $rule) {
                                                     return $rule->where(
                                                         config('custom-fields.column_names.tenant_foreign_key'),
-                                                        Filament::getTenant()?->id
+                                                        Filament::getTenant()?->getKey()
                                                     );
                                                 });
                                     },

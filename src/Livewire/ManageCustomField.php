@@ -78,7 +78,7 @@ class ManageCustomField extends Component implements HasActions, HasForms
             ->action(fn () => $this->field->delete() && $this->dispatch('field-deleted'));
     }
 
-    public function setWidth(int $fieldId, int $width): void
+    public function setWidth(int|string $fieldId, int $width): void
     {
         $this->dispatch('field-width-updated', $fieldId, $width);
     }

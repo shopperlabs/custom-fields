@@ -138,7 +138,7 @@ final class MultiSelectColumnConfigurator implements ColumnConfiguratorInterface
                 if (! $option && isset($optionsLowercaseMap[strtolower($value)])) {
                     $foundIds[] = $optionsLowercaseMap[strtolower($value)];
                 } elseif ($option) {
-                    $foundIds[] = $option->id;
+                    $foundIds[] = $option->getKey();
                 } else {
                     $missingValues[] = $value;
                 }

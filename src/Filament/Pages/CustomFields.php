@@ -86,10 +86,12 @@ class CustomFields extends Page
 
     public function updateSectionsOrder($sections): void
     {
+        $sectionModel = CustomFieldsModel::newSectionModel();
+        
         foreach ($sections as $index => $section) {
-            CustomFieldsModel::newSectionModel()->query()
+            $sectionModel->query()
                 ->withDeactivated()
-                ->where('id', $section)
+                ->where($sectionModel->getKeyName(), $section)
                 ->update([
                     'sort_order' => $index,
                 ]);
@@ -99,7 +101,7 @@ class CustomFields extends Page
     private function storeSection(array $data): CustomFieldSection
     {
         if (Utils::isTenantEnabled()) {
-            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->getKey();
         }
 
         $data['type'] ??= CustomFieldSectionType::SECTION->value;

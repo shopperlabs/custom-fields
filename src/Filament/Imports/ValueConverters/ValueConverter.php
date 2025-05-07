@@ -110,7 +110,7 @@ final class ValueConverter implements ValueConverterInterface
 
             // Update the value to the option ID if found
             if ($option) {
-                $customFieldsData[$field->code] = $option->id;
+                $customFieldsData[$field->code] = $option->getKey();
             }
         }
     }
@@ -149,7 +149,7 @@ final class ValueConverter implements ValueConverterInterface
 
                 // Add option ID if found
                 if ($option) {
-                    $newValues[] = $option->id;
+                    $newValues[] = $option->getKey();
                 }
             }
         }

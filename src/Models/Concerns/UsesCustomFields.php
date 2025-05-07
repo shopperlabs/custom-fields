@@ -92,7 +92,7 @@ trait UsesCustomFields
     public function getCustomFieldValue(CustomField $customField): mixed
     {
         $fieldValue = $this->customFieldValues
-            ->firstWhere('custom_field_id', $customField->id)
+            ->firstWhere('custom_field_id', $customField->getKey())
             ?->getValue();
 
         if (empty($fieldValue)) {
@@ -110,7 +110,7 @@ trait UsesCustomFields
 
     public function saveCustomFieldValue(CustomField $customField, mixed $value, ?Model $tenant = null): void
     {
-        $data = ['custom_field_id' => $customField->id];
+        $data = ['custom_field_id' => $customField->getKey()];
 
         if (Utils::isTenantEnabled()) {
             $data[config('custom-fields.column_names.tenant_foreign_key')] = $this->resolveTenantId($tenant, $customField);
@@ -134,13 +134,13 @@ trait UsesCustomFields
     {
         // First priority: Explicitly provided tenant
         if ($tenant !== null) {
-            return $tenant->id;
+            return $tenant->getKey();
         }
 
         // Second priority: Current Filament tenant
         $filamentTenant = Filament::getTenant();
         if ($filamentTenant !== null) {
-            return $filamentTenant->id;
+            return $filamentTenant->getKey();
         }
 
         // Fallback: Use the tenant from the custom field

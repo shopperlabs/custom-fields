@@ -37,10 +37,11 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
     }
 
     #[On('field-width-updated')]
-    public function fieldWidthUpdated(int $fieldId, int $width): void
+    public function fieldWidthUpdated(int|string $fieldId, int $width): void
     {
         // Update the width
-        CustomFields::newCustomFieldModel()->where('id', $fieldId)->update(['width' => $width]);
+        $model = CustomFields::newCustomFieldModel();
+        $model->where($model->getKeyName(), $fieldId)->update(['width' => $width]);
 
         // Re-fetch the fields
         $this->section->refresh();
@@ -52,11 +53,12 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
         $this->section->refresh();
     }
 
-    public function updateFieldsOrder($sectionId, $fields): void
+    public function updateFieldsOrder(int|string $sectionId, array $fields): void
     {
+        $model = CustomFields::newCustomFieldModel();
         foreach ($fields as $index => $field) {
-            CustomFields::newCustomFieldModel()->query()
-                ->where('id', $field)
+            $model->query()
+                ->where($model->getKeyName(), $field)
                 ->update([
                     'custom_field_section_id' => $sectionId,
                     'sort_order' => $index,
@@ -129,13 +131,13 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
             ])
             ->mutateFormDataUsing(function (array $data): array {
                 if (Utils::isTenantEnabled()) {
-                    $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+                    $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->getKey();
                 }
 
                 return [
                     ...$data,
                     'entity_type' => $this->entityType,
-                    'custom_field_section_id' => $this->section->id,
+                    'custom_field_section_id' => $this->section->getKey(),
                 ];
             })
             ->action(function (array $data) {
@@ -146,7 +148,7 @@ class ManageCustomFieldSection extends Component implements HasActions, HasForms
                         ];
 
                         if (Utils::isTenantEnabled()) {
-                            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->id;
+                            $data[config('custom-fields.column_names.tenant_foreign_key')] = Filament::getTenant()?->getKey();
                         }
 
                         return $data;

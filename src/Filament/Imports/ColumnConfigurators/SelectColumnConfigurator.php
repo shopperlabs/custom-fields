@@ -115,7 +115,7 @@ final class SelectColumnConfigurator implements ColumnConfiguratorInterface
                 );
             }
 
-            return $option->id;
+            return $option->getKey();
         });
 
         // Set example options
