@@ -12,7 +12,7 @@ final readonly class LookupMultiValueResolver implements ValueResolvers
 {
     public function __construct(private LookupResolver $lookupResolver) {}
 
-    public function resolve(Model $record, CustomField $customField): string
+    public function resolve(Model $record, CustomField $customField,  bool $exportable = false): string
     {
         $value = $record->getCustomFieldValue($customField) ?? [];
         $lookupValues = $this->lookupResolver->resolveLookupValues($value, $customField);

@@ -9,5 +9,5 @@ use Relaticle\CustomFields\Models\CustomField;
 
 interface ValueResolvers
 {
-    public function resolve(Model $record, CustomField $customField): mixed;
+    public function resolve(Model $record, CustomField $customField, bool $exportable = false): mixed;
 }
