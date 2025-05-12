@@ -40,6 +40,15 @@ class CustomFieldSection extends Model
      */
     protected $guarded = [];
 
+    public function __construct(array $attributes = [])
+    {
+        if (! isset($this->table)) {
+            $this->setTable(config('custom-fields.table_names.custom_field_sections'));
+        }
+
+        parent::__construct($attributes);
+    }
+
     protected function casts(): array
     {
         return [
