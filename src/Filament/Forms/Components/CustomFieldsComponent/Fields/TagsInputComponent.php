@@ -28,7 +28,7 @@ final readonly class TagsInputComponent implements FieldComponentInterface
             $entityInstanceKeyName = $entityInstanceQuery->getModel()->getKeyName();
             $recordTitleAttribute = FilamentResourceService::getRecordTitleAttribute($customField->lookup_type);
 
-            $suggestions = $entityInstanceQuery::pluck($recordTitleAttribute, $entityInstanceKeyName)->toArray();
+            $suggestions = $entityInstanceQuery->pluck($recordTitleAttribute, $entityInstanceKeyName)->toArray();
         } else {
             $suggestions = $customField->options->pluck('name', 'id')->all();
         }
