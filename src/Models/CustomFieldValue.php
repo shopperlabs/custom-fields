@@ -15,6 +15,7 @@ use Relaticle\CustomFields\CustomFields;
 use Relaticle\CustomFields\Database\Factories\CustomFieldValueFactory;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Scopes\TenantScope;
+use Relaticle\CustomFields\Support\SafeValueConverter;
 
 /**
  * @property CustomField $customField
@@ -104,6 +105,13 @@ class CustomFieldValue extends Model
     public function setValue(mixed $value): void
     {
         $column = $this->getValueColumn($this->customField->type);
-        $this->$column = $value;
+        
+        // Convert the value to a database-safe format based on the field type
+        $safeValue = SafeValueConverter::toDbSafe(
+            $value, 
+            $this->customField->type
+        );
+        
+        $this->$column = $safeValue;
     }
 }
