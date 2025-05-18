@@ -82,7 +82,7 @@ final class ValidationService
      * @param bool $isEncrypted Whether the field is encrypted
      * @return array<int, string> Array of validation rules
      */
-    private function getDatabaseValidationRules(CustomFieldType $fieldType, bool $isEncrypted = false): array
+    public function getDatabaseValidationRules(CustomFieldType $fieldType, bool $isEncrypted = false): array
     {
         // Get base database rules for this field type
         $dbRules = DatabaseFieldConstraints::getValidationRulesForFieldType($fieldType, $isEncrypted);

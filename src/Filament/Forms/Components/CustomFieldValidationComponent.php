@@ -10,6 +10,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
+use Illuminate\Support\Str;
 
 final class CustomFieldValidationComponent extends Component
 {
@@ -68,7 +69,7 @@ final class CustomFieldValidationComponent extends Component
                                     $rule = CustomFieldValidationRule::tryFrom($state);
                                     if ($rule && $rule->allowedParameterCount() > 0) {
                                         $paramCount = $rule->allowedParameterCount();
-                                        $parameters = array_fill(0, $paramCount, ['value' => '']);
+                                        $parameters = array_fill(0, $paramCount, ['value' => '', 'key' => Str::uuid()->toString()]);
                                         $set('parameters', $parameters);
                                     }
                                 }
@@ -81,10 +82,13 @@ final class CustomFieldValidationComponent extends Component
                         $this->buildRuleParametersRepeater(),
                     ]),
             ])
-            ->itemLabel(fn (array $state): string => CustomFieldValidationRule::getLabelForRule((string) $state['name'], $state['parameters'] ?? []))
+            ->itemLabel(fn (array $state): string => CustomFieldValidationRule::getLabelForRule((string) ($state['name'] ?? ''), $state['parameters'] ?? []))
             ->collapsible()
+            ->collapsed(fn (Get $get): bool => count($get('validation_rules') ?? []) > 3)
             ->reorderable()
+            ->reorderableWithButtons()
             ->deletable()
+            ->cloneable()
             ->hintColor('danger')
             ->addable(fn (Get $get): bool => $get('type') && CustomFieldType::tryFrom($get('type')))
             ->hint(function (Get $get): string {
@@ -107,7 +111,6 @@ final class CustomFieldValidationComponent extends Component
                     ->label(__('custom-fields::custom-fields.field.form.validation.parameters_value'))
                     ->required()
                     ->hiddenLabel()
-                    ->maxLength(255)
                     ->rules(function (Get $get, $record, $state, Forms\Components\Component $component): array {
                         $ruleName = $get('../../name');
                         $parameterIndex = $this->getParameterIndex($component);
@@ -119,7 +122,7 @@ final class CustomFieldValidationComponent extends Component
                             return '';
                         }
                         $parameterIndex = $this->getParameterIndex($component);
-                        
+
                         return CustomFieldValidationRule::getParameterHelpTextFor($ruleName, $parameterIndex);
                     })
                     ->afterStateHydrated(function (Get $get, Set $set, $state, Forms\Components\Component $component): void {
@@ -259,11 +262,43 @@ final class CustomFieldValidationComponent extends Component
     private function getParameterIndex(Forms\Components\Component $component): int
     {
         $statePath = $component->getStatePath();
-        
-        if (preg_match('/parameters\.(\d+)\./', $statePath, $matches)) {
-            return (int) $matches[1];
+
+        // Extract the key from the state path
+        if (preg_match('/parameters\.([^\.]+)/', $statePath, $matches)) {
+            $key = $matches[1];
+
+            // Try to directly find the index in the container state
+            $container = $component->getContainer();
+            if (method_exists($container, 'getParentComponent')) {
+                $repeater = $container->getParentComponent();
+                $parameters = $repeater->getState();
+
+                // If parameters is just a flat array (simple repeater), use the keys directly
+                if (is_array($parameters)) {
+                    $keys = array_keys($parameters);
+                    $index = array_search($key, $keys);
+                    if ($index !== false) {
+                        return (int) $index;
+                    }
+
+                    // If it's a numeric key, just return that
+                    if (is_numeric($key)) {
+                        return (int) $key;
+                    }
+                }
+            }
+
+            // For UUIDs or other keys, try to extract the ordinal position from the DOM structure
+            $idParts = explode('-', $component->getId());
+            if (count($idParts) > 1) {
+                $lastPart = end($idParts);
+                if (is_numeric($lastPart)) {
+                    return (int) $lastPart;
+                }
+            }
         }
         
         return 0;
     }
 }
+

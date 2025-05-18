@@ -6,6 +6,7 @@ namespace Relaticle\CustomFields\Enums;
 
 use Carbon\Carbon;
 use Filament\Support\Contracts\HasLabel;
+use Illuminate\Validation\Rule;
 
 enum CustomFieldValidationRule: string implements HasLabel
 {
@@ -193,49 +194,22 @@ enum CustomFieldValidationRule: string implements HasLabel
     {
         return match ($this) {
             // Numeric rules
-            self::SIZE, self::MIN, self::MAX => ['required', 'numeric', 'min:0'],
+            self::SIZE, self::MIN, self::MAX => ['required', Rule::numeric()->min(PHP_INT_MIN)->max(PHP_INT_MAX)],
             self::MULTIPLE_OF => ['required', 'numeric', 'gt:0'],
             self::DIGITS, self::MAX_DIGITS, self::MIN_DIGITS => ['required', 'integer', 'min:1'],
             
             // Between rules
             self::BETWEEN => match ($parameterIndex) {
-                0 => ['required', 'numeric'], // min value
-                1 => ['required', 'numeric', function ($attribute, $value, $fail) use ($parameterIndex) {
-                    // Custom validation instead of using 'gte:parameters.0.value'
-                    // This avoids Laravel interpreting 'between' as a rule name
-                    $parameters = request()->input('data.validation_rules.*.parameters', []);
-                    $firstValue = $parameters[0][0]['value'] ?? null;
-                    
-                    if (is_numeric($firstValue) && is_numeric($value) && (float) $value < (float) $firstValue) {
-                        $fail(__('custom-fields::custom-fields.validation.max_must_be_greater_than_min'));
-                    }
-                }],
+                0, 1 => ['required', Rule::numeric()->min(PHP_INT_MIN)->max(PHP_INT_MAX)],
                 default => ['required'],
             },
             self::DIGITS_BETWEEN => match ($parameterIndex) {
-                0 => ['required', 'integer', 'min:1'], // min digits
-                1 => ['required', 'integer', function ($attribute, $value, $fail) use ($parameterIndex) {
-                    // Custom validation instead of using 'gte:parameters.0.value'
-                    $parameters = request()->input('data.validation_rules.*.parameters', []);
-                    $firstValue = $parameters[0][0]['value'] ?? null;
-                    
-                    if (is_numeric($firstValue) && is_numeric($value) && (int) $value < (int) $firstValue) {
-                        $fail(__('custom-fields::custom-fields.validation.max_digits_must_be_greater_than_min'));
-                    }
-                }],
+                0, 1 => ['required', Rule::numeric()->integer()->min(PHP_INT_MIN)->max(PHP_INT_MAX)],
                 default => ['required'],
             },
             self::DECIMAL => match ($parameterIndex) {
-                0 => ['required', 'integer', 'min:0'], // min decimal places
-                1 => ['required', 'integer', function ($attribute, $value, $fail) use ($parameterIndex) {
-                    // Custom validation instead of using 'gte:parameters.0.value'
-                    $parameters = request()->input('data.validation_rules.*.parameters', []);
-                    $firstValue = $parameters[0][0]['value'] ?? null;
-                    
-                    if (is_numeric($firstValue) && is_numeric($value) && (int) $value < (int) $firstValue) {
-                        $fail(__('custom-fields::custom-fields.validation.max_decimals_must_be_greater_than_min'));
-                    }
-                }],
+                0 => ['nullable', 'integer', 'min:0'], // min decimal places
+                1 => ['nullable', Rule::numeric()->integer()->min(PHP_INT_MIN)->max(PHP_INT_MAX)], // max decimal places
                 default => ['required'],
             },
             
@@ -386,7 +360,7 @@ enum CustomFieldValidationRule: string implements HasLabel
     
     public static function normalizeParameterValue(?string $rule, string $value, int $parameterIndex = 0): string
     {
-        if ($rule === null || empty($rule)) {
+        if (empty($rule)) {
             return $value;
         }
         
@@ -397,7 +371,7 @@ enum CustomFieldValidationRule: string implements HasLabel
         }
         
         // For multi-parameter rules, ensure both parameters exist
-        if ($enum && $enum->allowedParameterCount() === 2 && $parameterIndex > 1) {
+        if ($enum->allowedParameterCount() === 2 && $parameterIndex > 1) {
             throw new \InvalidArgumentException(
                 __('custom-fields::custom-fields.validation.multi_parameter_missing')
             );
