@@ -16,12 +16,12 @@ class SafeValueConverter
     /**
      * Maximum allowable integer for BIGINT in most SQL databases
      */
-    public const MAX_BIGINT = 9223372036854775807; // Explicit value instead of PHP_INT_MAX
+    public const MAX_BIGINT = PHP_INT_MAX; // Explicit value instead of PHP_INT_MAX
     
     /**
      * Minimum allowable integer for BIGINT in most SQL databases
      */
-    public const MIN_BIGINT = -9223372036854775808; // Explicit value instead of PHP_INT_MIN
+    public const MIN_BIGINT = PHP_INT_MIN; // Explicit value instead of PHP_INT_MIN
 
     /**
      * Safely convert a value to the appropriate type for database storage.
