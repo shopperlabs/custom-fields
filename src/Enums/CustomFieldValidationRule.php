@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields\Enums;
 
+use Carbon\Carbon;
 use Filament\Support\Contracts\HasLabel;
 
 enum CustomFieldValidationRule: string implements HasLabel
@@ -153,7 +154,7 @@ enum CustomFieldValidationRule: string implements HasLabel
 
     public static function hasParameterForRule(?string $rule): bool
     {
-        if ($rule === null) {
+        if (empty($rule)) {
             return false;
         }
 
@@ -162,7 +163,7 @@ enum CustomFieldValidationRule: string implements HasLabel
 
     public static function getAllowedParametersCountForRule(?string $rule): int
     {
-        if ($rule === null) {
+        if (empty($rule)) {
             return 0;
         }
 
@@ -175,11 +176,326 @@ enum CustomFieldValidationRule: string implements HasLabel
 
     public static function getDescriptionForRule(?string $rule): string
     {
-        if ($rule === null) {
+        if (empty($rule)) {
             return __('custom-fields::custom-fields.validation.select_rule_description');
         }
 
         return self::tryFrom($rule)?->getDescription() ?? __('custom-fields::custom-fields.validation.select_rule_description');
+    }
+
+    /**
+     * Get the validation rules for a parameter of this validation rule.
+     * 
+     * @param int $parameterIndex The index of the parameter (0-based)
+     * @return array<string, mixed> The validation rules for the parameter
+     */
+    public function getParameterValidationRule(int $parameterIndex = 0): array
+    {
+        return match ($this) {
+            // Numeric rules
+            self::SIZE, self::MIN, self::MAX => ['required', 'numeric', 'min:0'],
+            self::MULTIPLE_OF => ['required', 'numeric', 'gt:0'],
+            self::DIGITS, self::MAX_DIGITS, self::MIN_DIGITS => ['required', 'integer', 'min:1'],
+            
+            // Between rules
+            self::BETWEEN => match ($parameterIndex) {
+                0 => ['required', 'numeric'], // min value
+                1 => ['required', 'numeric', function ($attribute, $value, $fail) use ($parameterIndex) {
+                    // Custom validation instead of using 'gte:parameters.0.value'
+                    // This avoids Laravel interpreting 'between' as a rule name
+                    $parameters = request()->input('data.validation_rules.*.parameters', []);
+                    $firstValue = $parameters[0][0]['value'] ?? null;
+                    
+                    if (is_numeric($firstValue) && is_numeric($value) && (float) $value < (float) $firstValue) {
+                        $fail(__('custom-fields::custom-fields.validation.max_must_be_greater_than_min'));
+                    }
+                }],
+                default => ['required'],
+            },
+            self::DIGITS_BETWEEN => match ($parameterIndex) {
+                0 => ['required', 'integer', 'min:1'], // min digits
+                1 => ['required', 'integer', function ($attribute, $value, $fail) use ($parameterIndex) {
+                    // Custom validation instead of using 'gte:parameters.0.value'
+                    $parameters = request()->input('data.validation_rules.*.parameters', []);
+                    $firstValue = $parameters[0][0]['value'] ?? null;
+                    
+                    if (is_numeric($firstValue) && is_numeric($value) && (int) $value < (int) $firstValue) {
+                        $fail(__('custom-fields::custom-fields.validation.max_digits_must_be_greater_than_min'));
+                    }
+                }],
+                default => ['required'],
+            },
+            self::DECIMAL => match ($parameterIndex) {
+                0 => ['required', 'integer', 'min:0'], // min decimal places
+                1 => ['required', 'integer', function ($attribute, $value, $fail) use ($parameterIndex) {
+                    // Custom validation instead of using 'gte:parameters.0.value'
+                    $parameters = request()->input('data.validation_rules.*.parameters', []);
+                    $firstValue = $parameters[0][0]['value'] ?? null;
+                    
+                    if (is_numeric($firstValue) && is_numeric($value) && (int) $value < (int) $firstValue) {
+                        $fail(__('custom-fields::custom-fields.validation.max_decimals_must_be_greater_than_min'));
+                    }
+                }],
+                default => ['required'],
+            },
+            
+            // Date rules
+            self::DATE_FORMAT, self::REQUIRED_IF, self::REQUIRED_UNLESS, self::PROHIBITED_IF, self::PROHIBITED_UNLESS, self::ACCEPTED_IF, self::DECLINED_IF, self::MIMES, self::MIMETYPES, self::GT, self::GTE, self::LT, self::LTE => ['required', 'string'],
+            self::AFTER, self::AFTER_OR_EQUAL, self::BEFORE, self::BEFORE_OR_EQUAL, self::DATE_EQUALS => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    // Accept valid date string or special values like 'today', 'tomorrow', etc.
+                    if (! in_array($value, ['today', 'tomorrow', 'yesterday']) && Carbon::hasFormat($value, 'Y-m-d') === false) {
+                        $fail(__('custom-fields::custom-fields.validation.invalid_date_format'));
+                    }
+                },
+            ],
+            
+            // List-based rules
+            self::IN, self::NOT_IN, self::STARTS_WITH, self::ENDS_WITH, self::DOESNT_START_WITH, self::DOESNT_END_WITH => [
+                'required', 'string', 'min:1'
+            ],
+            
+            // Regex rules
+            self::REGEX, self::NOT_REGEX => [
+                'required', 'string',
+                function ($attribute, $value, $fail) {
+                    try {
+                        preg_match('/' . $value . '/', 'test');
+                    } catch (\Exception $e) {
+                        $fail(__('custom-fields::custom-fields.validation.invalid_regex_pattern'));
+                    }
+                },
+            ],
+            
+            // Database rules
+            self::EXISTS, self::UNIQUE => [
+                'required', 'string',
+                function ($attribute, $value, $fail) {
+                    if (! preg_match('/^[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)?$/', $value)) {
+                        $fail(__('custom-fields::custom-fields.validation.invalid_table_format'));
+                    }
+                },
+            ],
+            
+            // File rules
+            // Default for all other rules
+            default => ['required', 'string', 'max:255'],
+        };
+    }
+    
+    /**
+     * Get suggested values for a parameter of this validation rule.
+     * 
+     * @param int $parameterIndex The index of the parameter (0-based)
+     * @return array<string, string> The suggested values for the parameter
+     */
+    public function getParameterSuggestions(int $parameterIndex = 0): array
+    {
+        return match ($this) {
+            self::DATE_FORMAT => [
+                'Y-m-d' => 'Y-m-d (e.g. 2023-12-31)',
+                'Y/m/d' => 'Y/m/d (e.g. 2023/12/31)',
+                'd-m-Y' => 'd-m-Y (e.g. 31-12-2023)',
+                'm/d/Y' => 'm/d/Y (e.g. 12/31/2023)',
+                'Y-m-d H:i:s' => 'Y-m-d H:i:s (e.g. 2023-12-31 23:59:59)',
+            ],
+            self::AFTER, self::AFTER_OR_EQUAL, self::BEFORE, self::BEFORE_OR_EQUAL, self::DATE_EQUALS => [
+                'today' => 'today',
+                'tomorrow' => 'tomorrow',
+                'yesterday' => 'yesterday',
+                Carbon::now()->format('Y-m-d') => 'Current date',
+                Carbon::now()->addDays(7)->format('Y-m-d') => 'One week from now',
+            ],
+            self::GT, self::GTE, self::LT, self::LTE => [
+                'other_field' => 'Another field name',
+            ],
+            self::MIMES => [
+                'jpg,jpeg,png,gif' => 'Common image formats',
+                'pdf,doc,docx' => 'Document formats',
+                'mp3,wav' => 'Audio formats',
+            ],
+            self::EXISTS, self::UNIQUE => [
+                'users' => 'Users table',
+                'users.email' => 'Users email column',
+            ],
+            default => [],
+        };
+    }
+    
+    /**
+     * Get the help text for a specific parameter of this validation rule.
+     * 
+     * @param int $parameterIndex The index of the parameter (0-based)
+     * @return string The help text for the parameter
+     */
+    public function getParameterHelpText(int $parameterIndex = 0): string
+    {
+        // For rules requiring exactly 2 parameters, strictly enforce that
+        if ($this->allowedParameterCount() === 2 && $parameterIndex > 1) {
+            throw new \InvalidArgumentException(
+                __('custom-fields::custom-fields.validation.multi_parameter_missing')
+            );
+        }
+        
+        return match ($this) {
+            self::SIZE => __('custom-fields::custom-fields.validation.parameter_help.size'),
+            self::MIN => __('custom-fields::custom-fields.validation.parameter_help.min'),
+            self::MAX => __('custom-fields::custom-fields.validation.parameter_help.max'),
+            self::BETWEEN => match ($parameterIndex) {
+                0 => __('custom-fields::custom-fields.validation.parameter_help.between.min'),
+                1 => __('custom-fields::custom-fields.validation.parameter_help.between.max'),
+                default => throw new \InvalidArgumentException(__('custom-fields::custom-fields.validation.between_validation_error')),
+            },
+            self::DIGITS => __('custom-fields::custom-fields.validation.parameter_help.digits'),
+            self::DIGITS_BETWEEN => match ($parameterIndex) {
+                0 => __('custom-fields::custom-fields.validation.parameter_help.digits_between.min'),
+                1 => __('custom-fields::custom-fields.validation.parameter_help.digits_between.max'),
+                default => throw new \InvalidArgumentException(__('custom-fields::custom-fields.validation.digits_between_validation_error')),
+            },
+            self::DECIMAL => match ($parameterIndex) {
+                0 => __('custom-fields::custom-fields.validation.parameter_help.decimal.min'),
+                1 => __('custom-fields::custom-fields.validation.parameter_help.decimal.max'),
+                default => throw new \InvalidArgumentException(__('custom-fields::custom-fields.validation.decimal_validation_error')),
+            },
+            self::DATE_FORMAT => __('custom-fields::custom-fields.validation.parameter_help.date_format'),
+            self::AFTER => __('custom-fields::custom-fields.validation.parameter_help.after'),
+            self::BEFORE => __('custom-fields::custom-fields.validation.parameter_help.before'),
+            self::IN => __('custom-fields::custom-fields.validation.parameter_help.in'),
+            self::MIMES => __('custom-fields::custom-fields.validation.parameter_help.mimes'),
+            self::REGEX => __('custom-fields::custom-fields.validation.parameter_help.regex'),
+            self::EXISTS => __('custom-fields::custom-fields.validation.parameter_help.exists'),
+            default => __('custom-fields::custom-fields.validation.parameter_help.default'),
+        };
+    }
+
+    /**
+     * Get the validation rules for a parameter of a specific validation rule.
+     * 
+     * @param string|null $rule The validation rule
+     * @param int $parameterIndex The index of the parameter (0-based)
+     * @return array<string, mixed> The validation rules for the parameter
+     */
+    public static function getParameterValidationRuleFor(?string $rule, int $parameterIndex = 0): array
+    {
+        if ($rule === null || empty($rule)) {
+            return ['required', 'string', 'max:255'];
+        }
+        
+        $ruleEnum = self::tryFrom($rule);
+        
+        // Special handling for rules that require exactly 2 parameters
+        if ($ruleEnum && $ruleEnum->allowedParameterCount() === 2) {
+            // Ensure we don't allow more than 2 parameters
+            if ($parameterIndex > 1) {
+                throw new \InvalidArgumentException(__('custom-fields::custom-fields.validation.multi_parameter_missing'));
+            }
+            
+            $rules = $ruleEnum->getParameterValidationRule($parameterIndex);
+            
+            // For these rules, both parameters are required for validation to work
+            $rules[] = function ($attribute, $value, $fail) use ($rule, $parameterIndex) {
+                $ruleName = match ($rule) {
+                    'between' => 'Between',
+                    'digits_between' => 'Digits Between',
+                    'decimal' => 'Decimal',
+                    default => $rule,
+                };
+                
+                // Add a validation error if the parameter is not valid
+                if ($parameterIndex === 1 && !is_numeric($value)) {
+                    $fail(__('custom-fields::custom-fields.validation.max_must_be_greater_than_min'));
+                }
+            };
+            
+            return $rules;
+        }
+
+        return $ruleEnum?->getParameterValidationRule($parameterIndex) ?? ['required', 'string', 'max:255'];
+    }
+    
+    /**
+     * Get suggested values for a parameter of a specific validation rule.
+     * 
+     * @param string|null $rule The validation rule
+     * @param int $parameterIndex The index of the parameter (0-based)
+     * @return array<string, string> The suggested values for the parameter
+     */
+    public static function getParameterSuggestionsFor(?string $rule, int $parameterIndex = 0): array
+    {
+        if ($rule === null || empty($rule)) {
+            return [];
+        }
+        
+        return self::tryFrom($rule)?->getParameterSuggestions($parameterIndex) ?? [];
+    }
+    
+    /**
+     * Get the help text for a specific parameter of a validation rule.
+     * 
+     * @param string|null $rule The validation rule
+     * @param int $parameterIndex The index of the parameter (0-based)
+     * @return string The help text for the parameter
+     */
+    public static function getParameterHelpTextFor(?string $rule, int $parameterIndex = 0): string
+    {
+        if ($rule === null || empty($rule)) {
+            return __('custom-fields::custom-fields.validation.parameter_help.default');
+        }
+        
+        return self::tryFrom($rule)?->getParameterHelpText($parameterIndex) ?? __('custom-fields::custom-fields.validation.parameter_help.default');
+    }
+    
+    /**
+     * Normalize a parameter value based on the validation rule type.
+     * 
+     * @param string|null $rule The validation rule
+     * @param string $value The parameter value to normalize
+     * @param int $parameterIndex The index of the parameter (0-based)
+     * @return string The normalized parameter value
+     */
+
+    
+    public static function normalizeParameterValue(?string $rule, string $value, int $parameterIndex = 0): string
+    {
+        if ($rule === null || empty($rule)) {
+            return $value;
+        }
+        
+        $enum = self::tryFrom($rule);
+        
+        if (! $enum instanceof self) {
+            return $value;
+        }
+        
+        // For multi-parameter rules, ensure both parameters exist
+        if ($enum && $enum->allowedParameterCount() === 2 && $parameterIndex > 1) {
+            throw new \InvalidArgumentException(
+                __('custom-fields::custom-fields.validation.multi_parameter_missing')
+            );
+        }
+        
+        return match ($enum) {
+            // Numeric rules - ensure they're properly formatted numbers
+            self::SIZE, self::MIN, self::MAX, self::DIGITS, self::MAX_DIGITS, self::MIN_DIGITS,
+            self::MULTIPLE_OF, self::BETWEEN => is_numeric($value) ? (string) floatval($value) : $value,
+            
+            // Between rules need special handling
+            self::DIGITS_BETWEEN, self::DECIMAL => is_numeric($value) ? (string) intval($value) : $value,
+            
+            // Decimal rule - ensure proper integer formatting
+            // Date rules - ensure they're properly formatted dates if possible
+            self::AFTER, self::AFTER_OR_EQUAL, self::BEFORE, self::BEFORE_OR_EQUAL, self::DATE_EQUALS => 
+                in_array($value, ['today', 'tomorrow', 'yesterday']) ? $value :
+                    (Carbon::hasFormat($value, 'Y-m-d') ? Carbon::parse($value)->format('Y-m-d') : $value),
+            
+            // List-based rules - trim values
+            self::IN, self::NOT_IN, self::STARTS_WITH, self::ENDS_WITH,
+            self::DOESNT_START_WITH, self::DOESNT_END_WITH => trim($value),
+            
+            // Default - just return the value as is
+            default => $value,
+        };
     }
 
     /**
@@ -191,6 +507,10 @@ enum CustomFieldValidationRule: string implements HasLabel
      */
     public static function getLabelForRule(string $rule, array $parameters = []): string
     {
+        if (empty($rule)) {
+            return '';
+        }
+        
         $enum = self::tryFrom($rule);
 
         if (! $enum instanceof CustomFieldValidationRule) {
