@@ -285,45 +285,6 @@ enum CustomFieldValidationRule: string implements HasLabel
     }
     
     /**
-     * Get suggested values for a parameter of this validation rule.
-     * 
-     * @param int $parameterIndex The index of the parameter (0-based)
-     * @return array<string, string> The suggested values for the parameter
-     */
-    public function getParameterSuggestions(int $parameterIndex = 0): array
-    {
-        return match ($this) {
-            self::DATE_FORMAT => [
-                'Y-m-d' => 'Y-m-d (e.g. 2023-12-31)',
-                'Y/m/d' => 'Y/m/d (e.g. 2023/12/31)',
-                'd-m-Y' => 'd-m-Y (e.g. 31-12-2023)',
-                'm/d/Y' => 'm/d/Y (e.g. 12/31/2023)',
-                'Y-m-d H:i:s' => 'Y-m-d H:i:s (e.g. 2023-12-31 23:59:59)',
-            ],
-            self::AFTER, self::AFTER_OR_EQUAL, self::BEFORE, self::BEFORE_OR_EQUAL, self::DATE_EQUALS => [
-                'today' => 'today',
-                'tomorrow' => 'tomorrow',
-                'yesterday' => 'yesterday',
-                Carbon::now()->format('Y-m-d') => 'Current date',
-                Carbon::now()->addDays(7)->format('Y-m-d') => 'One week from now',
-            ],
-            self::GT, self::GTE, self::LT, self::LTE => [
-                'other_field' => 'Another field name',
-            ],
-            self::MIMES => [
-                'jpg,jpeg,png,gif' => 'Common image formats',
-                'pdf,doc,docx' => 'Document formats',
-                'mp3,wav' => 'Audio formats',
-            ],
-            self::EXISTS, self::UNIQUE => [
-                'users' => 'Users table',
-                'users.email' => 'Users email column',
-            ],
-            default => [],
-        };
-    }
-    
-    /**
      * Get the help text for a specific parameter of this validation rule.
      * 
      * @param int $parameterIndex The index of the parameter (0-based)
@@ -378,7 +339,7 @@ enum CustomFieldValidationRule: string implements HasLabel
      */
     public static function getParameterValidationRuleFor(?string $rule, int $parameterIndex = 0): array
     {
-        if ($rule === null || empty($rule)) {
+        if (empty($rule)) {
             return ['required', 'string', 'max:255'];
         }
         
@@ -390,44 +351,11 @@ enum CustomFieldValidationRule: string implements HasLabel
             if ($parameterIndex > 1) {
                 throw new \InvalidArgumentException(__('custom-fields::custom-fields.validation.multi_parameter_missing'));
             }
-            
-            $rules = $ruleEnum->getParameterValidationRule($parameterIndex);
-            
-            // For these rules, both parameters are required for validation to work
-            $rules[] = function ($attribute, $value, $fail) use ($rule, $parameterIndex) {
-                $ruleName = match ($rule) {
-                    'between' => 'Between',
-                    'digits_between' => 'Digits Between',
-                    'decimal' => 'Decimal',
-                    default => $rule,
-                };
-                
-                // Add a validation error if the parameter is not valid
-                if ($parameterIndex === 1 && !is_numeric($value)) {
-                    $fail(__('custom-fields::custom-fields.validation.max_must_be_greater_than_min'));
-                }
-            };
-            
-            return $rules;
+
+            return $ruleEnum->getParameterValidationRule($parameterIndex);
         }
 
         return $ruleEnum?->getParameterValidationRule($parameterIndex) ?? ['required', 'string', 'max:255'];
-    }
-    
-    /**
-     * Get suggested values for a parameter of a specific validation rule.
-     * 
-     * @param string|null $rule The validation rule
-     * @param int $parameterIndex The index of the parameter (0-based)
-     * @return array<string, string> The suggested values for the parameter
-     */
-    public static function getParameterSuggestionsFor(?string $rule, int $parameterIndex = 0): array
-    {
-        if ($rule === null || empty($rule)) {
-            return [];
-        }
-        
-        return self::tryFrom($rule)?->getParameterSuggestions($parameterIndex) ?? [];
     }
     
     /**

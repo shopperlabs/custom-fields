@@ -110,21 +110,8 @@ final class CustomFieldValidationComponent extends Component
                     ->maxLength(255)
                     ->rules(function (Get $get, $record, $state, Forms\Components\Component $component): array {
                         $ruleName = $get('../../name');
-                        if (empty($ruleName)) {
-                            return ['required', 'string', 'max:255'];
-                        }
                         $parameterIndex = $this->getParameterIndex($component);
-                        
                         return CustomFieldValidationRule::getParameterValidationRuleFor($ruleName, $parameterIndex);
-                    })
-                    ->datalist(function (Get $get, Forms\Components\Component $component): array {
-                        $ruleName = $get('../../name');
-                        if (empty($ruleName)) {
-                            return [];
-                        }
-                        $parameterIndex = $this->getParameterIndex($component);
-                        
-                        return array_keys(CustomFieldValidationRule::getParameterSuggestionsFor($ruleName, $parameterIndex));
                     })
                     ->hint(function (Get $get, Forms\Components\Component $component): string {
                         $ruleName = $get('../../name');
