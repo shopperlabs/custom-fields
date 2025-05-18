@@ -35,7 +35,6 @@ final readonly class FieldConfigurator
      */
     public function configure(Field $field, CustomField $customField): Field
     {
-//        dd($this->validationService->getValidationRules($customField));
         return $field
             ->label($customField->name)
             ->reactive()
