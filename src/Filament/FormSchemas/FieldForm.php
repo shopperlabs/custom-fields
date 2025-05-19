@@ -194,6 +194,7 @@ class FieldForm implements FormInterface
                             Forms\Components\Select::make('options_lookup_type')
                                 ->label(__('custom-fields::custom-fields.field.form.options_lookup_type.label'))
                                 ->visible(fn(Forms\Get $get): bool => in_array($get('type'), CustomFieldType::optionables()->pluck('value')->toArray()))
+                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->system_defined)
                                 ->reactive()
                                 ->options([
                                     'options' => __('custom-fields::custom-fields.field.form.options_lookup_type.options'),
@@ -205,15 +206,18 @@ class FieldForm implements FormInterface
                                         $component->state($optionsLookupType);
                                     }
                                 })
-                                ->afterStateUpdated(function (Forms\Components\Select $component, ?string $state, Forms\Set $set): void {
+                                ->afterStateUpdated(function (Forms\Components\Select $component, ?string $state, Forms\Set $set, $record): void {
                                     if ($state === 'options') {
                                         $set('lookup_type', null);
+                                    }else{
+                                        $set('lookup_type', $record?->lookup_type ?? LookupTypeService::getDefaultOption());
                                     }
                                 })
                                 ->dehydrated(false)
                                 ->required(),
                             Forms\Components\Select::make('lookup_type_options')
                                 ->label(__('custom-fields::custom-fields.field.form.lookup_type.label'))
+                                ->disabled(fn(?CustomField $record): bool => (bool)$record?->system_defined)
                                 ->visible(fn(Forms\Get $get): bool => $get('options_lookup_type') === 'lookup')
                                 ->reactive()
                                 ->afterStateUpdated(function (Forms\Components\Select $component, ?string $state, Forms\Set $set): void {
@@ -221,7 +225,7 @@ class FieldForm implements FormInterface
                                 })
                                 ->afterStateHydrated(function (Forms\Components\Select $component, $state, $record): void {
                                     if (blank($state)) {
-                                        $component->state($record?->lookup_type);
+                                        $component->state($record?->lookup_type ?? LookupTypeService::getDefaultOption());
                                     }
                                 })
                                 ->dehydrated(false)
