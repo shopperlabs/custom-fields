@@ -1,16 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Relaticle\CustomFields\Observers;
 
 use Relaticle\CustomFields\Models\CustomField;
 
 class CustomFieldObserver
 {
-    public function saving(CustomField $customField): void
-    {
-
-    }
-
     public function deleted(CustomField $customField): void
     {
         // Delete the custom field options
