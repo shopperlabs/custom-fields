@@ -18,9 +18,9 @@ class TenantContextService
     public static function setTenantId(null|int|string $tenantId): void
     {
         if ($tenantId !== null) {
-            Context::add(self::TENANT_ID_KEY, $tenantId);
+            Context::addHidden(self::TENANT_ID_KEY, $tenantId);
         } else {
-            Context::forget(self::TENANT_ID_KEY);
+            Context::forgetHidden(self::TENANT_ID_KEY);
         }
     }
 
@@ -31,16 +31,16 @@ class TenantContextService
     public static function getCurrentTenantId(): null|int|string
     {
         // First try to get tenant from Laravel Context (works in queues)
-        $contextTenantId = Context::get(self::TENANT_ID_KEY);
+        $contextTenantId = Context::getHidden(self::TENANT_ID_KEY);
         if ($contextTenantId !== null) {
-            return (int) $contextTenantId;
+            return $contextTenantId;
         }
 
-        // Fallback to Filament tenant (works in web requests)
-        $filamentTenant = Filament::getTenant();
-        if ($filamentTenant !== null && isset($filamentTenant->id)) {
-            return (int) $filamentTenant->id;
-        }
+//        // Fallback to Filament tenant (works in web requests)
+//        $filamentTenant = Filament::getTenant();
+//        if ($filamentTenant !== null && isset($filamentTenant->id)) {
+//            return $filamentTenant->id;
+//        }
 
         return null;
     }
@@ -58,20 +58,12 @@ class TenantContextService
     }
 
     /**
-     * Clear the tenant context.
-     */
-    public static function clearTenantContext(): void
-    {
-        Context::forget(self::TENANT_ID_KEY);
-    }
-
-    /**
      * Execute a callback with a specific tenant context.
      */
     public static function withTenant(null|int|string $tenantId, callable $callback): mixed
     {
         $originalTenantId = self::getCurrentTenantId();
-        
+
         try {
             self::setTenantId($tenantId);
             return $callback();
