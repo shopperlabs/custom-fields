@@ -36,11 +36,11 @@ class TenantContextService
             return $contextTenantId;
         }
 
-//        // Fallback to Filament tenant (works in web requests)
-//        $filamentTenant = Filament::getTenant();
-//        if ($filamentTenant !== null && isset($filamentTenant->id)) {
-//            return $filamentTenant->id;
-//        }
+        // Fallback to Filament tenant (works in web requests)
+        $filamentTenant = Filament::getTenant();
+        if ($filamentTenant !== null && isset($filamentTenant->id)) {
+            return $filamentTenant->id;
+        }
 
         return null;
     }
