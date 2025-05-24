@@ -8,6 +8,7 @@ use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Relaticle\CustomFields\Filament\Pages\CustomFields;
+use Relaticle\CustomFields\Http\Middleware\SetTenantContextMiddleware;
 
 class CustomFieldsPlugin implements Plugin
 {
@@ -26,6 +27,7 @@ class CustomFieldsPlugin implements Plugin
             ->pages([
                 CustomFields::class,
             ])
+            ->tenantMiddleware([SetTenantContextMiddleware::class])
             ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
     }
 
