@@ -14,9 +14,11 @@ use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Relaticle\CustomFields\Commands\FilamentCustomFieldCommand;
+use Relaticle\CustomFields\Commands\OptimizeDatabaseCommand;
 use Relaticle\CustomFields\Commands\UpgradeCommand;
 use Relaticle\CustomFields\Contracts\CustomsFieldsMigrators;
 use Relaticle\CustomFields\Contracts\ValueResolvers;
+use Relaticle\CustomFields\Services\TenantContextService;
 use Relaticle\CustomFields\Livewire\ManageCustomField;
 use Relaticle\CustomFields\Livewire\ManageCustomFieldSection;
 use Relaticle\CustomFields\Livewire\ManageCustomFieldWidth;
@@ -40,9 +42,12 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
     public function bootingPackage(): void
     {
         $this->app->register(ImportsServiceProvider::class);
+        $this->app->register(Providers\ValidationServiceProvider::class);
 
         $this->app->singleton(CustomsFieldsMigrators::class, CustomFieldsMigrator::class);
         $this->app->singleton(ValueResolvers::class, ValueResolver::class);
+
+        $this->app->singleton(TenantContextService::class);
 
         if (Utils::isTenantEnabled()) {
             foreach (Filament::getPanels() as $panel) {
@@ -160,6 +165,7 @@ class CustomFieldsServiceProvider extends PackageServiceProvider
         return [
             FilamentCustomFieldCommand::class,
             UpgradeCommand::class,
+            OptimizeDatabaseCommand::class,
         ];
     }
 

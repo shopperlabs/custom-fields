@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Relaticle\CustomFields;
 
+use Filament\Actions\Action;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use Filament\Support\Concerns\EvaluatesClosures;
 use Relaticle\CustomFields\Filament\Pages\CustomFields;
+use Relaticle\CustomFields\Http\Middleware\SetTenantContextMiddleware;
+use Relaticle\CustomFields\Services\TenantContextService;
+use Relaticle\CustomFields\Support\Utils;
 
 class CustomFieldsPlugin implements Plugin
 {
@@ -26,10 +30,25 @@ class CustomFieldsPlugin implements Plugin
             ->pages([
                 CustomFields::class,
             ])
-            ->discoverPages(in: __DIR__.'/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
+            ->tenantMiddleware([SetTenantContextMiddleware::class], true)
+            ->discoverPages(in: __DIR__ . '/Filament/Pages', for: 'ManukMinasyan\\FilamentCustomField\\Filament\\Pages');
     }
 
-    public function boot(Panel $panel): void {}
+    public function boot(Panel $panel): void
+    {
+        if (Utils::isTenantEnabled()) {
+            Action::configureUsing(
+                function (Action $action): Action {
+                    return $action->before(
+                        function (Action $action): Action {
+                            TenantContextService::setFromFilamentTenant();
+                            return $action;
+                        }
+                    );
+                }
+            );
+        }
+    }
 
     public static function make(): static
     {

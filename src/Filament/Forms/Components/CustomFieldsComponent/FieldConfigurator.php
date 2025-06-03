@@ -6,20 +6,32 @@ namespace Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent
 
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Carbon;
-use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Enums\CustomFieldType;
-use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
 use Relaticle\CustomFields\Models\CustomField;
+use Relaticle\CustomFields\Services\ValidationService;
 use Relaticle\CustomFields\Support\FieldTypeUtils;
-use Spatie\LaravelData\DataCollection;
 
 final readonly class FieldConfigurator
 {
     /**
+     * Create a new field configurator instance.
+     */
+    public function __construct(
+        /**
+         * The validation service instance.
+         */
+        private ValidationService $validationService,
+    ) {}
+
+    /**
+     * Configure a Filament form field based on a custom field definition.
+     * Applies appropriate validation rules, state management, and UI settings.
+     *
      * @template T of Field
      *
-     * @param  T  $field
-     * @return T
+     * @param Field $field The Filament form field to configure
+     * @param CustomField $customField The custom field definition
+     * @return Field The configured field
      */
     public function configure(Field $field, CustomField $customField): Field
     {
@@ -48,33 +60,7 @@ final readonly class FieldConfigurator
                 $component->state($value);
             })
             ->dehydrated(fn ($state): bool => $state !== null && $state !== '')
-            ->required($this->isRequired($customField))
-            ->rules($this->convertRulesToFilamentFormat($customField->validation_rules));
-    }
-
-    /**
-     * Converts validation rules from a collection to an array in the format expected by Filament.
-     *
-     * @param  DataCollection<int, ValidationRuleData>|null  $rules  The validation rules to convert.
-     * @return array<string, string> The converted rules.
-     */
-    private function convertRulesToFilamentFormat(?DataCollection $rules): array
-    {
-        if (! $rules instanceof DataCollection || $rules->toCollection()->isEmpty()) {
-            return [];
-        }
-
-        return $rules->toCollection()->map(function ($ruleData): string {
-            if ($ruleData->parameters === []) {
-                return $ruleData->name;
-            }
-
-            return $ruleData->name.':'.implode(',', $ruleData->parameters);
-        })->toArray();
-    }
-
-    public function isRequired(CustomField $customField): bool
-    {
-        return $customField->validation_rules->toCollection()->contains('name', CustomFieldValidationRule::REQUIRED->value);
+            ->required($this->validationService->isRequired($customField))
+            ->rules($this->validationService->getValidationRules($customField));
     }
 }
