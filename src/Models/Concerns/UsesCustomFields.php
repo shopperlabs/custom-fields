@@ -118,7 +118,7 @@ trait UsesCustomFields
 
         $customFieldValue = $this->customFieldValues();
 
-        if ($customField->settings->encrypted) {
+        if ($customField->settings?->encrypted) {
             $customFieldValue->withCasts([$customField->getValueColumn() => 'encrypted']);
         }
 

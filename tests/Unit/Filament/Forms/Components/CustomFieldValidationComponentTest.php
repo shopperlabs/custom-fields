@@ -5,68 +5,65 @@ declare(strict_types=1);
 namespace Relaticle\CustomFields\Tests\Unit\Filament\Forms\Components;
 
 use Filament\Forms\Components\Component;
-use ReflectionClass;
+use Filament\Forms\Components\Repeater;
 use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldValidationComponent;
 use Relaticle\CustomFields\Tests\TestCase;
 
 class CustomFieldValidationComponentTest extends TestCase
 {
-    /** @test */
-    public function it_can_detect_parameter_index_from_state_path()
+    private CustomFieldValidationComponent $component;
+
+    protected function setUp(): void
     {
-        $component = new CustomFieldValidationComponent();
-        
-        // Use reflection to access private method
-        $reflection = new ReflectionClass($component);
-        $method = $reflection->getMethod('getParameterIndex');
-        $method->setAccessible(true);
-        
-        // Create a mock component with various state paths
-        $mockComponent = $this->createMock(Component::class);
-        
-        // Test index 0
-        $mockComponent->method('getStatePath')->willReturn('validation_rules.0.parameters.0.value');
-        $this->assertEquals(0, $method->invoke($component, $mockComponent));
-        
-        // Test index 1
-        $mockComponent = $this->createMock(Component::class);
-        $mockComponent->method('getStatePath')->willReturn('validation_rules.0.parameters.1.value');
-        $this->assertEquals(1, $method->invoke($component, $mockComponent));
-        
-        // Test index 10
-        $mockComponent = $this->createMock(Component::class);
-        $mockComponent->method('getStatePath')->willReturn('validation_rules.0.parameters.10.value');
-        $this->assertEquals(10, $method->invoke($component, $mockComponent));
-        
-        // Test with nested paths
-        $mockComponent = $this->createMock(Component::class);
-        $mockComponent->method('getStatePath')->willReturn('data.validation_rules.2.parameters.3.value');
-        $this->assertEquals(3, $method->invoke($component, $mockComponent));
-        
-        // Test with no match (should return 0)
-        $mockComponent = $this->createMock(Component::class);
-        $mockComponent->method('getStatePath')->willReturn('some.other.path');
-        $this->assertEquals(0, $method->invoke($component, $mockComponent));
+        parent::setUp();
+        $this->component = new CustomFieldValidationComponent();
     }
-    
+
     /** @test */
-    public function it_handles_complex_state_paths()
+    public function it_is_a_filament_component()
     {
-        $component = new CustomFieldValidationComponent();
+        expect($this->component)->toBeInstanceOf(Component::class);
+    }
+
+    /** @test */
+    public function it_uses_group_view()
+    {
+        $reflection = new \ReflectionClass($this->component);
+        $viewProperty = $reflection->getProperty('view');
+        $viewProperty->setAccessible(true);
         
-        // Use reflection to access private method
-        $reflection = new ReflectionClass($component);
-        $method = $reflection->getMethod('getParameterIndex');
-        $method->setAccessible(true);
+        expect($viewProperty->getValue($this->component))->toBe('filament-forms::components.group');
+    }
+
+    /** @test */
+    public function it_has_validation_rules_repeater_in_schema()
+    {
+        $schema = $this->component->getChildComponents();
         
-        // Test with more complex paths
-        $mockComponent = $this->createMock(Component::class);
-        $mockComponent->method('getStatePath')->willReturn('data.tabs.validation.validation_rules.5.parameters.2.value.something');
-        $this->assertEquals(2, $method->invoke($component, $mockComponent));
+        expect($schema)->toHaveCount(1);
+        expect($schema[0])->toBeInstanceOf(Repeater::class);
+        expect($schema[0]->getName())->toBe('validation_rules');
+    }
+
+    /** @test */
+    public function parameters_repeater_contains_text_input()
+    {
+        $schema = $this->component->getChildComponents();
+        $repeater = $schema[0];
+        $grid = $repeater->getChildComponents()[0];
+        $parametersRepeater = $grid->getChildComponents()[2];
+        $textInput = $parametersRepeater->getChildComponents()[0];
         
-        // Test multiple parameter patterns in path (should match the first one)
-        $mockComponent = $this->createMock(Component::class);
-        $mockComponent->method('getStatePath')->willReturn('parameters.7.value.nested.parameters.3.value');
-        $this->assertEquals(7, $method->invoke($component, $mockComponent));
+        expect($textInput->getName())->toBe('value');
+        expect($textInput->isRequired())->toBeTrue();
+    }
+
+    /** @test */
+    public function make_method_creates_instance_from_container()
+    {
+        $component = CustomFieldValidationComponent::make();
+        
+        expect($component)->toBeInstanceOf(CustomFieldValidationComponent::class);
+        expect($component)->not->toBe($this->component); // Different instance
     }
 }
