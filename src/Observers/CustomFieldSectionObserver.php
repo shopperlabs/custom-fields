@@ -8,6 +8,6 @@ class CustomFieldSectionObserver
 {
     public function deleted(CustomFieldSection $customFieldSection): void
     {
-        $customFieldSection->fields()->delete();
+        $customFieldSection->fields()->withDeactivated()->delete();
     }
 }
