@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-use Relaticle\CustomFields\Exceptions\CustomFieldDoesNotExistException;
+use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Migrations\CustomFieldsMigrator;
 use Relaticle\CustomFields\Models\CustomField;
-use Relaticle\CustomFields\Enums\CustomFieldType;
 
 it('can create a migrator instance', function () {
     $migrator = app(CustomFieldsMigrator::class);
-    
+
     expect($migrator)->toBeInstanceOf(CustomFieldsMigrator::class);
 });
 
@@ -43,7 +42,7 @@ it('can delete an existing field', function () {
     ]);
 
     $fieldId = $customField->id;
-    
+
     // Delete the field
     $customField->delete();
 
@@ -64,8 +63,8 @@ it('can activate and deactivate a field', function () {
     // Activate the field
     $customField->update(['active' => true]);
     expect($customField->fresh()->active)->toBeTruthy();
-    
+
     // Deactivate the field
     $customField->update(['active' => false]);
     expect($customField->fresh()->active)->toBeFalsy();
-}); 
+});

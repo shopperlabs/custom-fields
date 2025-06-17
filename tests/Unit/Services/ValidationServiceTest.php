@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
+use Relaticle\CustomFields\Data\CustomFieldSettingsData;
 use Relaticle\CustomFields\Data\ValidationRuleData;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Enums\CustomFieldValidationRule;
 use Relaticle\CustomFields\Models\CustomField;
 use Relaticle\CustomFields\Services\ValidationService;
-use Relaticle\CustomFields\Data\CustomFieldSettingsData;
 use Spatie\LaravelData\DataCollection;
 
 beforeEach(function () {
@@ -15,12 +15,12 @@ beforeEach(function () {
 });
 
 it('correctly identifies required fields', function () {
-    $requiredField = new CustomField();
+    $requiredField = new CustomField;
     $requiredField->validation_rules = new DataCollection(ValidationRuleData::class, [
         new ValidationRuleData(name: CustomFieldValidationRule::REQUIRED->value),
     ]);
 
-    $optionalField = new CustomField();
+    $optionalField = new CustomField;
     $optionalField->validation_rules = new DataCollection(ValidationRuleData::class, [
         new ValidationRuleData(name: CustomFieldValidationRule::STRING->value),
     ]);
@@ -30,14 +30,14 @@ it('correctly identifies required fields', function () {
 });
 
 it('can handle empty validation rules', function () {
-    $field = new CustomField();
+    $field = new CustomField;
     $field->validation_rules = new DataCollection(ValidationRuleData::class, []);
 
     expect($this->validationService->isRequired($field))->toBeFalse();
 });
 
 it('can identify fields with specific validation rules', function () {
-    $field = new CustomField();
+    $field = new CustomField;
     $field->validation_rules = new DataCollection(ValidationRuleData::class, [
         new ValidationRuleData(name: CustomFieldValidationRule::MAX->value, parameters: ['100']),
         new ValidationRuleData(name: CustomFieldValidationRule::MIN->value, parameters: ['10']),
@@ -45,7 +45,7 @@ it('can identify fields with specific validation rules', function () {
 
     $hasMaxRule = $field->validation_rules->toCollection()
         ->contains('name', CustomFieldValidationRule::MAX->value);
-    
+
     $hasMinRule = $field->validation_rules->toCollection()
         ->contains('name', CustomFieldValidationRule::MIN->value);
 
@@ -54,11 +54,11 @@ it('can identify fields with specific validation rules', function () {
 });
 
 it('can work with different field types', function () {
-    $textField = new CustomField();
+    $textField = new CustomField;
     $textField->type = CustomFieldType::TEXT;
     $textField->validation_rules = new DataCollection(ValidationRuleData::class, []);
 
-    $numberField = new CustomField();
+    $numberField = new CustomField;
     $numberField->type = CustomFieldType::NUMBER;
     $numberField->validation_rules = new DataCollection(ValidationRuleData::class, []);
 
@@ -67,7 +67,7 @@ it('can work with different field types', function () {
 });
 
 it('can handle settings data', function () {
-    $field = new CustomField();
+    $field = new CustomField;
     $field->settings = createCustomFieldSettings(['encrypted' => true]);
 
     // The settings will be cast to CustomFieldSettingsData by the model

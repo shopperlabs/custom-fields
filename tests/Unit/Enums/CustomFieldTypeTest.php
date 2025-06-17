@@ -26,16 +26,16 @@ it('has all expected field types', function () {
         'MULTI_SELECT',
     ];
 
-    $actualTypes = array_map(fn($case) => $case->name, CustomFieldType::cases());
+    $actualTypes = array_map(fn ($case) => $case->name, CustomFieldType::cases());
 
     // Check that we have the expected count
     expect($actualTypes)->toHaveCount(count($expectedTypes));
-    
+
     // Check that all expected types exist
     foreach ($expectedTypes as $expectedType) {
         expect($actualTypes)->toContain($expectedType);
     }
-    
+
     // Check that we don't have any unexpected types
     foreach ($actualTypes as $actualType) {
         expect($expectedTypes)->toContain($actualType);
@@ -135,4 +135,4 @@ it('identifies numeric types correctly', function () {
     foreach ($numericTypes as $type) {
         expect($type)->toBeInstanceOf(CustomFieldType::class);
     }
-}); 
+});

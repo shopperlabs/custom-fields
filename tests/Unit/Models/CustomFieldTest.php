@@ -27,8 +27,8 @@ it('can create a custom field', function () {
 });
 
 it('has correct default attributes', function () {
-    $customField = new CustomField();
-    
+    $customField = new CustomField;
+
     expect($customField->width)->toBe(CustomFieldWidth::_100);
 });
 
@@ -141,9 +141,9 @@ it('can determine if system defined', function () {
 
 it('uses custom table name from config', function () {
     config(['custom-fields.table_names.custom_fields' => 'my_custom_fields']);
-    
-    $customField = new CustomField();
-    
+
+    $customField = new CustomField;
+
     expect($customField->getTable())->toBe('my_custom_fields');
 });
 
@@ -172,4 +172,4 @@ it('applies global scopes', function () {
     // Check that active field exists
     expect($activeField->active)->toBeTrue();
     expect($inactiveField->active)->toBeFalse();
-}); 
+});

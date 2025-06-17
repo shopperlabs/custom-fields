@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-use Relaticle\CustomFields\Data\CustomFieldSettingsData;
-
-if (!function_exists('createCustomFieldSettings')) {
+if (! function_exists('createCustomFieldSettings')) {
     /**
      * Create CustomField settings data properly formatted for the model.
-     * 
-     * @param array<string, mixed> $overrides
+     *
+     * @param  array<string, mixed>  $overrides
      * @return array<string, mixed>
      */
     function createCustomFieldSettings(array $overrides = []): array
@@ -21,4 +19,4 @@ if (!function_exists('createCustomFieldSettings')) {
             'encrypted' => $overrides['encrypted'] ?? false,
         ];
     }
-} 
+}

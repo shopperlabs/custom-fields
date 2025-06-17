@@ -70,9 +70,8 @@ class TestCase extends Orchestra
 
     /**
      * Create CustomField settings data properly formatted for the model.
-     * 
-     * @param array<string, mixed> $overrides
-     * @return CustomFieldSettingsData
+     *
+     * @param  array<string, mixed>  $overrides
      */
     protected function createCustomFieldSettings(array $overrides = []): CustomFieldSettingsData
     {
@@ -87,8 +86,8 @@ class TestCase extends Orchestra
 
     /**
      * Create a basic CustomField for testing without settings issues.
-     * 
-     * @param array<string, mixed> $attributes
+     *
+     * @param  array<string, mixed>  $attributes
      * @return array<string, mixed>
      */
     protected function createCustomFieldData(array $attributes = []): array

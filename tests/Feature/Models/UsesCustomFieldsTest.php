@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Relaticle\CustomFields\Enums\CustomFieldType;
 use Relaticle\CustomFields\Models\Concerns\UsesCustomFields;
 use Relaticle\CustomFields\Models\CustomField;
-use Relaticle\CustomFields\Models\CustomFieldValue;
 
 function createTestModelTable()
 {
@@ -18,7 +17,7 @@ function createTestModelTable()
 }
 
 it('handles custom fields from fillable array', function () {
-    $testModel = new TestModel();
+    $testModel = new TestModel;
 
     // Test that custom_fields is included in fillable
     expect($testModel->getFillable())->toContain('custom_fields');
@@ -26,7 +25,7 @@ it('handles custom fields from fillable array', function () {
 
 it('returns empty value when custom field has no value', function () {
     createTestModelTable();
-    
+
     $testModel = TestModel::create(['name' => 'Test Model']);
 
     $customField = CustomField::create([
@@ -54,4 +53,4 @@ class TestModel extends Model
     {
         return 'test_model';
     }
-} 
+}

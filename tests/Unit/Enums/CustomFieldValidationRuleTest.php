@@ -41,7 +41,7 @@ it('can get help text for parameters', function () {
 it('can get help text with static method', function () {
     $helpText = CustomFieldValidationRule::getParameterHelpTextFor('regex');
     expect($helpText)->toBeString();
-    
+
     $helpText = CustomFieldValidationRule::getParameterHelpTextFor(null);
     expect($helpText)->toBeString();
 });
@@ -50,7 +50,7 @@ it('can normalize parameter values', function () {
     // Test string normalization
     $normalized = CustomFieldValidationRule::normalizeParameterValue('regex', '/test/');
     expect($normalized)->toBe('/test/');
-    
+
     // Test that it returns the input for unknown rules
     $normalized = CustomFieldValidationRule::normalizeParameterValue('unknown', 'value');
     expect($normalized)->toBe('value');
@@ -66,7 +66,7 @@ it('can get validation rules with static method for string rules', function () {
     $rules = CustomFieldValidationRule::getParameterValidationRuleFor('regex');
     expect($rules)->toContain('required');
     expect($rules)->toContain('string');
-    
+
     $rules = CustomFieldValidationRule::getParameterValidationRuleFor(null);
     expect($rules)->toContain('string');
-}); 
+});

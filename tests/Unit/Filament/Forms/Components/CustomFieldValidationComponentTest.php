@@ -16,7 +16,7 @@ class CustomFieldValidationComponentTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->component = new CustomFieldValidationComponent();
+        $this->component = new CustomFieldValidationComponent;
     }
 
     /** @test */
@@ -31,7 +31,7 @@ class CustomFieldValidationComponentTest extends TestCase
         $reflection = new \ReflectionClass($this->component);
         $viewProperty = $reflection->getProperty('view');
         $viewProperty->setAccessible(true);
-        
+
         expect($viewProperty->getValue($this->component))->toBe('filament-forms::components.group');
     }
 
@@ -39,7 +39,7 @@ class CustomFieldValidationComponentTest extends TestCase
     public function it_has_validation_rules_repeater_in_schema()
     {
         $schema = $this->component->getChildComponents();
-        
+
         expect($schema)->toHaveCount(1);
         expect($schema[0])->toBeInstanceOf(Repeater::class);
         expect($schema[0]->getName())->toBe('validation_rules');
@@ -53,7 +53,7 @@ class CustomFieldValidationComponentTest extends TestCase
         $grid = $repeater->getChildComponents()[0];
         $parametersRepeater = $grid->getChildComponents()[2];
         $textInput = $parametersRepeater->getChildComponents()[0];
-        
+
         expect($textInput->getName())->toBe('value');
         expect($textInput->isRequired())->toBeTrue();
     }
@@ -62,7 +62,7 @@ class CustomFieldValidationComponentTest extends TestCase
     public function make_method_creates_instance_from_container()
     {
         $component = CustomFieldValidationComponent::make();
-        
+
         expect($component)->toBeInstanceOf(CustomFieldValidationComponent::class);
         expect($component)->not->toBe($this->component); // Different instance
     }

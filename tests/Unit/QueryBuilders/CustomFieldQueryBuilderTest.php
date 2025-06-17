@@ -88,4 +88,4 @@ it('can filter by morph entity', function () {
     expect($postFields)->toHaveCount(1);
     expect($userFields->first()->id)->toBe($userField->id);
     expect($postFields->first()->id)->toBe($postField->id);
-}); 
+});

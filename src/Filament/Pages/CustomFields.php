@@ -87,7 +87,7 @@ class CustomFields extends Page
     public function updateSectionsOrder($sections): void
     {
         $sectionModel = CustomFieldsModel::newSectionModel();
-        
+
         foreach ($sections as $index => $section) {
             $sectionModel->query()
                 ->withDeactivated()

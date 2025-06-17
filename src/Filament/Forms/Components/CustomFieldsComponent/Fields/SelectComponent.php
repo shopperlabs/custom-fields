@@ -13,9 +13,7 @@ use Throwable;
 
 final readonly class SelectComponent implements FieldComponentInterface
 {
-    public function __construct(private FieldConfigurator $configurator)
-    {
-    }
+    public function __construct(private FieldConfigurator $configurator) {}
 
     /**
      * @throws Throwable
@@ -35,9 +33,6 @@ final readonly class SelectComponent implements FieldComponentInterface
     }
 
     /**
-     * @param Select $select
-     * @param $lookupType
-     * @return Select
      * @throws Throwable
      * @throws \ReflectionException
      */
@@ -51,7 +46,7 @@ final readonly class SelectComponent implements FieldComponentInterface
 
         return $select
             ->options(function () use ($select, $entityInstanceQuery, $recordTitleAttribute, $entityInstanceKeyName) {
-                if (!$select->isPreloaded()) {
+                if (! $select->isPreloaded()) {
                     return [];
                 }
 
@@ -69,8 +64,8 @@ final readonly class SelectComponent implements FieldComponentInterface
                     ->pluck($recordTitleAttribute, $entityInstanceKeyName)
                     ->toArray();
             })
-            ->getOptionLabelUsing(fn($value) => $entityInstanceQuery->find($value)?->{$recordTitleAttribute})
-            ->getOptionLabelsUsing(function (array $values) use ($resource, $entityInstanceQuery, $entityInstanceKeyName, $recordTitleAttribute): array {
+            ->getOptionLabelUsing(fn ($value) => $entityInstanceQuery->find($value)?->{$recordTitleAttribute})
+            ->getOptionLabelsUsing(function (array $values) use ($entityInstanceQuery, $entityInstanceKeyName, $recordTitleAttribute): array {
                 return $entityInstanceQuery
                     ->whereIn($entityInstanceKeyName, $values)
                     ->pluck($recordTitleAttribute, $entityInstanceKeyName)
