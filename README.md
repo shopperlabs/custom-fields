@@ -1,8 +1,8 @@
-# Custom Fields
+# Custom Fields - The 'Just One More Field' Solution
 
-[![Latest Version](https://img.shields.io/packagist/v/relaticle/custom-fields.svg?style=flat-square)](https://packagist.org/packages/relaticle/custom-fields)
-[![License](https://img.shields.io/packagist/l/relaticle/custom-fields.svg?style=flat-square)](https://packagist.org/packages/relaticle/custom-fields)
-[![PHP Version](https://img.shields.io/packagist/php-v/relaticle/custom-fields.svg?style=flat-square)](https://packagist.org/packages/relaticle/custom-fields)
+[![Latest Version](https://img.shields.io/packagist/v/relaticle/custom-fields.svg?style=for-the-badge)](https://packagist.org/packages/relaticle/custom-fields)
+[![License](https://img.shields.io/packagist/l/relaticle/custom-fields.svg?style=for-the-badge)](https://packagist.org/packages/relaticle/custom-fields)
+[![PHP Version](https://img.shields.io/packagist/php-v/relaticle/custom-fields.svg?style=for-the-badge)](https://packagist.org/packages/relaticle/custom-fields)
 
 A powerful Laravel/Filament plugin for adding dynamic custom fields to any Eloquent model without database migrations.
 
