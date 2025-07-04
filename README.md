@@ -85,10 +85,6 @@ public function form(Form $form): Form
 - [Authorization](https://custom-fields.relaticle.com/essentials/authorization)
 - [Preset Custom Fields](https://custom-fields.relaticle.com/essentials/preset-custom-fields)
 
-## 📝 License
-
-GPL-3.0. See [LICENSE](LICENSE) for details.
-
 ## 🤝 Contributing
 
 Contributions welcome! Please see our [contributing guide](https://custom-fields.relaticle.com/contributing).
