@@ -16,6 +16,11 @@ A powerful Laravel/Filament plugin for adding dynamic custom fields to any Eloqu
 - **Security** - Optional field encryption and type-safe validation
 - **Extensible** - Custom field types and automatic discovery (coming soon)
 
+## 🔧 Requirements
+
+- PHP 8.3+
+- Laravel via Filament 3.0+
+
 ## 🚀 Quick Start
 
 ### Installation
@@ -26,14 +31,31 @@ php artisan vendor:publish --tag="custom-fields-migrations"
 php artisan migrate
 ```
 
-### Basic Usage
+### Integrating Custom Fields Plugin into a panel
+
+```php
+use Relaticle\CustomFields\CustomFieldsPlugin;
+use Filament\Panel;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ... other panel configurations
+        ->plugins([
+            CustomFieldsPlugin::make(),
+        ]);
+}
+```
+
+### Setting Up the Model
 
 Add the trait to your model:
 
 ```php
+use Relaticle\CustomFields\Models\Contracts\HasCustomFields;
 use Relaticle\CustomFields\Models\Concerns\UsesCustomFields;
 
-class Post extends Model
+class Post extends Model implements HasCustomFields
 {
     use UsesCustomFields;
 }
@@ -47,9 +69,8 @@ use Relaticle\CustomFields\Filament\Forms\Components\CustomFieldsComponent;
 public function form(Form $form): Form
 {
     return $form->schema([
-        // Your existing fields...
-        CustomFieldsComponent::make('custom_fields')
-            ->model(Post::class),
+        // Your existing form fields...
+        CustomFieldsComponent::make()->columns(1),
     ]);
 }
 ```
@@ -64,14 +85,9 @@ public function form(Form $form): Form
 - [Authorization](https://custom-fields.relaticle.com/essentials/authorization)
 - [Preset Custom Fields](https://custom-fields.relaticle.com/essentials/preset-custom-fields)
 
-## 🔧 Requirements
-
-- PHP 8.3+
-- Laravel via Filament 3.0+
-
 ## 📝 License
 
-Apache 2.0. See [LICENSE](LICENSE) for details.
+GPL-3.0. See [LICENSE](LICENSE) for details.
 
 ## 🤝 Contributing
 
