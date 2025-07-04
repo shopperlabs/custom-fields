@@ -5,7 +5,7 @@
 [![Laravel Version](https://img.shields.io/badge/laravel-%3E%3D10.0-red?style=flat-square)](https://laravel.com)
 [![Filament Version](https://img.shields.io/badge/filament-3.x-purple?style=flat-square)](https://filamentphp.com)
 [![Total Downloads](https://img.shields.io/packagist/dt/relaticle/custom-fields.svg?style=flat-square)](https://packagist.org/packages/relaticle/custom-fields)
-[![License](https://img.shields.io/packagist/l/relaticle/custom-fields)](LICENSE.md)
+[![License](https://img.shields.io/packagist/l/relaticle/custom-fields?style=flat-square)](LICENSE.md)
 
 A powerful Laravel/Filament plugin for adding dynamic custom fields to any Eloquent model without database migrations.
 
