@@ -91,3 +91,11 @@ public function form(Form $form): Form
 ## 🤝 Contributing
 
 Contributions welcome! Please see our [contributing guide](https://custom-fields.relaticle.com/help-support/contributing).
+
+## 📄 Licensing
+
+This plugin is dual-licensed: **Open Source (AGPL-3.0)** for open source projects, and **Commercial License** for closed-source projects.
+
+**AGPL-3.0 requires your entire application to be open source.** For private/closed-source projects, you need a commercial license.
+
+**More Information:** [License Details](https://custom-fields.relaticle.com/legal-acknowledgments/license)  
