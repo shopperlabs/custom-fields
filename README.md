@@ -30,8 +30,7 @@ A powerful Laravel/Filament plugin for adding dynamic custom fields to any Eloqu
 
 ```bash
 composer require relaticle/custom-fields
-php artisan vendor:publish --tag="custom-fields-migrations"
-php artisan migrate
+php artisan custom-fields:install
 ```
 
 ### Integrating Custom Fields Plugin into a panel
