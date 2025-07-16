@@ -11,7 +11,7 @@ A powerful Laravel/Filament plugin for adding dynamic custom fields to any Eloqu
 
 ## ✨ Features
 
-- **32+ Field Types** - Text, number, date, select, rich editor, and more
+- **18+ Field Types** - Text, number, date, select, rich editor, and more
 - **Conditional Visibility** - Show/hide fields based on other field values
 - **Multi-tenancy** - Complete tenant isolation and context management
 - **Filament Integration** - Forms, tables, infolists, and admin interface
@@ -21,7 +21,7 @@ A powerful Laravel/Filament plugin for adding dynamic custom fields to any Eloqu
 
 ## 🔧 Requirements
 
-- PHP 8.3+
+- PHP 8.1+
 - Laravel via Filament 3.0+
 
 ## 🚀 Quick Start
