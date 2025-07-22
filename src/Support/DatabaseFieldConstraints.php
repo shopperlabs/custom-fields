@@ -86,7 +86,7 @@ final class DatabaseFieldConstraints
             'float_value' => [
                 'max_digits' => 30,
                 'max_decimals' => 15,
-                'validator' => ['digits_between:1,30', 'decimal:0,15'],
+                'validator' => ['decimal:0,15'],
                 'field_types' => [CustomFieldType::CURRENCY],
             ],
             'json_value' => [
@@ -116,7 +116,7 @@ final class DatabaseFieldConstraints
             'float_value' => [
                 'max_digits' => 30,
                 'max_decimals' => 15,
-                'validator' => ['digits_between:1,30', 'decimal:0,15'],
+                'validator' => ['decimal:0,15'],
                 'field_types' => [CustomFieldType::CURRENCY],
             ],
             'json_value' => [
